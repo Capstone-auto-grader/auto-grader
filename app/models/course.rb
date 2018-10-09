@@ -1,4 +1,9 @@
 class Course < ApplicationRecord
-    has_and_belongs_to_many users
-    has_many assignments
+    has_many :takes_class
+    has_many :t_as_for
+    has_many :teaches_class
+    has_many :users, through: :takes_class
+    has_many :users, through: :t_as_for
+    has_many :users, through: :teaches_class
+    has_many :assignments
 end
