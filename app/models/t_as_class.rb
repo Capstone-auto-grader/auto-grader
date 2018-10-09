@@ -1,0 +1,2 @@
+class TAsClass < ApplicationRecord
+end

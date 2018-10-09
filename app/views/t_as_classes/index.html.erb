@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>T As Classes</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @t_as_classes.each do |t_as_class| %>
+      <tr>
+        <td><%= link_to 'Show', t_as_class %></td>
+        <td><%= link_to 'Edit', edit_t_as_class_path(t_as_class) %></td>
+        <td><%= link_to 'Destroy', t_as_class, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New T As Class', new_t_as_class_path %>

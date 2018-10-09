@@ -1,0 +1,17 @@
+<%= form_with(model: t_as_class, local: true) do |form| %>
+  <% if t_as_class.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(t_as_class.errors.count, "error") %> prohibited this t_as_class from being saved:</h2>
+
+      <ul>
+      <% t_as_class.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

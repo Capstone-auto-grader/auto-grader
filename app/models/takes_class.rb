@@ -1,0 +1,2 @@
+class TakesClass < ApplicationRecord
+end

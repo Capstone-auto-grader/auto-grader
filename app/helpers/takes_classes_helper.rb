@@ -1,0 +1,2 @@
+module TakesClassesHelper
+end
