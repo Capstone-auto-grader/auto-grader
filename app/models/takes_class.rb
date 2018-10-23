@@ -1,4 +1,4 @@
 class TakesClass < ApplicationRecord
     belongs_to :user
-    belongs_to :class
+    belongs_to :course
 end
