@@ -1,3 +1,4 @@
 class Submission < ApplicationRecord
-    mount_uploader :attachment, AttachmentUploader
+  belongs_to :assignment
+  belongs_to :user
 end
