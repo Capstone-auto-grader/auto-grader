@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 2018_11_02_172911) do
     t.decimal "grade"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "attachment"
     t.bigint "courses_id"
     t.bigint "users_id"
     t.text "zip_uri"
