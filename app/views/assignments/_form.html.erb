@@ -7,7 +7,9 @@
         <%= simple_form_for @assignment do |f| %>
           <%= f.input :class_id, label: "Class", required: true %>
           <p></p>
-          <%= f.input :assignment_test, label: "Test directory" %>
+          <%= f.input :name, label: "Assignment Name", required: true %>
+          <p></p>
+          <%= f.input :assignment_test, label: "Test directory",required: true %>
           #active storage with s3
           <p></p>
           <%= f.input :due_date, label:"Due date", required: true %>
