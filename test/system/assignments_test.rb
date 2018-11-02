@@ -14,8 +14,10 @@ class AssignmentsTest < ApplicationSystemTestCase
     visit assignments_url
     click_on "New Assignment"
 
-    fill_in "Assignment Tests", with: @assignment.assignment_tests
+    fill_in "Assignment Test", with: @assignment.assignment_test
+    fill_in "Class", with: @assignment.class_id
     fill_in "Due Date", with: @assignment.due_date
+    fill_in "Name", with: @assignment.name
     click_on "Create Assignment"
 
     assert_text "Assignment was successfully created"
@@ -26,8 +28,10 @@ class AssignmentsTest < ApplicationSystemTestCase
     visit assignments_url
     click_on "Edit", match: :first
 
-    fill_in "Assignment Tests", with: @assignment.assignment_tests
+    fill_in "Assignment Test", with: @assignment.assignment_test
+    fill_in "Class", with: @assignment.class_id
     fill_in "Due Date", with: @assignment.due_date
+    fill_in "Name", with: @assignment.name
     click_on "Update Assignment"
 
     assert_text "Assignment was successfully updated"
