@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 2018_11_02_172911) do
     t.bigint "courses_id"
     t.bigint "users_id"
     t.text "zip_uri"
+    t.string "attachment"
     t.index ["courses_id"], name: "index_submissions_on_courses_id"
     t.index ["users_id"], name: "index_submissions_on_users_id"
   end
