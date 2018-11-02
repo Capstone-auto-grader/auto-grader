@@ -1,9 +1,13 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  assignment_tests: 
-  due_date: 2018-10-09
+  class_id: 1
+  name: MyString
+  assignment_test: MyString
+  due_date: 2018-11-01
 
 two:
-  assignment_tests: 
-  due_date: 2018-10-09
+  class_id: 1
+  name: MyString
+  assignment_test: MyString
+  due_date: 2018-11-01

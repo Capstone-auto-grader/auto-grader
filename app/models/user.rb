@@ -5,6 +5,5 @@ class User < ApplicationRecord
     has_many :registrations, through: :takes_class, source: :course
     has_many :taships, through: :t_as_class, source: :course
     has_many :professorships, through: :teaches_class, source: :course
-    # has_many courses, through: :t_as_for
-    # has_many courses, through: :teaches_class
+    has_many :submissions
 end

@@ -2,10 +2,12 @@
 
 <h1>Assignments</h1>
 
-<table>
-  <thead>
+<table class="table">
+  <thead class = "thead-dark">
     <tr>
-      <th>Assignment tests</th>
+      <th>Class</th>
+      <th>Name</th>
+      <th>Assignment test</th>
       <th>Due date</th>
       <th colspan="3"></th>
     </tr>
@@ -14,7 +16,9 @@
   <tbody>
     <% @assignments.each do |assignment| %>
       <tr>
-        <td><%= assignment.assignment_tests %></td>
+        <td><%= assignment.class_id %></td>
+        <td><%= assignment.name %></td>
+        <td><%= assignment.assignment_test %></td>
         <td><%= assignment.due_date %></td>
         <td><%= link_to 'Show', assignment %></td>
         <td><%= link_to 'Edit', edit_assignment_path(assignment) %></td>

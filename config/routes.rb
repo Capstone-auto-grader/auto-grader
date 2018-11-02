@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  resources :submissions
   resources :assignments
+  resources :submissions
   resources :t_as_classes
   resources :teaches_classes
   resources :takes_classes

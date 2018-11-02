@@ -5,3 +5,28 @@
 #
 #   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
 #   Character.create(name: 'Luke', movie: movies.first)
+
+require 'faker'
+
+studentscourse1 = []
+studentscourse2 = []
+studentscourse3 = []
+10.times do
+  studentscourse1 << User.create(name: Faker::Name.name, email: Faker::Internet.email)
+end
+10.times do
+  studentscourse2 << User.create(name: Faker::Name.name, email: Faker::Internet.email)
+end
+10.times do
+  studentscourse3 << User.create(name: Faker::Name.name, email: Faker::Internet.email)
+end
+courses = []
+
+3.times do
+  courses << Course.create(name: Faker::TwinPeaks.location)
+end
+
+courses[0].students << studentscourse1
+courses[1].students << studentscourse2
+courses[2].students << studentscourse3
+courses[0].tas
