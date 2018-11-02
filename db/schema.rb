@@ -10,13 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_26_201911) do
+ActiveRecord::Schema.define(version: 2018_10_26_193248) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "assignments", force: :cascade do |t|
-    t.date "dueDate"
+    t.integer "class_id"
+    t.string "assignment_test"
+    t.date "due_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -31,7 +33,6 @@ ActiveRecord::Schema.define(version: 2018_10_26_201911) do
     t.decimal "grade"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "attachment"
   end
 
   create_table "t_as_classes", force: :cascade do |t|
