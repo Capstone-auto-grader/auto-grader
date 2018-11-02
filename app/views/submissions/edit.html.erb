@@ -1,6 +1,28 @@
-<h1>Editing Submission</h1>
+# <h1>Editing Submission</h1>
 
-<%= render 'form', submission: @submission %>
+# <%= render 'form', submission: @submission %>
 
-<%= link_to 'Show', @submission %> |
-<%= link_to 'Back', submissions_path %>
+# <%= link_to 'Show', @submission %> |
+# <%= link_to 'Back', submissions_path %>
+
+<% if !@submission.errors.empty? %>
+   <div class = "alert alert-error">
+      
+      <ul>
+         <% @submission.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+         <% end %>
+      </ul>
+      
+   </div>
+<% end %>
+
+<div class = "well">
+   <%= form_for @submission, html: { multipart: true } do |f| %>
+      <%= f.label :grade %>
+      <%= f.text_field :grade %>
+      <%= f.label :attachment %>
+      <%= f.file_field :attachment %>
+      <%= f.submit "Save", class: "btn btn-primary" %>
+   <% end %>
+</div>
