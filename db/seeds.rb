@@ -12,13 +12,13 @@ studentscourse1 = []
 studentscourse2 = []
 studentscourse3 = []
 10.times do
-  studentscourse1 << User.create(name: Faker::Name.name, email: Faker::Internet.email)
+  studentscourse1 << User.create(name: Faker::Name.name, email: Faker::Internet.email, password: Faker::Internet.password)
 end
 10.times do
-  studentscourse2 << User.create(name: Faker::Name.name, email: Faker::Internet.email)
+  studentscourse2 << User.create(name: Faker::Name.name, email: Faker::Internet.email, password: Faker::Internet.password)
 end
 10.times do
-  studentscourse3 << User.create(name: Faker::Name.name, email: Faker::Internet.email)
+  studentscourse3 << User.create(name: Faker::Name.name, email: Faker::Internet.email, password: Faker::Internet.password)
 end
 courses = []
 
