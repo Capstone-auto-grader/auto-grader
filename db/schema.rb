@@ -38,6 +38,10 @@ ActiveRecord::Schema.define(version: 2018_11_07_043226) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "attachment"
+    t.bigint "courses_id"
+    t.bigint "users_id"
+    t.text "zip_uri"
+    t.string "attachment"
     t.text "zip_uri"
     t.bigint "course_id"
     t.bigint "user_id"
@@ -74,6 +78,7 @@ ActiveRecord::Schema.define(version: 2018_11_07_043226) do
     t.datetime "updated_at", null: false
     t.string "password_digest"
     t.string "name"
+    t.string "password_digest"
   end
 
 end
