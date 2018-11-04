@@ -10,21 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_03_173521) do
+ActiveRecord::Schema.define(version: 2018_11_04_024558) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "assignments", force: :cascade do |t|
-    t.integer "class_id"
     t.string "name"
     t.string "assignment_test"
     t.date "due_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "courses_id"
     t.text "test_uri"
-    t.index ["courses_id"], name: "index_assignments_on_courses_id"
+    t.bigint "course_id"
+    t.index ["course_id"], name: "index_assignments_on_course_id"
   end
 
   create_table "courses", force: :cascade do |t|
@@ -38,11 +37,11 @@ ActiveRecord::Schema.define(version: 2018_11_03_173521) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "attachment"
-    t.bigint "courses_id"
-    t.bigint "users_id"
     t.text "zip_uri"
-    t.index ["courses_id"], name: "index_submissions_on_courses_id"
-    t.index ["users_id"], name: "index_submissions_on_users_id"
+    t.bigint "course_id"
+    t.bigint "user_id"
+    t.index ["course_id"], name: "index_submissions_on_course_id"
+    t.index ["user_id"], name: "index_submissions_on_user_id"
   end
 
   create_table "t_as_classes", force: :cascade do |t|

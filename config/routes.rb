@@ -1,9 +1,7 @@
 Rails.application.routes.draw do
-  resources :assignments
-  resources :submissions
-  resources :t_as_classes
-  resources :teaches_classes
-  resources :takes_classes
+  resources :assignments do
+    resources :submissions
+  end
   resources :courses
   resources :users
   get 'sessions/new'
