@@ -2,8 +2,6 @@ Rails.application.routes.draw do
   resources :assignments do
     resources :submissions
   end
-  # resources :submissions
-
   resources :courses
   resources :users
   get 'sessions/new'
