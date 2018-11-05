@@ -24,6 +24,8 @@ class AssignmentsController < ApplicationController
   # POST /assignments
   # POST /assignments.json
   def create
+    p = assignment_params
+    p[:structure] = p[:structure].split(",")
     @assignment = Assignment.new(assignment_params)
     # byebug
     respond_to do |format|
@@ -69,6 +71,6 @@ class AssignmentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def assignment_params
-      params.require(:assignment).permit(:name, :course_id, :assignment_test, :due_date)
+      params.require(:assignment).permit(:name, :course_id, :assignment_test, :due_date, :structure)
     end
 end
