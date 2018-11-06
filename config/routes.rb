@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  root 'users#index'
   resources :assignments
   resources :submissions
   resources :t_as_classes
