@@ -26,7 +26,7 @@ class AssignmentsController < ApplicationController
   def create
     p = assignment_params
     p[:structure] = p[:structure].split(",")
-    @assignment = Assignment.new(assignment_params)
+    @assignment = Assignment.new(p)
     # byebug
     respond_to do |format|
       if @assignment.save!
