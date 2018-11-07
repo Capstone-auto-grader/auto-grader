@@ -15,6 +15,7 @@ class SubmissionsController < ApplicationController
   # GET /submissions/new
   def new
     @submission = Submission.new
+    @assignment = Assignment.find(params[:assignment_id].to_i)
   end
 
   # GET /submissions/1/edit
@@ -24,8 +25,12 @@ class SubmissionsController < ApplicationController
   # POST /submissions
   # POST /submissions.json
   def create
-    @submission = Submission.new(submission_params)
-
+    # TODO: Make sure user can have multiple submissions per assignment
+    uploader = AttachmentUploader.new
+    uploader.store! params[:submission][:subm_file]
+    byebug
+    @submission = Submission.new(course_id: params[:course_id].to_i, user_id: current_user.id)
+    ValidateZipFileJob.perform_later @submission.id, uploader.filename
     respond_to do |format|
       if @submission.save
         format.html { redirect_to @submission, notice: 'Submission was successfully created.' }
@@ -69,6 +74,6 @@ class SubmissionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def submission_params
-      params.require(:submission).permit(:grade, :submission_zip)
+      params.require(:submission).permit(:subm_file)
     end
 end

@@ -24,10 +24,12 @@ class AssignmentsController < ApplicationController
   # POST /assignments
   # POST /assignments.json
   def create
-    @assignment = Assignment.new(assignment_params)
-
+    p = assignment_params
+    p[:structure] = p[:structure].split(",")
+    @assignment = Assignment.new(p)
+    # byebug
     respond_to do |format|
-      if @assignment.save
+      if @assignment.save!
         format.html { redirect_to @assignment, notice: 'Assignment was successfully created.' }
         format.json { render :show, status: :created, location: @assignment }
       else
@@ -69,6 +71,6 @@ class AssignmentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def assignment_params
-      params.require(:assignment).permit(:class_id, :assignment_test, :due_date)
+      params.require(:assignment).permit(:name, :course_id, :assignment_test, :due_date, :structure)
     end
 end

@@ -1,27 +1,4 @@
-<%= form_with(model: submission, local: true) do |form| %>
-  <% if submission.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(submission.errors.count, "error") %> prohibited this submission from being saved:</h2>
-
-      <ul>
-      <% submission.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= form.label :grade %>
-    <%= form.text_field :grade %>
-  </div>
-
-  <div class="field">
-    <%= form.label :submission_zip %>
-    <%= form.text_field :submission_zip %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-<% end %>
+<%= simple_form_for @submission, url: assignment_submissions_path do |f| %>
+  <%= f.file_field :subm_file, label: "Submission zip" %>
+  <%= f.button :submit %>
+<%end %>
