@@ -1,4 +1,5 @@
 require 'zip'
+require 'net/http'
 class ValidateZipFileJob < ApplicationJob
   queue_as :default
 
@@ -15,6 +16,7 @@ class ValidateZipFileJob < ApplicationJob
       # Send out an email error message
       puts "NOT VALIDATED"
     end
+    # Send post to grading API
   end
 
   def validate(zip_uri, proj_structure)
