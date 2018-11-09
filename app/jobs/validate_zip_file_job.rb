@@ -5,7 +5,7 @@ class ValidateZipFileJob < ApplicationJob
   def perform(file_name, submission_id)
     submission = Submission.find submission_id
     structure_arr = submission.assignment.structure
-    structure_hash = [structure_arr, [false] * structure_arr.length]
+    structure_hash = structure_arr.map {|elem| [elem, false]}.to_h
     uploader = AttachmentUploader.new
     uploader.retrieve_from_store! file_name
     if validate(uploader.path, structure_hash)
