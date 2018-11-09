@@ -26,7 +26,6 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(user_params)
-    byebug
     if @user.save
       log_in @user
       flash[:success] = "Welcome!"
