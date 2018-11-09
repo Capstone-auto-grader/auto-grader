@@ -29,8 +29,9 @@ class SubmissionsController < ApplicationController
     uploader = AttachmentUploader.new
     uploader.store! params[:submission][:subm_file]
     byebug
-    @submission = Submission.new(course_id: params[:course_id].to_i, user_id: current_user.id)
-    ValidateZipFileJob.perform_later @submission.id, uploader.filename
+    #TODO: REPLACE WITH CURRENT USER
+    @submission = Submission.new(course_id: params[:course_id].to_i, user_id: 1)
+    @submission.assignment = Assignment.find(params[:assignment_id])
     respond_to do |format|
       if @submission.save!
         #TODO: WE NEED TO TEST THIS
