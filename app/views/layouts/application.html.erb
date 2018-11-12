@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html>
-
-   <head>
-      <title>Auto Grader</title>
-      <%= stylesheet_link_tag "application", media: "all", "data-turbolinks-track" => true %>
-      <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
-      <%= csrf_meta_tags %>
-   </head>
-
-   <body>
-      <div class = "container" style = "padding-top:20px;">
-         <%= yield %>
-      </div>
-   </body>
+  <head>
+    <title>Auto Grader</title>
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag    'application', media: 'all',
+                                              'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= render 'layouts/shim' %>
+  </head>
+  <body>
+    <%= render 'layouts/header' %>
+    <p></p>
+    <div class="container">
+    <%= yield %>
+    <%= render 'layouts/footer' %>
+    </div>
+  </body>
 </html>
