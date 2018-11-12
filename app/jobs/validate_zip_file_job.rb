@@ -10,6 +10,11 @@ class ValidateZipFileJob < ApplicationJob
     uploader.retrieve_from_store! file_name
     if validate(uploader.path, structure_hash)
       # upload to S3
+
+      buckob = S3_BUCKET.object file_name
+      buckob.upload_file uploader.path
+      submission.zip_uri = buckob.public_url
+      submission.save
       puts "VALIDATED"
     else
       # Send out an email error message
