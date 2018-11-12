@@ -24,6 +24,9 @@ class AssignmentsController < ApplicationController
   # POST /assignments
   # POST /assignments.json
   def create
+    uploader = AttachmentUploader.new
+    uploader.store! params[:assignment][:assignment_test]
+    
     p = assignment_params
     p[:structure] = p[:structure].split(",")
     @assignment = Assignment.new(p)
