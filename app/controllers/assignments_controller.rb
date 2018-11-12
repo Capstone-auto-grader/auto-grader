@@ -25,7 +25,10 @@ class AssignmentsController < ApplicationController
   # POST /assignments.json
   def create
     p = assignment_params
+    file = params[:assignment][:uploaded_file]
     p[:structure] = p[:structure].split(",")
+    uploader = AttachmentUploader.new
+    uploader.store! file
     @assignment = Assignment.new(p)
     # byebug
     respond_to do |format|
