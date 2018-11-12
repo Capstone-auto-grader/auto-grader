@@ -12,7 +12,7 @@ class ValidateZipFileJob < ApplicationJob
       # upload to S3
 
       buckob = S3_BUCKET.object file_name
-      buckob.upload_file file_name
+      buckob.upload_file uploader.path
       submission.zip_uri = buckob.public_url
       submission.save
       puts "VALIDATED"
