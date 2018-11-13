@@ -2,10 +2,13 @@
   <div class="col-md-6">
     <div class="panel panel-primary">
       <div class="panel-heading"></div>
-      <div clas = "panel-body">
+      <div class = "panel-body">
         <p></p>
         <%= simple_form_for @assignment do |f| %>
-          <%= f.association :course, label: "Class", required: true %>
+          <div class="control-group">
+            <%= f.association :course, label: "Class", required: true, class:"form-control" %>
+          </div>
+
           <p></p>
           <%= f.input :name, label: "Assignment Name", required: true %>
           <p></p>
@@ -13,7 +16,7 @@
           <p></p>
           <%= f.input :due_date, label:"Due date", required: true %>
           <p></p>
-          <%= f.input :structure, label:"Required files", required: true %>
+          <%= f.input :structure, label:"Required files",input_html: {value: @assignment.structure.join(',')}, required: true %>
           <button type="button" class="btn btn-dark"><%= f.button :submit %></button>
         <% end %>
         </div>
