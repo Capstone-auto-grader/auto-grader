@@ -1,11 +1,11 @@
 <% provide(:title, @user.name) %>
 <div class="row">
-  <aside class="col-md-4">
-    <section class="user_info">
       <h1>
-        <%= gravatar_for @user %>
+        <div class = "pull-left">
         <%= @user.name %>
+        </div>
       </h1>
-    </section>
-  </aside>
+      <h2>
+        <%= link_to "New Assignment", new_assignment_path, class: "btn btn-lg btn-primary pull-right" %>
+        </h2>
 </div>
