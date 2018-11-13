@@ -19,6 +19,9 @@
   <strong>Due date:</strong>
   <%= @assignment.due_date %>
 </p>
+<p>
+  <%= button_to "New Submission",  new_assignment_submission_path(@assignment.id), method: "get" %>
+</p>
 
 <%= link_to 'Edit', edit_assignment_path(@assignment) %> |
 <%= link_to 'Back', assignments_path %>

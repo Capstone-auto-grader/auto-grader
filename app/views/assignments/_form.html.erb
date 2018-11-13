@@ -2,21 +2,23 @@
   <div class="col-md-6">
     <div class="panel panel-primary">
       <div class="panel-heading"></div>
-      <div class = "panel-body">
+      <div class = "panel-body center-div">
         <p></p>
         <%= simple_form_for @assignment do |f| %>
-          <div class="control-group">
-            <%= f.association :course, label: "Class", required: true, class:"form-control" %>
+          <div class="form-group">
+            <%= f.association :course, label: "Class", required: true, input_html: {class:"form-control"} %>
           </div>
 
           <p></p>
-          <%= f.input :name, label: "Assignment Name", required: true %>
+          <%= f.input :name, label: "Assignment Name", required: true, input_html: {class:"form-control"} %>
           <p></p>
-          <%= f.file_field :assignment_test, label: "Test directory",required: true %>
+          <%= f.input :description, label: "Assignment description",  input_html: {class:"form-control"} %>
+
+          <%= f.file_field :assignment_test, label: "Test directory",required: true,  class:"form-control-file" %>
           <p></p>
-          <%= f.input :due_date, label:"Due date", required: true %>
+          <%= f.input :due_date, label:"Due date", required: true, input_html: {class:"form-control"}  %>
           <p></p>
-          <%= f.input :structure, label:"Required files",input_html: {value: @assignment.structure.join(',')}, required: true %>
+          <%= f.input :structure, label:"Required files",input_html: {value: @assignment.structure.join(','), class: "form-control"}, required: true %>
           <button type="button" class="btn btn-dark"><%= f.button :submit %></button>
         <% end %>
         </div>
