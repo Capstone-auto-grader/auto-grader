@@ -39,8 +39,6 @@ ActiveRecord::Schema.define(version: 2018_11_13_000040) do
     t.datetime "updated_at", null: false
     t.string "attachment"
     t.text "zip_uri"
-    t.string "attachment"
-    t.text "zip_uri"
     t.bigint "course_id"
     t.bigint "user_id"
     t.bigint "assignment_id"
@@ -49,7 +47,7 @@ ActiveRecord::Schema.define(version: 2018_11_13_000040) do
     t.index ["course_id"], name: "index_submissions_on_course_id"
     t.index ["user_id"], name: "index_submissions_on_user_id"
   end
- 
+
   create_table "t_as_classes", force: :cascade do |t|
     t.integer "user_id"
     t.integer "course_id"
