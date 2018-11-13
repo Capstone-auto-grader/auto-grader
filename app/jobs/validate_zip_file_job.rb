@@ -14,10 +14,17 @@ class ValidateZipFileJob < ApplicationJob
 
       buckob = S3_BUCKET.object file_name
       buckob.upload_file uploader.path
-      submission.zip_uri = buckob.public_url
+      submission.zip_uri = "#{S3_BUCKET.name}/#{buckob.key}"
       submission.save!
       uploader.remove!
       puts "VALIDATED"
+      uri = URI.parse('http://localhost/grade')
+      uri.port = 5000
+      http = Net::HTTP.new(uri.host, uri.port)
+      req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
+      req.body = {proj_id: submission.id, proj_zip: submission.zip_uri, test_zip: submission.assignment.test_uri }.to_json
+      res = http.request req
+      puts res
     else
       # Send out an email error message
       puts "NOT VALIDATED"
