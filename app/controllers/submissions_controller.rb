@@ -28,7 +28,6 @@ class SubmissionsController < ApplicationController
     # TODO: Make sure user can have multiple submissions per assignment
     uploader = AttachmentUploader.new
     uploader.store! params[:submission][:subm_file]
-    byebug
     #TODO: REPLACE WITH CURRENT USER
     @submission = Submission.new(course_id: params[:course_id].to_i, user_id: 1)
     @submission.assignment = Assignment.find(params[:assignment_id])
@@ -36,7 +35,7 @@ class SubmissionsController < ApplicationController
       if @submission.save!
         #TODO: WE NEED TO TEST THIS
         ValidateZipFileJob.perform_later uploader.filename,@submission.id
-        format.html { redirect_to @submission, notice: 'Submission was successfully created.' }
+        format.html { redirect_to '/submissions', notice: 'Submission was successfully created.' }
         format.json { render :show, status: :created, location: @submission }
       else
         format.html { render :new }
