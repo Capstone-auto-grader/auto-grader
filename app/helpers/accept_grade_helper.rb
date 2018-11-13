@@ -1,0 +1,2 @@
+module AcceptGradeHelper
+end

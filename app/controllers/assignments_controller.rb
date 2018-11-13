@@ -28,7 +28,10 @@ class AssignmentsController < ApplicationController
     uploader.store! params[:assignment][:assignment_test]
     
     p = assignment_params
+    file = params[:assignment][:uploaded_file]
     p[:structure] = p[:structure].split(",")
+    uploader = AttachmentUploader.new
+    uploader.store! file
     @assignment = Assignment.new(p)
     # byebug
     respond_to do |format|
