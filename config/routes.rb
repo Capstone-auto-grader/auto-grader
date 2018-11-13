@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   get '/create', to: 'assignments#new' 
   root 'welcome#index'
   post 'grades', to: 'accept_grade#accept_grade'
+  get '/submissions', to: 'submissions#index'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
