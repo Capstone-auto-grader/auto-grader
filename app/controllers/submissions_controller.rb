@@ -1,10 +1,10 @@
 class SubmissionsController < ApplicationController
   before_action :set_submission, only: [:show, :edit, :update, :destroy]
-
+  before_action :require_login
   # GET /submissions
   # GET /submissions.json
   def index
-    @submissions = Submission.all
+    @submissions = Submission.where(user_id: current_user.id)
   end
 
   # GET /submissions/1

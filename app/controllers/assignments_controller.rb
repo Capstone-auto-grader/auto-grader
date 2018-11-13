@@ -26,13 +26,15 @@ class AssignmentsController < ApplicationController
   def create
     uploader = AttachmentUploader.new
     uploader.store! params[:assignment][:assignment_test]
-    
+    buckob = S3_BUCKET.object File.basename(uploader.path)
+    buckob.upload_file uploader.path
     p = assignment_params
     file = params[:assignment][:uploaded_file]
     p[:structure] = p[:structure].split(",")
     uploader = AttachmentUploader.new
     uploader.store! file
     @assignment = Assignment.new(p)
+    @assignment.test_uri = "#{S3_BUCKET.name}/#{buckob.key}"
     # byebug
     respond_to do |format|
       if @assignment.save!
@@ -48,8 +50,11 @@ class AssignmentsController < ApplicationController
   # PATCH/PUT /assignments/1
   # PATCH/PUT /assignments/1.json
   def update
+    p = assignment_params
+    file = params[:assignment][:uploaded_file]
+    p[:structure] = p[:structure].split(",")
     respond_to do |format|
-      if @assignment.update(assignment_params)
+      if @assignment.update(p)
         format.html { redirect_to @assignment, notice: 'Assignment was successfully updated.' }
         format.json { render :show, status: :ok, location: @assignment }
       else

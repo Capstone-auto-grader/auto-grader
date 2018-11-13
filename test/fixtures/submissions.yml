@@ -2,8 +2,8 @@
 
 one:
   grade: 9.99
-  submission_zip: 
+  #submission_zip: testzipfolder.zip
 
 two:
   grade: 9.99
-  submission_zip: 
+  #submission_zip: testzipfolder.zip
