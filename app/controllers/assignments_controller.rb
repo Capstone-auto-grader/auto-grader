@@ -50,8 +50,11 @@ class AssignmentsController < ApplicationController
   # PATCH/PUT /assignments/1
   # PATCH/PUT /assignments/1.json
   def update
+    p = assignment_params
+    file = params[:assignment][:uploaded_file]
+    p[:structure] = p[:structure].split(",")
     respond_to do |format|
-      if @assignment.update(assignment_params)
+      if @assignment.update(p)
         format.html { redirect_to @assignment, notice: 'Assignment was successfully updated.' }
         format.json { render :show, status: :ok, location: @assignment }
       else
