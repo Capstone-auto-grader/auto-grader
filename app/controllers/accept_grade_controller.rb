@@ -6,9 +6,16 @@ class AcceptGradeController < ApplicationController
       submission = Submission.find(params[:id].to_i)
       if submission
         # TODO: Convert grade to int on frontend
-        submission.grade = ((params[:number_of_tests].to_f - params[:number_of_failures].to_f) / params[:number_of_tests]) * 100
+        submission.grade = ((params[:number_of_tests].to_f - (params[:number_of_failures].to_f + params[:number_of_errors].to_f)) / params[:number_of_tests]) * 100
+        submission.save!
+      end
+    elsif status == "failure"
+      submission = Submission.find(params[:id].to_i)
+      if submission
+        submission.grade = 0
         submission.save!
       end
     end
+
   end
 end

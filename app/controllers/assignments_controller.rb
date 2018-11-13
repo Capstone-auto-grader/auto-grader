@@ -30,7 +30,7 @@ class AssignmentsController < ApplicationController
     buckob.upload_file uploader.path
     p = assignment_params
     file = params[:assignment][:uploaded_file]
-    p[:structure] = p[:structure].split(",")
+    p[:structure] = p[:structure].split(',').map &:strip
     uploader = AttachmentUploader.new
     uploader.store! file
     @assignment = Assignment.new(p)
