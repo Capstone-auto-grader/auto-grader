@@ -15,7 +15,7 @@ class AssignmentsTest < ApplicationSystemTestCase
     click_on "New Assignment"
 
     fill_in "Assignment Test", with: @assignment.assignment_test
-    fill_in "Class", with: @assignment.class_id
+    fill_in "Class", with: @assignmente.course_id
     fill_in "Due Date", with: @assignment.due_date
     fill_in "Name", with: @assignment.name
     click_on "Create Assignment"
@@ -29,7 +29,7 @@ class AssignmentsTest < ApplicationSystemTestCase
     click_on "Edit", match: :first
 
     fill_in "Assignment Test", with: @assignment.assignment_test
-    fill_in "Class", with: @assignment.class_id
+    fill_in "Class", with: @assignment.course_id
     fill_in "Due Date", with: @assignment.due_date
     fill_in "Name", with: @assignment.name
     click_on "Update Assignment"
