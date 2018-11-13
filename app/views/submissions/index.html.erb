@@ -1,20 +1,22 @@
  <p id="notice"><%= notice %></p>
 
- <h1>Submissions</h1>
+ <h1>My Submissions</h1>
 
  <table class="table">
    <thead class = "thead-dark">
      <tr>
+       <th>Assignment</th>
        <th>Grade</th>
-       <th>Submission zip</th>
+       <th>Submission</th>
      </tr>
    </thead>
 
    <tbody>
      <% @submissions.each do |submission| %>
        <tr>
-         <td><%= submission.grade %></td>
-         <td><%= link_to 'Show', assignment_submissions_path(submission.id) %></td>
+         <td><%=submission.assignment.name %></td>
+         <td><%= ! submission.grade.nil? ? submission.grade : "Pending"  %></td>
+         <td><%= link_to 'Show', assignment_submission_path(assignment_id: submission.assignment.id, id: submission.id) %></td>
        </tr>
      <% end %>
    </tbody>
