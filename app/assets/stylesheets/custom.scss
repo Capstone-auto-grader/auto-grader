@@ -1,6 +1,6 @@
-@import "bootstrap-sprockets";
-@import "bootstrap";
 
+@import "bootstrap";
+@import "bootstrap/variables";
 /* universal */
 
 body {
@@ -42,7 +42,7 @@ h2 {
   margin-bottom: 30px;
   text-align: center;
   font-weight: normal;
-  color: $gray-light;
+  color: #777777;
 }
 
 p {
@@ -100,10 +100,19 @@ input {
 }
 
 .field_with_errors {
-  @extend .has-error;
+  @extend .is-invalid;
   .form-control {
-    color: $state-danger-text;
+    color: #a94442;
   }
+}
+
+.ml-auto .dropdown-menu {
+  left: auto !important;
+  right: 0px;
+}
+
+.navbar-nav {
+  flex-direction: row;
 }
 
 .main-footer {
