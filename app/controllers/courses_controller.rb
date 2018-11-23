@@ -10,6 +10,8 @@ class CoursesController < ApplicationController
   # GET /courses/1
   # GET /courses/1.json
   def show
+    @assignments= @course.assignments.order(:created_at).reverse
+    @recently_edited = @assignments.first
   end
 
   # GET /courses/new

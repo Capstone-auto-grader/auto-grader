@@ -4,7 +4,12 @@ class SubmissionsController < ApplicationController
   # GET /submissions
   # GET /submissions.json
   def index
-    @submissions = Submission.where(user_id: current_user.id)
+    if params.key? :assignment_id
+      @submissions = Submission.where(assignment_id: params[:assignment_id])
+    else
+      @submissions = Submission.where(user_id: current_user.id)
+    end
+
   end
 
   # GET /submissions/1
