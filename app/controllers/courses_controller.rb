@@ -19,6 +19,21 @@ class CoursesController < ApplicationController
     @course = Course.new
   end
 
+  def show_student
+    @assignments= @course.assignments.order(:created_at).reverse
+    @recently_edited = @assignments.first
+  end
+
+  def show_teacher
+    @assignments= @course.assignments.order(:created_at).reverse
+    @recently_edited = @assignments.first
+  end
+
+  def show_ta
+    @assignments= @course.assignments.order(:created_at).reverse
+    @recently_edited = @assignments.first
+  end
+
   # GET /courses/1/edit
   def edit
   end
