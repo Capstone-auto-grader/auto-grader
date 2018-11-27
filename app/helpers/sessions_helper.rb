@@ -38,9 +38,13 @@ module SessionsHelper
 
   def is_superuser(course_id)
     current_course = Course.find course_id
-    (current_course.professors.exists? current_user.id) || (current_course.tas.exists? current_user.id)
+    (current_course.professors.exists? current_user.id)
   end
 
+  def is_ta(course_id)
+    current_course = Course.find course_id
+    (current_course.tas.exists? current_user.id)
+  end
   def is_student(course_id)
     current_course = Course.find course_id
     (current_course.students.exists? current_user.id)

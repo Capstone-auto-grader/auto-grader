@@ -14,6 +14,10 @@ class CoursesController < ApplicationController
       @assignments= @course.assignments.order(:created_at).reverse
       @recently_edited = @assignments.first
       render 'courses/show_professor'
+    elsif is_ta(params[:id])
+      @assignments= @course.assignments.order(:created_at).reverse
+      @recently_edited = @assignments.first
+      render 'courses/show_ta'
     elsif is_student(params[:id])
       @assignments= @course.assignments.order(:created_at).reverse
       render 'courses/show_student'
