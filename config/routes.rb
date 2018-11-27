@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   get 'sessions/new'
   get 'users/new'
   get 'welcome/index'
-  get 'courses/show_ta', to: 'courses#show_ta'
+  get 'courses/index', to:'courses#show'
   get  '/signup',  to: 'users#new'
   post '/signup',  to: 'users#create'
   get '/login', to: 'sessions#new'
