@@ -1,0 +1,17 @@
+<table class="table">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th></th>
+  </tr>
+  </thead>
+  <% courses.each do |course| %>
+    <tr>
+      <td><%= course.name %></td>
+      <td>
+        <%= link_to 'Show', course, html_options= { class: "btn btn-primary", role: "button"} %>
+      </td>
+    </tr>
+  <% end %>
+
+</table>

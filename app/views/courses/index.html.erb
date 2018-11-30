@@ -5,11 +5,13 @@
   Choose user <b class="caret"></b>
   </a>
   <ul class="dropdown-menu">
-    <li>Student</li>
+    <% if !@current_user.registrations.empty? && @status == 1 %>
+      <li>Go to student</li>
+      <% end %>
     <li class="divider"></li>
+    <% if !@current_user.taships.empty? && @status == 0 %>
     <li>TA</li>
-    <li class="divider"></li>
-    <li>Professor</li>
+    <% end %>
   </ul>
   <table class="table">
     <thead>
@@ -18,11 +20,11 @@
       <th></th>
     </tr>
     </thead>
-    <% @current_user.taships.each do |course| %>
+    <% @courses.each do |course| %>
       <tr>
         <td><%= course.name %></td>
         <td>
-          <%= link_to 'Show', show_student, html_options= { class: "btn btn-primary", role: "button"} %>
+          <%= link_to 'Show', course, html_options= { class: "btn btn-primary", role: "button"} %>
         </td>
       </tr>
     <% end %>

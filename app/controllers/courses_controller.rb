@@ -4,6 +4,21 @@ class CoursesController < ApplicationController
   # GET /courses
   # GET /courses.json
   def index
+    @current_user = current_user
+
+    if !@current_user.professorships.empty?
+      @courses = @current_user.professorships
+    elsif !@current_user.registrations.empty?
+      @courses = @current_user.registrations
+      @status = 0
+    elsif !@current_user.taships.empty?
+        @courses = @current_user.taships
+        @status = 1
+    end
+    respond_to do |format|
+          format.html
+          format.js
+    end
   end
 
   # GET /courses/1
