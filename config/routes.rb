@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get 'users/new'
   get 'welcome/index'
   get 'courses/index'
+
   get  '/signup',  to: 'users#new'
   post '/signup',  to: 'users#create'
   get '/login', to: 'sessions#new'

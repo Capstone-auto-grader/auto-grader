@@ -9,11 +9,41 @@ class CoursesController < ApplicationController
   # GET /courses/1
   # GET /courses/1.json
   def show
+    if is_superuser(params[:id])
+      @assignments= @course.assignments.order(:created_at).reverse
+      @recently_edited = @assignments.first
+      render 'courses/show_professor'
+    elsif is_ta(params[:id])
+      @assignments= @course.assignments.order(:created_at).reverse
+      @recently_edited = @assignments.first
+      render 'courses/show_ta'
+    elsif is_student(params[:id])
+      @assignments= @course.assignments.order(:created_at).reverse
+      render 'courses/show_student'
+    else
+      render 'courses/show'
+    end
+
   end
 
   # GET /courses/new
   def new
     @course = Course.new
+  end
+
+  def show_student
+    @assignments= @course.assignments.order(:created_at).reverse
+    @recently_edited = @assignments.first
+  end
+
+  def show_teacher
+    @assignments= @course.assignments.order(:created_at).reverse
+    @recently_edited = @assignments.first
+  end
+
+  def show_ta
+    @assignments= @course.assignments.order(:created_at).reverse
+    @recently_edited = @assignments.first
   end
 
   # GET /courses/1/edit
