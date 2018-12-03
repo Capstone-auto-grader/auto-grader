@@ -35,7 +35,7 @@ class AssignmentsController < ApplicationController
     uploader.store! file
     @assignment = Assignment.new(p)
     @assignment.test_uri = "#{S3_BUCKET.name}/#{buckob.key}"
-    # byebug
+    create_grades_from_assignment @assignment
     respond_to do |format|
       if @assignment.save!
         format.html { redirect_to @assignment, notice: 'Assignment was successfully created.' }

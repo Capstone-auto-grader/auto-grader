@@ -15,4 +15,12 @@ module AssignmentsHelper
     end
     ret_hash
   end
+
+  def create_grades_from_assignment(assignment)
+    student_arr = assignment.course.students.all.map &:id
+    tas = assignment.course.tas.all
+
+
+
+  end
 end
