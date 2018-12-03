@@ -19,8 +19,13 @@ module AssignmentsHelper
   def create_grades_from_assignment(assignment)
     student_arr = assignment.course.students.all.map &:id
     tas = assignment.course.tas.all
-
-
-
+    ta_ids = tas.map &:id
+    ta_conflicts = tas.map {|ta| [ta.id, ta.conflicts.map &:id]}.to_h
+    assignments = assign student_arr,ta_ids,ta_conflicts
+    assignments.flat_map do |ta, students|
+      students.map do |student|
+        Grade.new(ta_id: ta, student_id: student, assignment_id: assignment.id)
+      end
+    end
   end
 end
