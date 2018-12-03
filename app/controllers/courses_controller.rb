@@ -10,8 +10,7 @@ class CoursesController < ApplicationController
     elsif !@current_user.registrations.empty?
       @courses = @current_user.registrations
     elsif !@current_user.taships.empty?
-        @courses = @current_user.taships
-        render 'courses/ta_index'
+      redirect_to ta_index
     end
   end
 

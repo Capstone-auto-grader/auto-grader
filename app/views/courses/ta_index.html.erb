@@ -2,7 +2,7 @@
 
 <h1>Courses (TA view)</h1>
     <% if !@current_user.registrations.empty?%>
-      <%= link_to 'Student view', courses, html_options= { class: "btn btn-primary", role: "button"} %>
+      <%= link_to 'Student view', courses_path , html_options= { class: "btn btn-primary", role: "button"} %>
     <% end %>
   <table class="table">
     <thead>

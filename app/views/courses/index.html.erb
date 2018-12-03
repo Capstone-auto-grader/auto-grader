@@ -2,7 +2,8 @@
 
 <h1>Courses</h1>
     <% if !@current_user.taships.empty?%>
-      <%= link_to 'TA view', courses_ta_index, html_options= { class: "btn btn-primary", role: "button"} %>
+      <%= link_to 'TA view', ta_index_path, html_options= { class: "btn btn-primary", role: "button"} %>
+
     <% end %>
   <table class="table">
     <thead>
