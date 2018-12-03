@@ -7,16 +7,16 @@ class CoursesController < ApplicationController
     @current_user = current_user
     if !@current_user.professorships.empty?
       @courses = @current_user.professorships
-    elsif !@current_user.registrations.empty?
-      @courses = @current_user.registrations
     elsif !@current_user.taships.empty?
       redirect_to ta_index
+    else
+      @courses = @current_user.registrations
     end
   end
 
   def ta_index
     @courses = @current_user.taships
-  end 
+  end
 
   # GET /courses/1
   # GET /courses/1.json
