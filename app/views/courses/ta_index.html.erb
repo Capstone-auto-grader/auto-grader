@@ -1,9 +1,8 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Courses</h1>
-    <% if !@current_user.taships.empty?%>
-      <%= link_to 'TA view', ta_index_path, html_options= { class: "btn btn-primary", role: "button"} %>
-
+<h1>Courses (TA view)</h1>
+    <% if !@current_user.registrations.empty?%>
+      <%= link_to 'Student view', courses_path , html_options= { class: "btn btn-primary", role: "button"} %>
     <% end %>
   <table class="table">
     <thead>
