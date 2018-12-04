@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_13_203155) do
+ActiveRecord::Schema.define(version: 2018_12_03_045310) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,6 +30,15 @@ ActiveRecord::Schema.define(version: 2018_11_13_203155) do
 
   create_table "courses", force: :cascade do |t|
     t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "grades", force: :cascade do |t|
+    t.decimal "grade"
+    t.integer "ta_id"
+    t.integer "student_id"
+    t.integer "assignment_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -56,6 +65,15 @@ ActiveRecord::Schema.define(version: 2018_11_13_203155) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "ta_conflicts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.bigint "conflict_id"
+    t.index ["conflict_id"], name: "index_ta_conflicts_on_conflict_id"
+    t.index ["user_id"], name: "index_ta_conflicts_on_user_id"
+  end
+
   create_table "takes_classes", force: :cascade do |t|
     t.integer "user_id"
     t.integer "course_id"
@@ -78,4 +96,6 @@ ActiveRecord::Schema.define(version: 2018_11_13_203155) do
     t.string "name"
   end
 
+  add_foreign_key "ta_conflicts", "users"
+  add_foreign_key "ta_conflicts", "users", column: "conflict_id"
 end
