@@ -1,5 +1,5 @@
 class AssignmentsController < ApplicationController
-  before_action :set_assignment, only: [:show, :edit, :update, :destroy]
+  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades]
 
   # GET /assignments
   # GET /assignments.json
@@ -21,6 +21,9 @@ class AssignmentsController < ApplicationController
   def edit
   end
 
+  def grades
+    @partition = Grade.where(assignment_id: @assignment.id, ta_id: current_user.id)
+  end
   # POST /assignments
   # POST /assignments.json
   def create
