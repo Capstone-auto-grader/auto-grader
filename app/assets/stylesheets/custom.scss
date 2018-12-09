@@ -123,3 +123,18 @@ input {
     color: #777777;
     text-align: center;
 }
+
+.btn-align {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  line-height: 1.42857143;
+  vertical-align: middle;
+
+}
+.btn-toolbar .btn{
+  margin-right: 5px;
+}
+.btn-toolbar .btn:last-child{
+  margin-right: 0;
+}
+

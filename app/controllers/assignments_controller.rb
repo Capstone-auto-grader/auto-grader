@@ -1,6 +1,6 @@
 class AssignmentsController < ApplicationController
-  before_action :set_assignment, only: [:show, :edit, :update, :destroy]
-
+  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades]
+  include AssignmentsHelper
   # GET /assignments
   # GET /assignments.json
   def index
@@ -21,6 +21,9 @@ class AssignmentsController < ApplicationController
   def edit
   end
 
+  def grades
+    @partition = Grade.where(assignment_id: @assignment.id, ta_id: current_user.id)
+  end
   # POST /assignments
   # POST /assignments.json
   def create
@@ -35,9 +38,10 @@ class AssignmentsController < ApplicationController
     uploader.store! file
     @assignment = Assignment.new(p)
     @assignment.test_uri = "#{S3_BUCKET.name}/#{buckob.key}"
-    # byebug
+
     respond_to do |format|
       if @assignment.save!
+        create_grades_from_assignment @assignment
         format.html { redirect_to @assignment, notice: 'Assignment was successfully created.' }
         format.json { render :show, status: :created, location: @assignment }
       else

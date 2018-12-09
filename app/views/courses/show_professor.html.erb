@@ -1,0 +1,52 @@
+<p id="notice"><%= notice %></p>
+<h1 style="text-align: left;"><%= @course.name %></h1>
+<div class="row">
+  <div class="column">
+    <%= button_to "Edit course", edit_course_path(@course.id), method: "get", class:"btn btn-primary" %>
+  </div>
+</div>
+<br />
+<h3>Most recently updated assignment</h3>
+<div class="row bg-light rounded" style=" padding:10px;">
+  <div class="col col-xs-9">
+    <div class="btn-align" style="">
+      <p><%= @recently_edited.name %></p>
+    </div>
+
+  </div>
+  <div class="col col-xs-2">
+    <div class="d-flex justify-content-end align-middle">
+      <div class="btn-toolbar" >
+        <%= link_to "Show", @recently_edited, html_options= { class: "btn btn-primary", role: "button"} %>
+        <%= link_to "Edit", edit_assignment_path(@recently_edited), html_options= { class: "btn btn-primary", role: "button"} %>
+        <%= link_to "Submissions", assignment_submissions_path(@recently_edited), html_options= { class: "btn btn-primary", role: "button"} %>
+      </div>
+    </div>
+  </div>
+</div>
+<h3 style="margin-top:1em">All assignments</h3>
+<br />
+<table class="table">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Last updated</th>
+    <th>Submissions</th>
+    <th></th>
+  </tr>
+  </thead>
+  <% num_students = @course.students.length %>
+  <% @assignments.each do |assignment| %>
+    <tr>
+      <td><%= assignment.name %></td>
+      <td><%= assignment.due_date %></td>
+      <td><%= assignment.submissions.length%>/<%= num_students %></td>
+      <td>
+        <%= link_to 'Show', assignment, html_options= { class: "btn btn-primary", role: "button"} %>
+        <%= link_to 'Edit', edit_assignment_path(assignment), html_options= { class: "btn btn-primary", role: "button"}  %>
+        <%= link_to 'Submissions', assignment_submissions_path(assignment), html_options= { class: "btn btn-primary", role: "button"}  %>
+      </td>
+    </tr>
+  <% end %>
+
+</table>

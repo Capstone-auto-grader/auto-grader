@@ -1,9 +1,4 @@
 <p id="notice"><%= notice %></p>
+<h1 style="text-align: left;"><%= @course.name %></h1>
+<h2>You do not have access to this course!</h2>
 
-<p>
-  <strong>Name:</strong>
-  <%= @course.name %>
-</p>
-
-<%= link_to 'Edit', edit_course_path(@course) %> |
-<%= link_to 'Back', courses_path %>
