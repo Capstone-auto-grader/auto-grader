@@ -16,6 +16,7 @@ class PasswordResetsController < ApplicationController
     else
       flash.now[:danger] = "Email address not found"
       render 'new'
+    end
   end
 
   def edit
@@ -43,9 +44,10 @@ class PasswordResetsController < ApplicationController
 
   def get_user
     @user = User.find_by(email: params[:email])
+  end
 
   def valid_user
-    unless (@user && @user.activated? && @user.authenticated?(:reset, params[:id]))
+    unless (@user && @user.authenticated?(:reset, params[:id]))
       redirect_to root_url
     end
   end
@@ -57,3 +59,5 @@ class PasswordResetsController < ApplicationController
     end
   end
 end
+
+

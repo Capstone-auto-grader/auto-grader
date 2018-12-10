@@ -1,6 +1,10 @@
+
 class AssignmentsController < ApplicationController
-  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades]
   include AssignmentsHelper
+  include SessionsHelper
+  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades]
+  before_action :require_login
+
   # GET /assignments
   # GET /assignments.json
   def index

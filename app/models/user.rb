@@ -30,9 +30,21 @@ class User < ApplicationRecord
     def send_password_reset_email
         UserMailer.password_reset(self).deliver_now
     end
-
+    def authenticated?(attribute, token)
+        digest = send("#{attribute}_digest")
+        return false if digest.nil?
+        BCrypt::Password.new(digest).is_password?(token)
+    end
     #Returns true if a password reset has expired.
     def password_reset_expired?
         reset_sent_at < 2.hours.ago
+    end
+    def User.digest(string)
+        cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+                   BCrypt::Engine.cost
+        BCrypt::Password.create(string, cost: cost)
+    end
+    def User.new_token
+        SecureRandom.urlsafe_base64
     end
 end
