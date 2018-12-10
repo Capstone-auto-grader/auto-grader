@@ -1,6 +1,8 @@
 <p id="notice"><%= notice %></p>
 <h1 style="text-align: left;"><%= @course.name %></h1>
 <br />
+<% if !@recently_edited.nil? %>
+
 <h3>Most recently updated assignment</h3>
 <div class="row bg-light rounded" style=" padding:10px;">
   <div class="col col-xs-10">
@@ -17,6 +19,7 @@
     </div>
   </div>
 </div>
+<% end %>
 <h3 style="margin-top:1em">All assignments</h3>
 <br />
 <table class="table">
