@@ -4,14 +4,18 @@
   <tr>
     <th>Student</th>
     <th>Grade</th>
+    <th>TA Grade</th>
     <th colspan="3"></th>
   </tr>
   </thead>
   <tbody>
-    <% @partition.each do |grade| %>
+    <%@partition.each do |grade| %>
       <tr>
         <td><%= grade.student.name %></td>
         <td><%= grade.grade %></td>
+        <p></p>
+        <%= grade.ta_grade :grade, label: "Style grade",  input_html: {class:"form-control"} %>
+        <button type="button" class="btn btn-dark"><%= f.button :submit %></button>
       </tr>
     <% end %>
   </tbody>
