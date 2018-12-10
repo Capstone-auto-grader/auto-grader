@@ -12,6 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2018_12_10_221552) do
 
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -95,6 +96,8 @@ ActiveRecord::Schema.define(version: 2018_12_10_221552) do
     t.datetime "updated_at", null: false
     t.string "password_digest"
     t.string "name"
+    t.string "reset_digest"
+    t.datetime "reset_sent_at"
   end
 
   add_foreign_key "ta_conflicts", "users"

@@ -1,5 +1,9 @@
+
 class AssignmentsController < ApplicationController
+  include AssignmentsHelper
+  include SessionsHelper
   before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades]
+  before_action :require_login
 
   # GET /assignments
   # GET /assignments.json
@@ -38,9 +42,10 @@ class AssignmentsController < ApplicationController
     uploader.store! file
     @assignment = Assignment.new(p)
     @assignment.test_uri = "#{S3_BUCKET.name}/#{buckob.key}"
-    create_grades_from_assignment @assignment
+
     respond_to do |format|
       if @assignment.save!
+        create_grades_from_assignment @assignment
         format.html { redirect_to @assignment, notice: 'Assignment was successfully created.' }
         format.json { render :show, status: :created, location: @assignment }
       else
