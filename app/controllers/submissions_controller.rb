@@ -7,7 +7,9 @@ class SubmissionsController < ApplicationController
     @submissions = params.key? :assignment_id ?
                                    Submission.where(assignment_id: params[:assignment_id]) :
                                    Submission.where(user_id: current_user.id)
-
+    if @submissions.is_a?(FalseClass)
+      @submissions = []
+    end
 
   end
 
