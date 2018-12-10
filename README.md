@@ -1,4 +1,3 @@
 # Capstone auto grader
 
-This is a modification meant to prompt deployment
-to master
+This branch is focused on allowing the user to reset their password

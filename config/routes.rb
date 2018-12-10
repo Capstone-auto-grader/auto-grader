@@ -22,7 +22,9 @@ Rails.application.routes.draw do
   root 'welcome#index'
   post 'grades', to: 'accept_grade#accept_grade'
   get '/submissions', to: 'submissions#index'
+  resources :password_resets, only: [:new, :create, :edit, :update]
   get '/assignments/:id/grades', to: 'assignments#grades'
+
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
