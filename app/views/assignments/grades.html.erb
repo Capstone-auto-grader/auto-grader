@@ -8,10 +8,12 @@
   </tr>
   </thead>
   <tbody>
-    <% @partition.each do |grade| %>
+    <% simple_form_for @partition.each do |grade| %>
       <tr>
         <td><%= grade.student.name %></td>
         <td><%= grade.grade %></td>
+        <p></p>
+        <%= grade.input :grade, label: "Style grade",  input_html: {class:"form-control"} %>
       </tr>
     <% end %>
   </tbody>
