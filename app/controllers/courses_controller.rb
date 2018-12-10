@@ -7,10 +7,10 @@ class CoursesController < ApplicationController
     @current_user = current_user
     if !@current_user.professorships.empty?
       @courses = @current_user.professorships
+    elsif !@current_user.registrations.empty?
+      @courses = @current_user.registrations
     elsif !@current_user.taships.empty?
       redirect_to ta_index_path
-    else
-      @courses = @current_user.registrations
     end
   end
 
