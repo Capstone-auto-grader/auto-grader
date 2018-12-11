@@ -10,7 +10,7 @@ class ValidateZipFileJob < ApplicationJob
     uploader = AttachmentUploader.new
     uploader.retrieve_from_store! file_name
     if validate(uploader.path, structure_hash)
-      # upload to S3
+
 
       buckob = S3_BUCKET.object file_name
       buckob.upload_file uploader.path
@@ -18,7 +18,7 @@ class ValidateZipFileJob < ApplicationJob
       submission.save!
       uploader.remove!
       puts "VALIDATED"
-      uri = URI.parse("http://#{ENV['GRADING_SERVER']}/grade")
+      uri = URI.parse("#{ENV['GRADING_SERVER']}/grade")
       uri.port = 5000
       http = Net::HTTP.new(uri.host, uri.port)
       req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
