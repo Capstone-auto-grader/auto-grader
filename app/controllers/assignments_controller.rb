@@ -26,7 +26,12 @@ class AssignmentsController < ApplicationController
   end
 
   def grades
-    @partition = Grade.where(assignment_id: @assignment.id, ta_id: current_user.id)
+    if is_superuser(@assignment.course.id)
+      @partition = Grade.where(assignment_id: @assignment.id)
+    else
+      @partition = Grade.where(assignment_id: @assignment.id, ta_id: current_user.id)
+    end
+
   end
   # POST /assignments
   # POST /assignments.json
