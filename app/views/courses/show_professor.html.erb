@@ -18,9 +18,8 @@
   <div class="col col-xs-2">
     <div class="d-flex justify-content-end align-middle">
       <div class="btn-toolbar" >
-        <%= link_to "Show", @recently_edited, html_options= { class: "btn btn-primary", role: "button"} %>
         <%= link_to "Edit", edit_assignment_path(@recently_edited), html_options= { class: "btn btn-primary", role: "button"} %>
-        <%= link_to "Submissions", assignment_submissions_path(@recently_edited), html_options= { class: "btn btn-primary", role: "button"} %>
+        <%= link_to "Submissions", assignment_grades_path(@recently_edited), html_options= { class: "btn btn-primary", role: "button"} %>
       </div>
     </div>
   </div>
