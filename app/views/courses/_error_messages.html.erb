@@ -1,0 +1,14 @@
+<% if @add_ta_failed %>
+  <div id="error_explanation">
+    <div class="alert alert-danger">
+      <li>Invalid email</li>
+    </div>
+  </div>
+<% end %>
+<% if @add_ta_already %>
+  <div id="error_explanation">
+    <div class="alert alert-danger">
+      <li>TA already added to class</li>
+    </div>
+  </div>
+<% end %>

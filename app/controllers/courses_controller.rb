@@ -108,11 +108,18 @@ class CoursesController < ApplicationController
   end
 
   def add_ta
-    if User.where(email: params[:email]) == 0
-      
-    @ta = User.find(email: params[:email])
-    if @course.tas.where(id: @ta.id).size == 0
-      @course.tas << @ta
+    set_course
+    if User.where(email: params[:email]).size == 0
+      @add_ta_failed = true
+      render 'get_ta'
+    else
+      @ta = User.where(email: params[:email]).first
+      if @course.tas.where(id: @ta.id).size == 0
+        @course.tas << @ta
+      else
+        @add_ta_already = true
+        render 'get_ta'
+      end
     end
   end
 
