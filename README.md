@@ -1,3 +1,3 @@
-# Capstone auto grader
+# Auto grader
 
-This branch is focused on allowing the user to reset their password
+A Capstone Project made by Sam Stern, Eli Esrig, Zihao Wang, Calum Middlemiss
