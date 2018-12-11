@@ -1,4 +1,4 @@
-require 'zip'
+require 'zip/zip'
 require 'net/http'
 class ValidateZipFileJob < ApplicationJob
   queue_as :default
