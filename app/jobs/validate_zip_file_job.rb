@@ -18,6 +18,7 @@ class ValidateZipFileJob < ApplicationJob
       submission.save!
       uploader.remove!
       puts "VALIDATED"
+      puts "#{ENV['GRADING_SERVER']}/grade")
       uri = URI.parse("#{ENV['GRADING_SERVER']}/grade")
       uri.port = 5000
       http = Net::HTTP.new(uri.host, uri.port)
