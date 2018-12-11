@@ -102,6 +102,27 @@ class CoursesController < ApplicationController
     end
   end
 
+  def get_ta
+    @ta = User.new
+    set_course
+  end
+
+  def add_ta
+    set_course
+    if User.where(email: params[:email]).size == 0
+      @add_ta_failed = true
+      render 'get_ta'
+    else
+      @ta = User.where(email: params[:email]).first
+      if @course.tas.where(id: @ta.id).size == 0
+        @course.tas << @ta
+      else
+        @add_ta_already = true
+        render 'get_ta'
+      end
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_course

@@ -25,6 +25,9 @@ Rails.application.routes.draw do
   resources :password_resets, only: [:new, :create, :edit, :update]
   get '/assignments/:id/grades', to: 'assignments#grades', as: 'assignment_grades'
   post '/assignments/:id/grades' , to: 'assignments#update_grade', as: 'assignment_grades_post'
+  get 'courses/:id/addTA', to: 'courses#get_ta', as: 'add_ta'
+  post 'courses/:id/addTA', to: 'courses#add_ta'
+
 
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
