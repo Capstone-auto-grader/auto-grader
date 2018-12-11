@@ -104,7 +104,7 @@ class CoursesController < ApplicationController
 
   def add_ta
     ta = User.find(email: params[:email])
-    if @course.tas.find(id: ta.id) == nil
+    if @course.tas.where(id: ta.id).size == 0
       @course.tas << ta
     end
   end
