@@ -5,52 +5,51 @@ class SubmissionsControllerTest < ActionDispatch::IntegrationTest
     @submission = submissions(:one)
   end
 
-  #
-  #test "should get index" do
-  #  get submissions_url
-  #  assert_response :success
-  #end
+  
+  test "should get index" do
+    get submissions_url
+    assert_response :success
+  end
 
-  #test fails because submission_zip isnt implimented yet 
 
   test "should get new" do
-    get new_submission_url
+    get new_submissions_url
     assert_response :success
   end
   ##
-  #test "should create submission" do
-  #  assert_difference('Submission.count') do
-  #    post submissions_url, params: { submission: { grade: @submission.grade, submission_zip: @submission.submission_zip } }
-  #  end
-  #
-  #  assert_redirected_to submission_url(Submission.last)
-  #end
+  test "should create submission" do
+    assert_difference('Submission.count') do
+      post submissions_url, params: { submission: { grade: @submission.grade, submission_zip: @submission.submission_zip } }
+  end
+  
+    assert_redirected_to submission_url(Submission.last)
+  end
 
   #test fails because submission_zip isnt implimented yet 
 
   ##
-  #test "should show submission" do
-  #  get submission_url(@submission)
-  #  assert_response :success
-  #end
+  test "should show submission" do
+    get submissions_url(@submission)
+    assert_response :success
+  end
 
   #test fails because submission_zip isnt implimented yet 
   
   test "should get edit" do
-    get edit_submission_url(@submission)
+    get edit_submissions_url(@submission)
     assert_response :success
   end
 
   ##
-  #test "should update submission" do
-  #  patch submission_url(@submission), params: { submission: { grade: @submission.grade, submission_zip: @submission.submission_zip } }
-  #  assert_redirected_to submission_url(@submission)
-  #end
+  test "should update submission" do
+    patch submissions_url(@submission), params: { submission: { grade: @submission.grade, submission_zip: @submission.submission_zip } }
+    assert_redirected_to submission_url(@submission)
+  end
   #test fails because submission_zip isnt implimented yet 
 
   test "should destroy submission" do
     assert_difference('Submission.count', -1) do
-      delete submission_url(@submission)
+      delete submissions_url(@submission)
     end
 
     assert_redirected_to submissions_url
