@@ -102,6 +102,13 @@ class CoursesController < ApplicationController
     end
   end
 
+  def add_ta
+    ta = User.find(email: params[:email])
+    if @course.tas.find(id: ta.id) == nil
+      @course.tas << ta
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_course
