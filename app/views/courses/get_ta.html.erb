@@ -1,0 +1,6 @@
+<h1>Add TA to Course</h1>
+
+<%= form_tag(add_ta_path, method: :post) do %>
+    Email <%= email_field_tag :email %>
+    <%= submit_tag 'Add TA' %>
+<% end %>
