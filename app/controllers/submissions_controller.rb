@@ -24,6 +24,7 @@ class SubmissionsController < ApplicationController
   def new
     @submission = Submission.new
     @assignment = Assignment.find(params[:assignment_id].to_i)
+    # A change to submit
   end
 
   # GET /submissions/1/edit
