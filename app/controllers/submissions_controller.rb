@@ -38,7 +38,7 @@ class SubmissionsController < ApplicationController
     uploader = AttachmentUploader.new
     uploader.store! params[:submission][:subm_file]
     #TODO: REPLACE WITH CURRENT USER
-    @submission = Submission.new(course_id: params[:course_id].to_i, user_id: 1)
+    @submission = Submission.new(course_id: params[:course_id].to_i, user_id: current_user.id)
     @submission.assignment = Assignment.find(params[:assignment_id])
     respond_to do |format|
       if @submission.save!
