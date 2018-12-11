@@ -27,9 +27,9 @@ class AssignmentsController < ApplicationController
 
   def grades
     if is_superuser(@assignment.course.id)
-      @partition = Grade.where(assignment_id: @assignment.id)
+      @partition = Grade.where(assignment_id: @assignment.id).sort_by{|g| g.student.name}
     else
-      @partition = Grade.where(assignment_id: @assignment.id, ta_id: current_user.id)
+      @partition = Grade.where(assignment_id: @assignment.id, ta_id: current_user.id).sort_by{|g| g.student.name}
     end
 
   end
