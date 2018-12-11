@@ -20,7 +20,6 @@ class ValidateZipFileJob < ApplicationJob
       puts "VALIDATED"
       puts "#{ENV['GRADING_SERVER']}/grade"
       uri = URI.parse("#{ENV['GRADING_SERVER']}/grade")
-      uri.port = 5000
       http = Net::HTTP.new(uri.host, uri.port)
       req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
       req.body = {proj_id: submission.id, proj_zip: submission.zip_uri, test_zip: submission.assignment.test_uri }.to_json
