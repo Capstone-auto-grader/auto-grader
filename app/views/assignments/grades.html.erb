@@ -16,7 +16,7 @@
         <td><%= grade.student.name %></td>
         <td><%= grade.grade %></td>
         <p></p>
-        <td><%= f.input :ta_grade, label: "Style grade",  input_html: {value: grade.ta_grade, class:"form-control"} %></td>
+        <td><%= f.input :ta_grade, label: false,  input_html: {value: grade.ta_grade, class:"form-control"} %></td>
         <td> <%= f.button :submit %></td>
       </tr>
     <% end %>
