@@ -6,7 +6,7 @@
       </a>
       <ul class="nav navbar-nav">
         <% if logged_in? %>
-          <li class="nav-item"><%= link_to "Home", current_user, class: "nav-link" %></li>
+          <li class="nav-item"><%= link_to "Home", courses_path, class: "nav-link" %></li>
           <li class="nav-item dropdown">
             <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
             <%=  current_user.name %> <b class="caret"></b>

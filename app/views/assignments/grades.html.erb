@@ -9,14 +9,17 @@
   </tr>
   </thead>
   <tbody>
-    <%@partition.each do |grade| %>
+    <% @partition.each do |grade| %>
+    <%= simple_form_for( grade, method: :post, url: assignment_grades_post_path) do |f| %>
       <tr>
+        <%= f.input :id, as: :hidden %>
         <td><%= grade.student.name %></td>
         <td><%= grade.grade %></td>
         <p></p>
-        <%= grade.ta_grade :grade, label: "Style grade",  input_html: {class:"form-control"} %>
-        <button type="button" class="btn btn-dark"><%= f.button :submit %></button>
+        <td><%= f.input :ta_grade, label: false,  input_html: {value: grade.ta_grade,style: 'width: 100px', class:"form-control"} %></td>
+        <td> <%= f.button :submit %></td>
       </tr>
+    <% end %>
     <% end %>
   </tbody>
 </table>

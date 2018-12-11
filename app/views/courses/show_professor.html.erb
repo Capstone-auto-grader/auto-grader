@@ -6,6 +6,7 @@
   </div>
 </div>
 <br />
+<% if !@recently_edited.nil? %>
 <h3>Most recently updated assignment</h3>
 <div class="row bg-light rounded" style=" padding:10px;">
   <div class="col col-xs-9">
@@ -17,14 +18,16 @@
   <div class="col col-xs-2">
     <div class="d-flex justify-content-end align-middle">
       <div class="btn-toolbar" >
-        <%= link_to "Show", @recently_edited, html_options= { class: "btn btn-primary", role: "button"} %>
         <%= link_to "Edit", edit_assignment_path(@recently_edited), html_options= { class: "btn btn-primary", role: "button"} %>
-        <%= link_to "Submissions", assignment_submissions_path(@recently_edited), html_options= { class: "btn btn-primary", role: "button"} %>
+        <%= link_to "Submissions", assignment_grades_path(@recently_edited), html_options= { class: "btn btn-primary", role: "button"} %>
       </div>
     </div>
   </div>
 </div>
-<h3 style="margin-top:1em">All assignments</h3>
+<%end%>
+<h3 style="margin-top:1em">All assignments
+<%= link_to "New Assignment", new_assignment_path, html_options= { class: "btn btn-primary", role: "button"} %>
+</h3>
 <br />
 <table class="table">
   <thead>
@@ -42,9 +45,8 @@
       <td><%= assignment.due_date %></td>
       <td><%= assignment.submissions.length%>/<%= num_students %></td>
       <td>
-        <%= link_to 'Show', assignment, html_options= { class: "btn btn-primary", role: "button"} %>
         <%= link_to 'Edit', edit_assignment_path(assignment), html_options= { class: "btn btn-primary", role: "button"}  %>
-        <%= link_to 'Submissions', assignment_submissions_path(assignment), html_options= { class: "btn btn-primary", role: "button"}  %>
+        <%= link_to 'Submissions', assignment_grades_path(assignment), html_options= { class: "btn btn-primary", role: "button"}  %>
       </td>
     </tr>
   <% end %>

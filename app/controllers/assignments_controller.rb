@@ -26,7 +26,17 @@ class AssignmentsController < ApplicationController
   end
 
   def grades
-    @partition = Grade.where(assignment_id: @assignment.id, ta_id: current_user.id)
+    if is_superuser(@assignment.course.id)
+      @partition = Grade.where(assignment_id: @assignment.id).sort_by{|g| g.student.name}
+    else
+      @partition = Grade.where(assignment_id: @assignment.id, ta_id: current_user.id).sort_by{|g| g.student.name}
+    end
+
+  end
+
+  def update_grade
+    Grade.find(params[:grade][:id]).update( ta_grade: params[:grade][:ta_grade].to_i)
+    redirect_to assignment_grades_path
   end
   # POST /assignments
   # POST /assignments.json
