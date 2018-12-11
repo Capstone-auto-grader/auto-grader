@@ -16,6 +16,8 @@ class AcceptGradeController < ApplicationController
         submission.save!
       end
     end
-    Grades.where(user_id: submission.student_id, assignment_id: submission.assignment_id)
+    g = Grade.where(user_id: submission.student_id, assignment_id: submission.assignment_id)
+    g.grade = submission.grade
+    g.save!
   end
 end
