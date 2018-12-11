@@ -12,10 +12,10 @@
     <% @partition.each do |grade| %>
     <%= simple_form_for( grade, method: :post, url: assignment_grades_post_path) do |f| %>
       <tr>
+        <%= f.input :id, as: :hidden %>
         <td><%= grade.student.name %></td>
         <td><%= grade.grade %></td>
         <p></p>
-        <%puts grade.ta_grade.to_s %>
         <td><%= f.input :ta_grade, label: "Style grade",  input_html: {value: grade.ta_grade, class:"form-control"} %></td>
         <td> <%= f.button :submit %></td>
       </tr>

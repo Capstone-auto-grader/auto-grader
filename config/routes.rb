@@ -24,7 +24,7 @@ Rails.application.routes.draw do
   get '/submissions', to: 'submissions#index'
   resources :password_resets, only: [:new, :create, :edit, :update]
   get '/assignments/:id/grades', to: 'assignments#grades', as: 'assignment_grades'
-  post '/assignments/:id/grades' , to: 'assignments#grades', as: 'assignment_grades_post'
+  post '/assignments/:id/grades' , to: 'assignments#update_grade', as: 'assignment_grades_post'
 
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

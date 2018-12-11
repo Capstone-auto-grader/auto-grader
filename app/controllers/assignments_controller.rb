@@ -33,6 +33,11 @@ class AssignmentsController < ApplicationController
     end
 
   end
+
+  def update_grade
+    Grade.find(params[:grade][:id]).update( ta_grade: params[:grade][:ta_grade].to_i)
+    redirect_to assignment_grades_path
+  end
   # POST /assignments
   # POST /assignments.json
   def create
