@@ -17,9 +17,11 @@
         <td><%= grade.grade %></td>
         <p></p>
         <td><%= f.input :ta_grade, label: false,  input_html: {value: grade.ta_grade,style: 'width: 100px', class:"form-control"} %></td>
-        <td> <%= f.button :submit %></td>
+        <td> <%= f.button :submit ,html_options= { class: "btn btn-primary", role: "button"}%></td>
         <% if !grade.submission.nil? %>
-          <td> <%= link_to 'Download', assigments_download_path(grade: grade.submission.zip_uri) %> </td>
+          <td> <%= link_to 'Download', assigments_download_path(grade: grade.submission.zip_uri),html_options= { class: "btn btn-primary", role: "button"} %> </td>
+          <% else %>
+          <td> No Submission </td>
         <% end %>
       </tr>
     <% end %>
