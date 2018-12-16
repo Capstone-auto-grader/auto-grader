@@ -148,6 +148,20 @@ class CoursesController < ApplicationController
     end
   end
 
+  def delete_ta
+    set_course
+    @ta = User.where(email: params[:email]).first
+    @course.tas = @course.tas.reject{|user| user == @ta }
+    redirect_to edit_course_path
+  end
+
+  def delete_student
+    set_course
+    @student = User.where(email: params[:email]).first
+    @course.students = @course.students.reject{|user| user == @student }
+    redirect_to edit_course_path
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_course

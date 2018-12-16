@@ -2,10 +2,6 @@
 <h1 style="text-align: left;"><%= @course.name %></h1>
 <div class="row">
     <%= button_to "Edit course", edit_course_path(@course.id), method: "get", class:"btn btn-primary" %>
-    &nbsp
-    <%= button_to "Add TA", add_ta_path(@course.id), method: "get", class:"btn btn-primary" %>
-    &nbsp
-    <%= button_to "Add Student", add_student_path(@course.id), method: "get", class:"btn btn-primary" %>
 </div>
 <br />
 <% if !@recently_edited.nil? %>

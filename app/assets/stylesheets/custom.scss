@@ -23,6 +23,10 @@ textarea {
   }
 }
 
+.right {
+  text-align: right;
+}
+
 /* typography */
 
 h1, h2, h3, h4, h5, h6 {
@@ -44,6 +48,8 @@ h2 {
   font-weight: normal;
   color: #777777;
 }
+
+
 
 p {
   font-size: 1.1em;
@@ -115,6 +121,10 @@ input {
   flex-direction: row;
 }
 
+.navbar-right {
+  float: right;
+}
+
 .main-footer {
     background-color: #f8f8f8;
     margin-top: 40px;
@@ -137,4 +147,3 @@ input {
 .btn-toolbar .btn:last-child{
   margin-right: 0;
 }
-

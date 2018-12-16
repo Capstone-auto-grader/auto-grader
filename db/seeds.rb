@@ -37,6 +37,9 @@ professor = User.create(name: Faker::Name.name, email: 'prof@autograder.com', pa
 student = User.create(name: Faker::Name.name, email: 'student@autograder.com', password: '123456')
 
 course = Course.create(name: Faker::TwinPeaks.location)
+course1 = Course.create(name: Faker::TwinPeaks.location)
 course.tas << ta
 course.professors << professor
 course.students << student
+course1.professors << professor
+course1.students << ta

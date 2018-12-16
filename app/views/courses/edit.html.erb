@@ -1,6 +1,46 @@
 <h1>Editing Course</h1>
 
 <%= render 'form', course: @course %>
+&nbsp
+<div class="row"><h3>
+&nbsp TA List
+<%= link_to "Add TA", add_ta_path(@course.id), method: "get", class:"btn btn-primary" %>
+</h3></div>
 
-<%= link_to 'Show', @course %> |
-<%= link_to 'Back', courses_path %>
+<table class="table">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th></th>
+  </tr>
+  </thead>
+  <% @course.tas.each do |ta| %>
+    <tr>
+      <td><%= ta.name %></td>
+      <td><%= ta.email %></td>
+      <td><%= link_to "Delete", delete_ta_path(@course.id,email: ta.email), method: "get", class:"btn btn-primary" %></td>
+    </tr>
+  <% end %>
+</table>
+&nbsp
+<div class="row"><h3>
+  &nbsp Student List
+<%= link_to "Add Student", add_student_path(@course.id), method: "get", class:"btn btn-primary" %>
+</h3></div>
+<table class="table">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th></th>
+  </tr>
+  </thead>
+  <% @course.students.each do |student| %>
+    <tr>
+      <td><%= student.name %></td>
+      <td><%= student.email %></td>
+      <td><%= link_to "Delete", delete_student_path(@course.id,email: student.email), method: "get", class:"btn btn-primary" %></td>
+    </tr>
+  <% end %>
+</table>

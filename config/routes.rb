@@ -29,6 +29,8 @@ Rails.application.routes.draw do
   post 'courses/:id/addTA', to: 'courses#add_ta'
   get 'courses/:id/addStudent', to: 'courses#get_student', as: 'add_student'
   post 'courses/:id/addStudent', to: 'courses#add_student'
+  get 'courses/:id/deleteTA', to: 'courses#delete_ta', as: 'delete_ta'
+  get 'courses/:id/deleteStudent', to: 'courses#delete_student', as: 'delete_student'
   get '/assignments/:id/grades/download', to: 'assignments#download', as: 'assigments_download'
 
 
