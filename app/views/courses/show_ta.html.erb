@@ -1,5 +1,8 @@
 <p id="notice"><%= notice %></p>
 <h1 style="text-align: left;"><%= @course.name %></h1>
+<div class="row">
+    <%= button_to "Add Student", add_student_path(@course.id), method: "get", class:"btn btn-primary" %>
+</div>
 <br />
 <% if !@recently_edited.nil? %>
 
