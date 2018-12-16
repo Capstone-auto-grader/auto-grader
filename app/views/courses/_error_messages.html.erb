@@ -1,4 +1,4 @@
-<% if @add_ta_failed %>
+<% if @add_failed %>
   <div id="error_explanation">
     <div class="alert alert-danger">
       <li>Invalid email</li>
@@ -10,5 +10,17 @@
     <div class="alert alert-danger">
       <li>TA already added to class</li>
     </div>
+  </div>
+<% end %>
+<% if @add_student_already %>
+  <div id="error_explanation">
+    <div class="alert alert-danger">
+      <li>Student already added to class</li>
+    </div>
+  </div>
+<% end %>
+<% if @successful %>
+  <div class="alert alert-success" role="alert">
+      <li>Successful!</li>
   </div>
 <% end %>
