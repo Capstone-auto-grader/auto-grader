@@ -2,4 +2,4 @@
 
 <%= render 'form', submission: @submission %>
 
-<%= link_to 'Back', assignment_path(params[:assignment_id])%>
+<%= link_to 'Back', course_path(Assignment.find(params[:assignment_id]).course)%>
