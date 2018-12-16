@@ -12,6 +12,7 @@
       <th></th>
     </tr>
     </thead>
+    <% if(!@courses.nil?) %>
     <% @courses.each do |course| %>
       <tr>
         <td><%= course.name %></td>
@@ -19,6 +20,7 @@
           <%= link_to 'Show', course, html_options= { class: "btn btn-primary", role: "button"} %>
         </td>
       </tr>
+    <% end %>
     <% end %>
 
   </table>

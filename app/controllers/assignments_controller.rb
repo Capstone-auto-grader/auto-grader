@@ -31,7 +31,17 @@ class AssignmentsController < ApplicationController
     else
       @partition = Grade.where(assignment_id: @assignment.id, ta_id: current_user.id).sort_by{|g| g.student.name}
     end
+  end
 
+  def download
+    object_name = params[:grade].split("/")[1]
+    zip_file = S3_BUCKET.object(object_name).presigned_url(:get, expires_in: 60)
+    send_data open(zip_file).read,
+              filename: "#{Time.now.to_date}.zip",
+              type: "application/zip",
+              disposition: 'attachment',
+              stream: 'true',
+              buffer_size: '4096'
   end
 
   def update_grade

@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   post '/assignments/:id/grades' , to: 'assignments#update_grade', as: 'assignment_grades_post'
   get 'courses/:id/addTA', to: 'courses#get_ta', as: 'add_ta'
   post 'courses/:id/addTA', to: 'courses#add_ta'
+  get '/assignments/:id/grades/download', to: 'assignments#download', as: 'assigments_download'
 
 
 
