@@ -19,7 +19,7 @@
     <tr>
       <td><%= ta.name %></td>
       <td><%= ta.email %></td>
-      <td><%= link_to "Delete", delete_ta_path(@course.id,email: ta.email), method: "get", class:"btn btn-primary" %></td>
+      <td><%= link_to "Delete", delete_ta_path(@course.id,email: ta.email), method: "get", data: { confirm: 'Are you sure?' },class:"btn btn-primary" %></td>
     </tr>
   <% end %>
 </table>
@@ -40,7 +40,7 @@
     <tr>
       <td><%= student.name %></td>
       <td><%= student.email %></td>
-      <td><%= link_to "Delete", delete_student_path(@course.id,email: student.email), method: "get", class:"btn btn-primary" %></td>
+      <td><%= link_to "Delete", delete_student_path(@course.id,email: student.email), method: "get", data: { confirm: 'Are you sure?' },class:"btn btn-primary" %></td>
     </tr>
   <% end %>
 </table>
