@@ -14,7 +14,7 @@
       <tr>
         <%= f.input :id, as: :hidden %>
         <td><%= grade.student.name %></td>
-        <td><%= grade.grade %></td>
+        <td><%= grade.submission.grade %></td>
         <p></p>
         <td><%= f.input :ta_grade, label: false,  input_html: {value: grade.ta_grade,style: 'width: 100px', class:"form-control"} %></td>
         <td> <%= f.button :submit ,html_options= { class: "btn btn-primary", role: "button"}%></td>
