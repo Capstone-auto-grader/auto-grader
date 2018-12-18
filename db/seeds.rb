@@ -38,6 +38,7 @@ professor = User.create(name: 'Calum Middlemiss', email: 'prof@autograder.com', 
 student = User.create(name: 'Eli Esrig', email: 'student@autograder.com', password: '123456')
 
 course = Course.create(name: 'COSI 166')
+course.students << ta
 course1 = Course.create(name: 'COSI 12B')
 course.professors << professor
 course1.professors << professor
