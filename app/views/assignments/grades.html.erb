@@ -26,5 +26,8 @@
       </tr>
     <% end %>
     <% end %>
+
+    <p><%= link_to 'Download Grades', assigments_download_path(grade: grade.submission.zip_uri),html_options= { class: "btn btn-primary", role: "button", target: :_blank  } %></p>
+
   </tbody>
 </table>

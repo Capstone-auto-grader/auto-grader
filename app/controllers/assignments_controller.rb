@@ -44,6 +44,25 @@ class AssignmentsController < ApplicationController
               buffer_size: '4096'
   end
 
+  #new 
+
+  def get_grades_output
+    output = "assignment id: " + :assignment_id
+    @grades = Grade.where(assignment_id: @assignment.id).sort_by{|g| g.student.name}
+    @grades.each do |sub|
+      output = output + "\nname: #{student.name} grade: #{sub.grade} ta_grade: #{sub.ta_grade}"
+    end
+    send_data output,
+              filename: "#{Time.now.to_date}.txt",
+              type: "application/txt",
+              disposition: 'attachment',
+              stream: 'true',
+              buffer_size: '4096'
+
+  end 
+
+  #new
+
   def update_grade
     Grade.find(params[:grade][:id]).update( ta_grade: params[:grade][:ta_grade].to_i)
     redirect_to assignment_grades_path
