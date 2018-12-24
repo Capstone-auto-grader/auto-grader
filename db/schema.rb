@@ -10,8 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 
 ActiveRecord::Schema.define(version: 2019_01_16_030006) do
+=======
+ActiveRecord::Schema.define(version: 2018_12_24_203847) do
+>>>>>>> Added rails_admin
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -113,6 +117,7 @@ ActiveRecord::Schema.define(version: 2019_01_16_030006) do
     t.string "name"
     t.string "reset_digest"
     t.datetime "reset_sent_at"
+    t.boolean "is_admin"
   end
 
   add_foreign_key "submission_batches", "assignments"
