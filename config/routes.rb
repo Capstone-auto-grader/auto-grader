@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   resources :assignments do
     resources :submissions
+    collection do
+      post :download_csv
+    end
   end
   # resources :submissions
   resources :courses
