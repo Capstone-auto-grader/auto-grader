@@ -33,7 +33,7 @@ require 'faker'
 #
 
 ta = User.create(name: 'Zihao Wang', email:'ta@autograder.com', password: '123456')
-professor = User.create(name: 'Calum Middlemiss', email: 'prof@autograder.com', password: '123456')
+professor = User.create(name: 'Calum Middlemiss', email: 'prof@autograder.com', password: '123456', is_admin: true)
 
 student = User.create(name: 'Eli Esrig', email: 'student@autograder.com', password: '123456')
 
