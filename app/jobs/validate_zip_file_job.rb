@@ -25,7 +25,7 @@ class ValidateZipFileJob < ApplicationJob
       req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
       puts req
       req.body = {proj_id: submission.id, proj_zip: submission.zip_uri, test_zip: submission.assignment.test_uri }.to_json
-      puts req
+      puts req.body
       res = http.request req
       puts res
     else
