@@ -35,17 +35,17 @@ require 'faker'
 ta = User.create(name: 'Zihao Wang', email:'ta@autograder.com', password: '123456')
 professor = User.create(name: 'Calum Middlemiss', email: 'prof@autograder.com', password: '123456')
 
-student = User.create(name: 'Eli Esrig', email: 'student@autograder.com', password: '123456')
+# student = User.create(name: 'Eli Esrig', email: 'student@autograder.com', password: '123456')
 
 course = Course.create(name: 'COSI 166')
-course.students << ta
+course.students << Student.create(name: ta.name, email: ta.email)
 course1 = Course.create(name: 'COSI 12B')
 course.professors << professor
 course1.professors << professor
 10.times do
-  course.students << User.create(name: Faker::Name.name, email: Faker::Internet.email, password: Faker::Internet.password)
- end
+  course.students << Student.create(name: Faker::Name.name, email: Faker::Internet.email)
+end
 
- 10.times do
-   course1.students << User.create(name: Faker::Name.name, email: Faker::Internet.email, password: Faker::Internet.password)
-  end
+10.times do
+  course1.students << Student.create(name: Faker::Name.name, email: Faker::Internet.email)
+end

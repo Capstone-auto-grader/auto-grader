@@ -45,8 +45,4 @@ module SessionsHelper
     current_course = Course.find course_id
     (current_course.tas.exists? current_user.id)
   end
-  def is_student(course_id)
-    current_course = Course.find course_id
-    (current_course.students.exists? current_user.id)
-  end
 end

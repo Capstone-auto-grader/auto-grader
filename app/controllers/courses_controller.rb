@@ -7,8 +7,6 @@ class CoursesController < ApplicationController
     @current_user = current_user
     if !@current_user.professorships.empty?
       @courses = @current_user.professorships
-    elsif !@current_user.registrations.empty?
-      @courses = @current_user.registrations
     elsif !@current_user.taships.empty?
       redirect_to ta_index_path
     end
@@ -29,9 +27,6 @@ class CoursesController < ApplicationController
       @assignments= @course.assignments.order(:created_at).reverse
       @recently_edited = @assignments.first
       render 'courses/show_ta'
-    elsif is_student(params[:id])
-      @assignments= @course.assignments.order(:created_at).reverse
-      render 'courses/show_student'
     else
       render 'courses/show'
     end
@@ -41,11 +36,6 @@ class CoursesController < ApplicationController
   # GET /courses/new
   def new
     @course = Course.new
-  end
-
-  def show_student
-    @assignments= @course.assignments.order(:created_at).reverse
-    @recently_edited = @assignments.first
   end
 
   def show_teacher
@@ -132,19 +122,14 @@ class CoursesController < ApplicationController
 
   def add_student
     set_course
-    if User.where(email: params[:email]).size == 0
-      @add_failed = true
+    @student = Student.find_or_create_by(email: params[:email])
+    if @course.students.where(id: @student.id).size == 0
+      @course.students << @student
+      @successful = true;
       render 'get_student'
     else
-      @student = User.where(email: params[:email]).first
-      if @course.students.where(id: @student.id).size == 0
-        @course.students << @student
-        @successful = true;
-        render 'get_student'
-      else
-        @add_student_already = true
-        render 'get_student'
-      end
+      @add_student_already = true
+      render 'get_student'
     end
   end
 

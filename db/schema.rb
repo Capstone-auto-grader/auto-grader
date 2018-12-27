@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_24_182705) do
+ActiveRecord::Schema.define(version: 2018_12_27_055648) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,32 +35,29 @@ ActiveRecord::Schema.define(version: 2018_12_24_182705) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "grades", force: :cascade do |t|
-    t.integer "ta_id"
-    t.integer "student_id"
-    t.integer "assignment_id"
+  create_table "students", force: :cascade do |t|
+    t.string "name"
+    t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.decimal "ta_grade"
-    t.text "custom_comment"
   end
 
   create_table "submissions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "attachment"
-    t.text "zip_uri"
-    t.bigint "user_id"
+    t.string "zip_uri"
     t.bigint "assignment_id"
-    t.bigint "grade_id"
     t.integer "latte_id"
     t.integer "tests_passed"
     t.integer "total_tests"
     t.decimal "test_grade"
+    t.decimal "ta_grade"
+    t.integer "ta_id"
+    t.text "ta_comment"
+    t.integer "student_id"
     t.index ["assignment_id"], name: "index_submissions_on_assignment_id"
-    t.index ["grade_id"], name: "index_submissions_on_grade_id"
     t.index ["latte_id"], name: "index_submissions_on_latte_id"
-    t.index ["user_id"], name: "index_submissions_on_user_id"
   end
 
   create_table "t_as_classes", force: :cascade do |t|
@@ -80,10 +77,10 @@ ActiveRecord::Schema.define(version: 2018_12_24_182705) do
   end
 
   create_table "takes_classes", force: :cascade do |t|
-    t.integer "user_id"
     t.integer "course_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "student_id"
   end
 
   create_table "teaches_classes", force: :cascade do |t|
