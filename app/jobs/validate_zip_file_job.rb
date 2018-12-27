@@ -1,5 +1,6 @@
 require 'zip'
 require 'net/http'
+require 'tempfile'
 class ValidateZipFileJob < ApplicationJob
   queue_as :default
 
@@ -17,17 +18,13 @@ class ValidateZipFileJob < ApplicationJob
       submission.zip_uri = "#{S3_BUCKET.name}/#{buckob.key}"
       submission.save!
       uploader.remove!
-      puts "VALIDATED"
-      puts "#{ENV['GRADING_SERVER']}/grade"
+
       uri = URI.parse("#{ENV['GRADING_SERVER']}/grade")
-      puts uri
       http = Net::HTTP.new(uri.host, uri.port)
       req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
-      puts req
       req.body = {proj_id: submission.id, proj_zip: submission.zip_uri, test_zip: submission.assignment.test_uri, image_name: 'java' }.to_json
       puts req.body
       res = http.request req
-      puts res
     else
       # Send out an email error message
       puts "NOT VALIDATED"
@@ -47,5 +44,43 @@ class ValidateZipFileJob < ApplicationJob
       end
       return proj_structure.values.all?
     end
+  end
+
+  def validate_each_file(zip_uri, assignment_id)
+    assignment = Assignment.find(assignment_id)
+    Zip::File.open(zip_uri) do |submission_folder|
+      submission_folder.each do |zip|
+        split_name = zip.name.split('_')
+        latte_id = split_name[1]
+        tempfile = Tempfile.new("#{assignment_id}_#{latte_id}")
+        # to get that: .basename
+        tempfile.binmode
+        tempfile.write zip.get_input_stream.read
+        submission = Submission.where(assignment_id: assignment_id, latte_id: latte_id)
+        upload_tempfile_to_s3(tempfile, submission)
+        poust_submission_to_api(submission)
+      end
+      # basename = File.basename(submission_folder.name)
+      #
+      #
+      # tempfile = Tempfile.new(basename)
+      # tempfile.binmode
+      # tempfile.write submission_folder.get_input_stream.read
+    end
+  end
+
+  def post_submission_to_api(submission)
+    uri = URI.parse("#{ENV['GRADING_SERVER']}/grade")
+    http = Net::HTTP.new(uri.host, uri.port)
+    req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
+    req.body = {proj_id: submission.id, proj_zip: submission.zip_uri, test_zip: submission.assignment.test_uri, image_name: 'java' }.to_json
+    puts req.body
+    res = http.request req
+  end
+
+  def upload_tempfile_to_s3(tempfile, submission)
+    buckob = S3_BUCKET.object tempfile.basename
+    buckob.upload_file tempfile.path
+    submission.zip_uri = "#{S3_BUCKET.name}/#{buckob.key}"
   end
 end
