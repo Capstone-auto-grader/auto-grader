@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_15_020328) do
+ActiveRecord::Schema.define(version: 2018_12_24_182705) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 2018_12_15_020328) do
     t.bigint "course_id"
     t.text "structure"
     t.text "description"
+    t.integer "test_grade_weight"
     t.index ["course_id"], name: "index_assignments_on_course_id"
   end
 
@@ -35,29 +36,30 @@ ActiveRecord::Schema.define(version: 2018_12_15_020328) do
   end
 
   create_table "grades", force: :cascade do |t|
-    t.decimal "grade"
     t.integer "ta_id"
     t.integer "student_id"
     t.integer "assignment_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "ta_grade"
+    t.text "custom_comment"
   end
 
   create_table "submissions", force: :cascade do |t|
-    t.decimal "grade"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "attachment"
     t.text "zip_uri"
-    t.bigint "course_id"
     t.bigint "user_id"
     t.bigint "assignment_id"
-    t.text "failures"
     t.bigint "grade_id"
+    t.integer "latte_id"
+    t.integer "tests_passed"
+    t.integer "total_tests"
+    t.decimal "test_grade"
     t.index ["assignment_id"], name: "index_submissions_on_assignment_id"
-    t.index ["course_id"], name: "index_submissions_on_course_id"
     t.index ["grade_id"], name: "index_submissions_on_grade_id"
+    t.index ["latte_id"], name: "index_submissions_on_latte_id"
     t.index ["user_id"], name: "index_submissions_on_user_id"
   end
 

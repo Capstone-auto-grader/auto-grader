@@ -29,4 +29,30 @@ module AssignmentsHelper
     end
     grades.map &:save!
   end
+
+  def csv_lines
+    headers = ['Identifier', 'Full name', 'Email address', 'Status', 'Grade', 'Maximum Grade', 'Grade can be changed', 'Last modified (submission)', 'Last modified (grade)', 'Feedback comments']
+    lines = []
+    lines << headers
+    @submissions.each do |s|
+      curr_sub = []
+      curr_sub[0] = "Participant #{s.latte_id}"
+      curr_sub[1] = s.user.name
+      curr_sub[2] = s.user.email
+      curr_sub[4] = s.grade.final_grade
+      curr_sub[9] = "#{comment(s)}"
+      lines << curr_sub
+    end
+    lines
+  end
+
+  def comment(submission)
+    """TESTS PASSED: #{submission.tests_passed}
+    TOTAL TESTS: #{submission.total_tests}
+    TEST GRADE: #{submission.test_grade}
+    -----
+    TA GRADE: #{submission.grade.ta_grade}
+    GRADING TA: #{submission.grade.ta.name}
+    #{"-----\n#{submission.grade.custom_comment}" if submission.grade.custom_comment}"""
+  end
 end
