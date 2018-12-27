@@ -2,7 +2,7 @@
 class AssignmentsController < ApplicationController
   include AssignmentsHelper
   include SessionsHelper
-  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades]
+  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades, :download_csv]
   before_action :require_login
 
   # GET /assignments
@@ -48,6 +48,17 @@ class AssignmentsController < ApplicationController
     Grade.find(params[:grade][:id]).update( ta_grade: params[:grade][:ta_grade].to_i)
     redirect_to assignment_grades_path
   end
+
+  def download_csv
+    @submissions = @assignment.submissions
+    respond_to do |format|
+      format.csv do
+        headers['Content-Disposition'] = "attachment; filename=\"AutoGrader_#{@assignment.name}.csv\""
+        headers['Content-Type'] ||= 'text/csv'
+      end
+    end
+  end
+
   # POST /assignments
   # POST /assignments.json
   def create

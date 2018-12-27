@@ -683,6 +683,7 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
     crass (1.0.4)
+    csv (3.0.2)
     erubi (1.7.1)
     execjs (2.7.0)
     faker (1.9.1)
@@ -826,6 +827,7 @@ DEPENDENCIES
   carrierwave
   chromedriver-helper
   coffee-rails (~> 4.2)
+  csv
   faker
   jbuilder (~> 2.5)
   jquery-rails
@@ -850,4 +852,4 @@ RUBY VERSION
    ruby 2.5.3p105
 
 BUNDLED WITH
-   1.17.1
+   1.17.2
