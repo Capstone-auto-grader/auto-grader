@@ -20,13 +20,5 @@ class AcceptGradeController < ApplicationController
         submission.save!
       end
     end
-    g = Grade.where(student_id: submission.user_id, assignment_id: submission.assignment_id).first
-    # g.grade = submission.grade
-    if g.submission.nil?
-      g.submission = submission
-    elsif g.submission.created_at < submission.created_at
-      g.submission = submission
-    end
-    g.save!
   end
 end

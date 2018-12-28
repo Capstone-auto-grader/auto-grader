@@ -1,14 +1,10 @@
 class User < ApplicationRecord
     attr_accessor :reset_token
-    has_many :takes_class
     has_many :t_as_class
     has_many :teaches_class
-    has_many :registrations, through: :takes_class, source: :course
     has_many :taships, through: :t_as_class, source: :course
     has_many :professorships, through: :teaches_class, source: :course
-    has_many :submissions
-    has_many :ta_assignments, class_name: 'Grade', foreign_key: :ta_id
-    has_many :assignment_grades, class_name: 'Grade', foreign_key: :student_id
+    has_many :ta_assignments, class_name: 'Submission', foreign_key: :ta_id
     has_many :ta_conflicts
     has_many :conflicts, through: :ta_conflicts
     before_save { self.email = email.downcase }

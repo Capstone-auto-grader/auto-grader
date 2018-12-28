@@ -16,18 +16,47 @@ module AssignmentsHelper
     ret_hash
   end
 
-  def create_grades_from_assignment(assignment)
+  def create_grades_from_assignment(assignment, csv)
     student_arr = assignment.course.students.all.map &:id
     tas = assignment.course.tas.all
     ta_ids = tas.map &:id
     ta_conflicts = tas.map {|ta| [ta.id, ta.conflicts.map(&:id)]}.to_h
     assignments = assign_groups(student_arr,ta_ids,ta_conflicts)
-    grades = assignments.flat_map do |ta, students|
+    latte_ids = get_latte_ids(csv)
+    submissions = assignments.flat_map do |ta, students|
       students.map do |student|
-        Grade.new(ta_id: ta, student_id: student, assignment_id: assignment.id)
+        Submission.new(ta_id: ta, student_id: student, assignment_id: assignment.id, latte_id: latte_ids[student])
       end
     end
-    grades.map &:save!
+    submissions.map &:save!
+  end
+
+  def get_latte_ids(csv)
+    headers = csv[0]
+    id_index = headers.index "﻿Identifier"
+    email_index = headers.index "Email address"
+    name_index = headers.index "Full name"
+
+    data = csv.drop(1)
+    latte_ids = Hash.new
+    data.each do |curr|
+      email = curr[email_index]
+      name = curr[name_index]
+
+      latte_id = curr[id_index]
+      latte_id.slice! "Participant "
+      latte_id = latte_id.to_i
+
+      student = Student.find_or_create_by email: email
+      if name != student.name
+        student.name = name
+        student.save!
+      end
+
+      latte_ids[student.id] = latte_id
+
+    end
+    latte_ids
   end
 
   def csv_lines
@@ -39,7 +68,7 @@ module AssignmentsHelper
       curr_sub[0] = "Participant #{s.latte_id}"
       curr_sub[1] = s.user.name
       curr_sub[2] = s.user.email
-      curr_sub[4] = s.grade.final_grade
+      curr_sub[4] = s.final_grade
       curr_sub[9] = "#{comment(s)}"
       lines << curr_sub
     end
@@ -51,8 +80,8 @@ module AssignmentsHelper
     TOTAL TESTS: #{submission.total_tests}
     TEST GRADE: #{submission.test_grade}
     -----
-    TA GRADE: #{submission.grade.ta_grade}
-    GRADING TA: #{submission.grade.ta.name}
-    #{"-----\n#{submission.grade.custom_comment}" if submission.grade.custom_comment}"""
+    TA GRADE: #{submission.ta_grade}
+    GRADING TA: #{submission.ta.name}
+    #{"-----\n#{submission.ta_comment}" if submission.ta_comment}"""
   end
 end

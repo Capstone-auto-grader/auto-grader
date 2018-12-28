@@ -9,17 +9,17 @@
   </tr>
   </thead>
   <tbody>
-    <% @partition.each do |grade| %>
-    <%= simple_form_for( grade, method: :post, url: assignment_grades_post_path) do |f| %>
+    <% @partition.each do |submission| %>
+    <%= simple_form_for(submission, method: :post, url: assignment_grades_post_path) do |f| %>
       <tr>
         <%= f.input :id, as: :hidden %>
-        <td><%= grade.student.name %></td>
-        <td><%= grade.submission.test_grade if grade.submission %></td>
+        <td><%= submission.student.name %></td>
+        <td><%= submission.test_grade if submission %></td>
         <p></p>
-        <td><%= f.input :ta_grade, label: false,  input_html: {value: grade.ta_grade,style: 'width: 100px', class:"form-control"} %></td>
+        <td><%= f.input :ta_grade, label: false,  input_html: {value: submission.ta_grade,style: 'width: 100px', class:"form-control"} %></td>
         <td> <%= f.button :submit ,html_options= { class: "btn btn-primary", role: "button"}%></td>
-        <% if !grade.submission.nil? %>
-          <td> <%= link_to 'Download', assigments_download_path(grade: grade.submission.zip_uri),html_options= { class: "btn btn-primary", role: "button", target: :_blank  } %> </td>
+        <% if !submission.nil? %>
+          <td> <%= link_to 'Download', assigments_download_path(grade: submission.zip_uri),html_options= { class: "btn btn-primary", role: "button", target: :_blank  } %> </td>
           <% else %>
           <td> No Submission </td>
         <% end %>
