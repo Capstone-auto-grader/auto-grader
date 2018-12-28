@@ -13,8 +13,11 @@
           <%= f.input :name, label: "Assignment Name", required: true, input_html: {class:"form-control"} %>
           <p></p>
           <%= f.input :description, label: "Assignment description",  input_html: {class:"form-control"} %>
-
+          <%= f.label :assignment_test, label: "Assignment test zip" %>
           <%= f.file_field :assignment_test, label: "Test directory",required: true,  class:"form-control-file" %>
+          <p></p>
+          <%= f.label :csv, label: "Grading CSV" %>
+          <%= f.file_field :csv, label: "Grading CSV",required: true,  class:"form-control-file" %>
           <p></p>
           <%= f.input :due_date, label:"Due date", required: true, input_html: {class:"form-control"}  %>
           <p></p>

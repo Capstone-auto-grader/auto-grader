@@ -25,11 +25,22 @@ class AssignmentsController < ApplicationController
   def edit
   end
 
+  def upload_submissions
+    uploader = AttachmentUploader.new
+    uploader.store! params[:assignment][:subm_file]
+    @assignment = Assignment.find(params[:assignment][:id])
+    respond_to do |format|
+      ValidateZipFileJob.perform_later uploader.filename, @assignment.id
+      format.html { redirect_to course_path(@assignment.course_id),notice: 'Assignment submissions were successfully uploaded' }
+      format.json { render :show, status: :created, location: @assignment }
+    end
+  end
+
   def grades
     if is_superuser(@assignment.course.id)
-      @partition = Grade.where(assignment_id: @assignment.id).sort_by{|g| g.student.name}
+      @partition = Submission.where(assignment_id: @assignment.id).sort_by{|s| s.student.name}
     else
-      @partition = Grade.where(assignment_id: @assignment.id, ta_id: current_user.id).sort_by{|g| g.student.name}
+      @partition = Submission.where(assignment_id: @assignment.id, ta_id: current_user.id).sort_by{|s| s.student.name}
     end
   end
 
@@ -45,7 +56,7 @@ class AssignmentsController < ApplicationController
   end
 
   def update_grade
-    Grade.find(params[:grade][:id]).update( ta_grade: params[:grade][:ta_grade].to_i)
+    Submission.find(params[:submission][:id]).update(ta_grade: params[:submission][:ta_grade].to_i)
     redirect_to assignment_grades_path
   end
 
@@ -76,7 +87,8 @@ class AssignmentsController < ApplicationController
 
     respond_to do |format|
       if @assignment.save!
-        create_grades_from_assignment @assignment
+        @csv = CSV.read(params[:assignment][:csv].path)
+        create_grades_from_assignment @assignment, @csv
         format.html { redirect_to course_path(@assignment.course), notice: 'Assignment was successfully created.' }
         format.json { render :show, status: :created, location: @assignment }
       else
