@@ -57,8 +57,11 @@ class ValidateZipFileJob < ApplicationJob
         tempfile.binmode
         tempfile.write zip.get_input_stream.read
         submission = Submission.where(assignment_id: assignment_id, latte_id: latte_id)
-        upload_tempfile_to_s3(tempfile, submission)
-        poust_submission_to_api(submission)
+        if !validate(tempfile.path, assignment.structure)
+          upload_tempfile_to_s3(tempfile, submission)
+          post_submission_to_api(submission)
+        end
+
       end
       # basename = File.basename(submission_folder.name)
       #
