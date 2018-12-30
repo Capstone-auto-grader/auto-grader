@@ -82,13 +82,19 @@ class AssignmentsController < ApplicationController
     p[:structure] = p[:structure].split(',').map &:strip
     uploader = AttachmentUploader.new
     uploader.store! file
+    p[:test_uri] = "#{S3_BUCKET.name}/#{buckob.key}"
     @assignment = Assignment.new(p)
-    @assignment.test_uri = "#{S3_BUCKET.name}/#{buckob.key}"
 
     respond_to do |format|
       if @assignment.save!
+        resubmit_params = p.clone
+        resubmit_params[:name] = "#{p[:name]} RESUBMIT"
+        resubmit = Assignment.new(resubmit_params)
+        resubmit.save!
+        @assignment.resubmit = resubmit
+        @assignment.save!
         @csv = CSV.read(params[:assignment][:csv].path)
-        create_grades_from_assignment @assignment, @csv
+        create_submissions_from_assignment @assignment, @csv
         format.html { redirect_to course_path(@assignment.course), notice: 'Assignment was successfully created.' }
         format.json { render :show, status: :created, location: @assignment }
       else
@@ -133,6 +139,6 @@ class AssignmentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def assignment_params
-      params.require(:assignment).permit(:name, :course_id, :assignment_test, :due_date, :structure)
+      params.require(:assignment).permit(:name, :course_id, :assignment_test, :structure, :test_uri, :test_grade_weight)
     end
 end

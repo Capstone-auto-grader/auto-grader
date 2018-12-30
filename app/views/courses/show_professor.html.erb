@@ -31,7 +31,6 @@
   <thead>
   <tr>
     <th>Name</th>
-    <th>Last updated</th>
     <th>Submissions</th>
     <th></th>
   </tr>
@@ -40,7 +39,6 @@
   <% @assignments.each do |assignment| %>
     <tr>
       <td><%= assignment.name %></td>
-      <td><%= assignment.due_date %></td>
       <td><%= assignment.submissions.where.not(submissions: {zip_uri: nil}).length%>/<%= num_students %></td>
       <td>
         <%= simple_form_for assignment, url: upload_submissions_path do |f| %>

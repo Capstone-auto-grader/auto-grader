@@ -16,7 +16,7 @@ module AssignmentsHelper
     ret_hash
   end
 
-  def create_grades_from_assignment(assignment, csv)
+  def create_submissions_from_assignment(assignment, csv)
     student_arr = assignment.course.students.all.map &:id
     tas = assignment.course.tas.all
     ta_ids = tas.map &:id
@@ -25,10 +25,9 @@ module AssignmentsHelper
     latte_ids = get_latte_ids_and_validate_registrations(csv, assignment)
     # byebug
     assignments = assign_groups(student_arr,ta_ids,ta_conflicts)
-    puts assignments
     submissions = assignments.flat_map do |ta, students|
       students.map do |student|
-        Submission.new(ta_id: ta, student_id: student, assignment_id: assignment.id, latte_id: latte_ids[student])
+        Submission.new(ta_id: ta, student_id: student, assignment_id: assignment.resubmit.id, latte_id: latte_ids[student])
       end
     end
 
@@ -75,22 +74,31 @@ module AssignmentsHelper
     @submissions.each do |s|
       curr_sub = []
       curr_sub[0] = "Participant #{s.latte_id}"
-      curr_sub[1] = s.user.name
-      curr_sub[2] = s.user.email
+      curr_sub[1] = s.student.name
+      curr_sub[2] = s.student.email
       curr_sub[4] = s.final_grade
-      curr_sub[9] = "#{comment(s)}"
+      curr_sub[9] = comment(s)
       lines << curr_sub
     end
     lines
   end
 
   def comment(submission)
-    """TESTS PASSED: #{submission.tests_passed}
-    TOTAL TESTS: #{submission.total_tests}
-    TEST GRADE: #{submission.test_grade}
-    -----
-    TA GRADE: #{submission.ta_grade}
-    GRADING TA: #{submission.ta.name}
-    #{"-----\n#{submission.ta_comment}" if submission.ta_comment}"""
+    if submission.resubmission.has_grade?
+      sub_comment(submission) + sub_comment(submission.resubmission)
+    else
+      sub_comment(submission)
+    end
+  end
+
+  def sub_comment(submission)
+    s = "#{"\n-----\nRESUBMISSION:\n" if submission.is_resubmission?}TESTS PASSED: #{submission.tests_passed}
+TOTAL TESTS: #{submission.total_tests}
+TEST GRADE: #{submission.test_grade}"
+    s += "\n-----
+TA GRADE: #{submission.ta_grade}
+GRADING TA: #{submission.ta.name}
+#{"-----\n#{submission.ta_comment}" if submission.ta_comment}" unless submission.ta_grade.nil?
+    s
   end
 end

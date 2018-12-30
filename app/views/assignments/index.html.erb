@@ -7,7 +7,6 @@
     <tr>
       <th>Class</th>
       <th>Name</th>
-      <th>Due date</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -17,7 +16,6 @@
       <tr>
         <td><%= assignment.course_id %></td>
         <td><%= assignment.name %></td>
-        <td><%= assignment.due_date %></td>
         <td><%= link_to 'Show', assignment %></td>
         <td><%= link_to 'Edit', edit_assignment_path(assignment) %></td>
         <td><%= link_to 'Destroy', assignment, method: :delete, data: { confirm: 'Are you sure?' } %></td>
