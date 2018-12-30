@@ -20,12 +20,12 @@ class CoursesController < ApplicationController
   # GET /courses/1.json
   def show
     if is_superuser(params[:id])
-      @assignments= @course.assignments.order(:created_at).reverse
-      @recently_edited = @assignments.first
+      @assignments= @course.assignments.order(:created_at)
+      @recently_edited = @assignments[-2]
       render 'courses/show_professor'
     elsif is_ta(params[:id])
-      @assignments= @course.assignments.order(:created_at).reverse
-      @recently_edited = @assignments.first
+      @assignments= @course.assignments.order(:created_at)
+      @recently_edited = @assignments[-2]
       render 'courses/show_ta'
     else
       render 'courses/show'

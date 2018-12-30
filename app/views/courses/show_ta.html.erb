@@ -28,7 +28,6 @@
   <thead>
   <tr>
     <th>Name</th>
-    <th>Last updated</th>
     <th>Submissions</th>
     <th></th>
   </tr>
@@ -37,7 +36,6 @@
   <% @assignments.each do |assignment| %>
     <tr>
       <td><%= assignment.name %></td>
-      <td><%= assignment.due_date %></td>
       <td><%= assignment.submissions.length %>/<%= num_students %></td>
       <td>
         <%= link_to 'Submissions', assignment_grades_path(assignment), html_options= { class: "btn btn-primary", role: "button"}  %>

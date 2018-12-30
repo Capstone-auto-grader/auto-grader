@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_27_145224) do
+ActiveRecord::Schema.define(version: 2018_12_29_045950) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,14 +18,13 @@ ActiveRecord::Schema.define(version: 2018_12_27_145224) do
   create_table "assignments", force: :cascade do |t|
     t.string "name"
     t.string "assignment_test"
-    t.date "due_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "test_uri"
     t.bigint "course_id"
     t.text "structure"
-    t.text "description"
     t.integer "test_grade_weight"
+    t.integer "resubmit_id"
     t.index ["course_id"], name: "index_assignments_on_course_id"
   end
 
@@ -46,7 +45,7 @@ ActiveRecord::Schema.define(version: 2018_12_27_145224) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "attachment"
-    t.text "zip_uri"
+    t.string "zip_uri"
     t.bigint "assignment_id"
     t.integer "latte_id"
     t.integer "tests_passed"
@@ -56,6 +55,7 @@ ActiveRecord::Schema.define(version: 2018_12_27_145224) do
     t.integer "ta_id"
     t.text "ta_comment"
     t.integer "student_id"
+    t.integer "resubmission_id"
     t.index ["assignment_id"], name: "index_submissions_on_assignment_id"
     t.index ["latte_id"], name: "index_submissions_on_latte_id"
   end

@@ -1,4 +1,4 @@
-<%= button_to "Download CSV for LATTE", download_csv_assignments_path(id: @assignment.id, format: :csv), class: "btn btn-primary" %>
+<%= (button_to "Download CSV for LATTE", download_csv_assignments_path(id: @assignment.id, format: :csv), class: "btn btn-primary") if !@assignment.resubmit_id.nil? %>
 <table class="table">
   <thead class = "thead-dark">
   <tr>
