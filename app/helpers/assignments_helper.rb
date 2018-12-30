@@ -21,17 +21,22 @@ module AssignmentsHelper
     tas = assignment.course.tas.all
     ta_ids = tas.map &:id
     ta_conflicts = tas.map {|ta| [ta.id, ta.conflicts.map(&:id)]}.to_h
+    # byebug
+    latte_ids = get_latte_ids_and_validate_registrations(csv, assignment)
+    # byebug
     assignments = assign_groups(student_arr,ta_ids,ta_conflicts)
-    latte_ids = get_latte_ids(csv)
+    puts assignments
     submissions = assignments.flat_map do |ta, students|
       students.map do |student|
         Submission.new(ta_id: ta, student_id: student, assignment_id: assignment.id, latte_id: latte_ids[student])
       end
     end
+
     submissions.map &:save!
+    puts submissions.map(&:id)
   end
 
-  def get_latte_ids(csv)
+  def get_latte_ids_and_validate_registrations(csv, assignment)
     headers = csv[0]
     id_index = headers.index "﻿Identifier"
     email_index = headers.index "Email address"
@@ -51,6 +56,10 @@ module AssignmentsHelper
       if name != student.name
         student.name = name
         student.save!
+      end
+
+      if !student.courses.include? assignment.course
+        student.courses << assignment.course
       end
 
       latte_ids[student.id] = latte_id
