@@ -23,14 +23,17 @@ module AssignmentsHelper
     ta_conflicts = tas.map {|ta| [ta.id, ta.conflicts.map(&:id)]}.to_h
     # byebug
     latte_ids = get_latte_ids_and_validate_registrations(csv, assignment)
+    # byebug
     assignments = assign_groups(student_arr,ta_ids,ta_conflicts)
-
+    puts assignments
     submissions = assignments.flat_map do |ta, students|
       students.map do |student|
         Submission.new(ta_id: ta, student_id: student, assignment_id: assignment.id, latte_id: latte_ids[student])
       end
     end
+
     submissions.map &:save!
+    puts submissions.map(&:id)
   end
 
   def get_latte_ids_and_validate_registrations(csv, assignment)

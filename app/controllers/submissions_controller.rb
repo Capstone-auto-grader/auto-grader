@@ -43,7 +43,8 @@ class SubmissionsController < ApplicationController
     respond_to do |format|
       if @submission.save!
         #TODO: WE NEED TO TEST THIS
-        ValidateZipFileJob.perform_later uploader.filename,@submission.id
+        puts "OK"
+        ValidateZipFileJob.perform_later uploader.filename,@submission.assignment.id
         format.html { redirect_to course_path(@submission.assignment.course_id),notice: 'Submission was successfully created.' }
         format.json { render :show, status: :created, location: @submission }
       else
