@@ -42,7 +42,6 @@ course.students << Student.create(name: ta.name, email: ta.email)
 course1 = Course.create(name: 'COSI 12B')
 course.professors << professor
 course1.professors << professor
-course1.tas << ta
 10.times do
   course.students << Student.create(name: Faker::Name.name, email: Faker::Internet.email)
 end
