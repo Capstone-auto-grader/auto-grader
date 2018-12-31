@@ -17,22 +17,36 @@ module AssignmentsHelper
   end
 
   def create_submissions_from_assignment(assignment, csv)
+    puts "ASSIGNMENT #{assignment.id}"
+    # byebug
+    latte_ids = get_latte_ids_and_validate_registrations(csv, assignment)
     student_arr = assignment.course.students.all.map &:id
     tas = assignment.course.tas.all
     ta_ids = tas.map &:id
     ta_conflicts = tas.map {|ta| [ta.id, ta.conflicts.map(&:id)]}.to_h
     # byebug
-    latte_ids = get_latte_ids_and_validate_registrations(csv, assignment)
+
     # byebug
     assignments = assign_groups(student_arr,ta_ids,ta_conflicts)
-    submissions = assignments.flat_map do |ta, students|
+    resubs = assignments.flat_map do |ta, students|
       students.map do |student|
         Submission.new(ta_id: ta, student_id: student, assignment_id: assignment.resubmit.id, latte_id: latte_ids[student])
       end
     end
+    resubs.map &:save!
+    submissions = resubs.map do |r|
+      Submission.new(ta_id: r.ta_id, student_id: r.student_id, assignment_id: assignment.id, latte_id: r.latte_id, resubmission_id: r.id)
+    end
+    byebug
+    submissions.map &:save!
+    # submissions = assignments.flat_map do |ta, students|
+    #   students.map do |student|
+    #     Submission.new(ta_id: ta, student_id: student, assignment_id: assignment.resubmit.id, latte_id: latte_ids[student])
+    #   end
+    # end
 
     submissions.map &:save!
-    puts submissions.map(&:id)
+    puts submissions.map(&:assignment_id)
   end
 
   def get_latte_ids_and_validate_registrations(csv, assignment)

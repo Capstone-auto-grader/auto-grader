@@ -63,6 +63,10 @@ class ValidateZipFileJob < ApplicationJob
         tempfile.write zip.get_input_stream.read
         # puts tempfile.size
         tempfile.flush
+        puts "AAAAAAAAAAAAA"
+        puts assignment_id
+        puts latte_id
+        puts "BBBBBBBBBB"
         submission = Submission.find_by(assignment_id: assignment_id, latte_id: latte_id)
         # puts "BEGIN"
         # puts submission.id
@@ -97,6 +101,6 @@ class ValidateZipFileJob < ApplicationJob
   def upload_tempfile_to_s3(tempfile, submission)
     buckob = S3_BUCKET.object File.basename(tempfile.path)
     buckob.upload_file tempfile.path
-    submission.zip_uri = "#{S3_BUCKET.name}/#{buckob.key}"
+    submission.update_attribute(:zip_uri,"#{S3_BUCKET.name}/#{buckob.key}")
   end
 end

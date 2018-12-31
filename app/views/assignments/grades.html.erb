@@ -19,6 +19,9 @@
         <td><%= f.input :ta_grade, label: false,  input_html: {value: submission.ta_grade,style: 'width: 100px', class:"form-control"} %></td>
         <td> <%= f.button :submit ,html_options= { class: "btn btn-primary", role: "button"}%></td>
         <% if !submission.nil? %>
+          <%# if submission.zip_uri %>
+            <%#puts submission.zip_uri %>
+            <%#end %>
           <td> <%= link_to 'Download', assigments_download_path(grade: submission.zip_uri),html_options= { class: "btn btn-primary", role: "button", target: :_blank  } %> </td>
           <% else %>
           <td> No Submission </td>

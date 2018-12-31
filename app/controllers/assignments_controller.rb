@@ -29,6 +29,7 @@ class AssignmentsController < ApplicationController
     uploader = AttachmentUploader.new
     uploader.store! params[:assignment][:subm_file]
     @assignment = Assignment.find(params[:assignment][:id])
+    byebug
     respond_to do |format|
       ValidateZipFileJob.perform_later uploader.filename, @assignment.id
       format.html { redirect_to course_path(@assignment.course_id),notice: 'Assignment submissions were successfully uploaded' }
@@ -95,6 +96,7 @@ class AssignmentsController < ApplicationController
         @assignment.save!
         @csv = CSV.read(params[:assignment][:csv].path)
         create_submissions_from_assignment @assignment, @csv
+        byebug
         format.html { redirect_to course_path(@assignment.course), notice: 'Assignment was successfully created.' }
         format.json { render :show, status: :created, location: @assignment }
       else
