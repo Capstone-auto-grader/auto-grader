@@ -94,9 +94,9 @@ class AssignmentsController < ApplicationController
         resubmit.save!
         @assignment.resubmit = resubmit
         @assignment.save!
-        @csv = CSV.read(params[:assignment][:csv].path)
-        create_submissions_from_assignment @assignment, @csv
-        byebug
+        @orig_csv = CSV.read(params[:assignment][:orig_csv].path)
+        @resub_csv = CSV.read(params[:assignment][:resub_csv].path)
+        create_submissions_from_assignment @assignment, @orig_csv, @resub_csv
         format.html { redirect_to course_path(@assignment.course), notice: 'Assignment was successfully created.' }
         format.json { render :show, status: :created, location: @assignment }
       else
