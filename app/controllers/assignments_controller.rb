@@ -57,7 +57,10 @@ class AssignmentsController < ApplicationController
   end
 
   def update_grade
-    Submission.find(params[:submission][:id]).update(ta_grade: params[:submission][:ta_grade].to_i)
+    ta_grade = params[:submission][:ta_grade]
+    ta_grade = ta_grade.to_i unless ta_grade.nil?
+    ta_comment = params[:submission][:ta_comment]
+    Submission.find(params[:submission][:id]).update(ta_grade: ta_grade, ta_comment: ta_comment)
     redirect_to assignment_grades_path
   end
 

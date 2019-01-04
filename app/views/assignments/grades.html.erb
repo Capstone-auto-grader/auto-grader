@@ -5,6 +5,7 @@
     <th>Student</th>
     <th>Grade</th>
     <th>TA Grade</th>
+    <th>TA Comment</th>
     <th colspan="3"></th>
   </tr>
   </thead>
@@ -17,6 +18,7 @@
         <td><%= submission.test_grade if submission %></td>
         <p></p>
         <td><%= f.input :ta_grade, label: false,  input_html: {value: submission.ta_grade,style: 'width: 100px', class:"form-control"} %></td>
+        <td><%= f.input :ta_comment, label: false,  input_html: {value: submission.ta_comment,class:"form-control"} %></td>
         <td> <%= f.button :submit ,html_options= { class: "btn btn-primary", role: "button"}%></td>
         <% if !submission.nil? %>
           <%# if submission.zip_uri %>

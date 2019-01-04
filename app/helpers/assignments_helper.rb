@@ -104,6 +104,7 @@ module AssignmentsHelper
     end
   end
 
+
   def sub_comment(submission)
     s = "#{"\n-----\nRESUBMISSION:\n" if submission.is_resubmission?}TESTS PASSED: #{submission.tests_passed}
 TOTAL TESTS: #{submission.total_tests}
@@ -112,6 +113,7 @@ TEST GRADE: #{submission.test_grade}"
 TA GRADE: #{submission.ta_grade}
 GRADING TA: #{submission.ta.name}
 #{"-----\n#{submission.ta_comment}" if submission.ta_comment}" unless submission.ta_grade.nil?
-    s
+    s.delete("\r").gsub("\n", "<br>")
   end
+
 end
