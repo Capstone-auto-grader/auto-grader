@@ -28,13 +28,13 @@ module AssignmentsHelper
     assignments = assign_groups(student_arr,ta_ids,ta_conflicts)
     resubs = assignments.flat_map do |ta, students|
       students.map do |student|
-        Submission.new(ta_id: ta, student_id: student, assignment_id: assignment.resubmit.id, latte_id: resub_latte_ids[student])
+        Submission.new(grade_received: false, ta_id: ta, student_id: student, assignment_id: assignment.resubmit.id, latte_id: resub_latte_ids[student])
       end
     end
     resubs.map &:save!
 
     submissions = resubs.map do |r|
-      Submission.new(ta_id: r.ta_id, student_id: r.student_id, assignment_id: assignment.id, latte_id: orig_latte_ids[r.student_id], resubmission_id: r.id)
+      Submission.new(grade_received: false, ta_id: r.ta_id, student_id: r.student_id, assignment_id: assignment.id, latte_id: orig_latte_ids[r.student_id], resubmission_id: r.id)
     end
     submissions.map &:save!
 
@@ -97,7 +97,7 @@ module AssignmentsHelper
   end
 
   def comment(submission)
-    if submission.resubmission.has_grade?
+    if submission.resubmission.grade_received
       sub_comment(submission) + sub_comment(submission.resubmission)
     else
       sub_comment(submission)

@@ -19,7 +19,7 @@
      <% @submissions.each do |submission| %>
        <tr>
          <td><%=submission.assignment.name %></td>
-         <td><%= ! submission.test_grade.nil? ? submission.test_grade : "Pending"  %></td>
+         <td><%= submission.grade_received ? submission.test_grade : "Pending"  %></td>
          <td><%= link_to 'Show', assignment_submission_path(assignment_id: submission.assignment.id, id: submission.id) %></td>
        </tr>
      <% end %>

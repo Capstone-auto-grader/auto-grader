@@ -1,4 +1,5 @@
 <%= (button_to "Download CSV for LATTE", download_csv_assignments_path(id: @assignment.id, format: :csv), class: "btn btn-primary") if !@assignment.resubmit_id.nil? %>
+<h3> <%= @grades_remaining == 0 ? 'ALL UPLOADED SUBMISSIONS GRADED' : "#{pluralize(@grades_remaining, 'grade').upcase} REMAINING" %> </h3>
 <table class="table">
   <thead class = "thead-dark">
   <tr>
@@ -15,7 +16,7 @@
       <tr>
         <%= f.input :id, as: :hidden %>
         <td><%= submission.student.name %></td>
-        <td><%= submission.test_grade if submission %></td>
+        <td><%= submission.zip_uri.nil? ? "No submission" : (submission.grade_received ? submission.test_grade : "Pending") %></td>
         <p></p>
         <td><%= f.input :ta_grade, label: false,  input_html: {value: submission.ta_grade,style: 'width: 100px', class:"form-control"} %></td>
         <td><%= f.input :ta_comment, label: false,  input_html: {value: submission.ta_comment,class:"form-control"} %></td>

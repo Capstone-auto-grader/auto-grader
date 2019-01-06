@@ -29,7 +29,6 @@ class AssignmentsController < ApplicationController
     uploader = AttachmentUploader.new
     uploader.store! params[:assignment][:subm_file]
     @assignment = Assignment.find(params[:assignment][:id])
-    byebug
     respond_to do |format|
       ValidateZipFileJob.perform_later uploader.filename, @assignment.id
       format.html { redirect_to course_path(@assignment.course_id),notice: 'Assignment submissions were successfully uploaded' }
@@ -38,8 +37,9 @@ class AssignmentsController < ApplicationController
   end
 
   def grades
+    @grades_remaining = @assignment.submissions.where.not(zip_uri: nil).where(grade_received: false).count
     if is_superuser(@assignment.course.id)
-      @partition = Submission.where(assignment_id: @assignment.id).sort_by{|s| s.student.name}
+      @partition = @assignment.submissions.sort_by{|s| s.student.name}
     else
       @partition = Submission.where(assignment_id: @assignment.id, ta_id: current_user.id).sort_by{|s| s.student.name}
     end
@@ -66,6 +66,7 @@ class AssignmentsController < ApplicationController
 
   def download_csv
     @submissions = @assignment.submissions
+    @submissions = @submissions.where.not(ta_grade: nil) unless @assignment.test_grade_weight == 100
     respond_to do |format|
       format.csv do
         headers['Content-Disposition'] = "attachment; filename=\"AutoGrader_#{@assignment.name}.csv\""
