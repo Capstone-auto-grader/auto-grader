@@ -9,7 +9,7 @@ class Submission < ApplicationRecord
   end
 
   def test_grade
-    if zip_uri.nil? || !grade_received || total_tests.zero?
+    if !is_valid || !grade_received || total_tests.zero?
       0.0
     else
       ((tests_passed.to_f * 100) / total_tests).round(3)
@@ -17,9 +17,10 @@ class Submission < ApplicationRecord
   end
 
   def final_grade
+    return 0 unless is_valid
+
     test_weight = assignment.test_grade_weight / 100.0
     ta_weight = 1 - test_weight
-
 
     ta_grade = self.ta_grade || Submission.find_by(resubmission_id: id).ta_grade
 

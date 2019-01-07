@@ -106,7 +106,11 @@ module AssignmentsHelper
 
 
   def sub_comment(submission)
-    s = "#{"\n-----\nRESUBMISSION:\n" if submission.is_resubmission?}TESTS PASSED: #{submission.tests_passed}
+    return 'NO SUBMISSION' unless submission.grade_received
+    return 'INVALID SUBMISSION' unless submission.is_valid
+    
+    s = submission.is_resubmission? ? "\n-----\nRESUBMISSION:\n" : ''
+    s += "TESTS PASSED: #{submission.tests_passed}
 TOTAL TESTS: #{submission.total_tests}
 TEST GRADE: #{submission.test_grade}"
     s += "\n-----

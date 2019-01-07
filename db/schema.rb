@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_06_031629) do
+ActiveRecord::Schema.define(version: 2019_01_07_023218) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 2019_01_06_031629) do
     t.integer "student_id"
     t.integer "resubmission_id"
     t.boolean "grade_received"
+    t.boolean "is_valid"
     t.index ["assignment_id"], name: "index_submissions_on_assignment_id"
     t.index ["latte_id"], name: "index_submissions_on_latte_id"
   end
