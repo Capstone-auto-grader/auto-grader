@@ -23,8 +23,7 @@
           <%= f.label :csv, label: "Resubmit Grading CSV" %>
           <%= f.file_field :resub_csv, label: "Resubmit Grading CSV",required: true,  class:"form-control-file" %>
           <p></p>
-          <%= f.input :structure, label:"Required files",input_html: {value: @assignment.structure.join(','), class: "form-control"}, required: true %>
-          <button type="button" class="btn btn-dark"><%= f.button :submit %></button>
+          <%= f.button :submit %>
         <% end %>
         </div>
       </div>

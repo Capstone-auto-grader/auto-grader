@@ -10,6 +10,7 @@ class AcceptGradeController < ApplicationController
         tests_passed = total_tests - (params[:number_of_failures] + params[:number_of_errors])
         submission.tests_passed = tests_passed
         submission.total_tests = total_tests
+        submission.is_valid = true
       else
         submission.is_valid = false
       end
