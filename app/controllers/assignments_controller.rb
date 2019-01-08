@@ -1,4 +1,3 @@
-
 class AssignmentsController < ApplicationController
   include AssignmentsHelper
   include SessionsHelper
@@ -31,8 +30,8 @@ class AssignmentsController < ApplicationController
     @assignment = Assignment.find(params[:assignment][:id])
     # byebug
     respond_to do |format|
-      ValidateZipFileJob.perform_later uploader.filename, @assignment.id
-      format.html { redirect_to course_path(@assignment.course_id),notice: 'Assignment submissions were successfully uploaded' }
+      UploadZipFileJob.perform_later uploader.filename, @assignment.id
+      format.html { redirect_to assignment_grades_path(@assignment.id), notice: 'Assignment submissions were successfully uploaded' }
       format.json { render :show, status: :created, location: @assignment }
     end
   end
@@ -85,7 +84,6 @@ class AssignmentsController < ApplicationController
     buckob.upload_file uploader.path
     p = assignment_params
     file = params[:assignment][:uploaded_file]
-    p[:structure] = p[:structure].split(',').map &:strip
     uploader = AttachmentUploader.new
     uploader.store! file
     p[:test_uri] = "#{S3_BUCKET.name}/#{buckob.key}"
@@ -116,7 +114,6 @@ class AssignmentsController < ApplicationController
   def update
     p = assignment_params
     file = params[:assignment][:uploaded_file]
-    p[:structure] = p[:structure].split(",")
     respond_to do |format|
       if @assignment.update(p)
         format.html { redirect_to @assignment, notice: 'Assignment was successfully updated.' }
@@ -146,6 +143,6 @@ class AssignmentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def assignment_params
-      params.require(:assignment).permit(:name, :course_id, :assignment_test, :structure, :test_uri, :test_grade_weight)
+      params.require(:assignment).permit(:name, :course_id, :assignment_test, :test_uri, :test_grade_weight)
     end
 end
