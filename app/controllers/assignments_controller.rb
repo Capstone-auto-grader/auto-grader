@@ -29,7 +29,7 @@ class AssignmentsController < ApplicationController
     uploader = AttachmentUploader.new
     uploader.store! params[:assignment][:subm_file]
     @assignment = Assignment.find(params[:assignment][:id])
-    byebug
+    # byebug
     respond_to do |format|
       ValidateZipFileJob.perform_later uploader.filename, @assignment.id
       format.html { redirect_to course_path(@assignment.course_id),notice: 'Assignment submissions were successfully uploaded' }
