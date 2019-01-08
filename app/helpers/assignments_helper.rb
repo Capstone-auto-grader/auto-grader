@@ -16,40 +16,46 @@ module AssignmentsHelper
     ret_hash
   end
 
-  def create_submissions_from_assignment(assignment, csv)
-    student_arr = assignment.course.students.all.map &:id
+  def create_submissions_from_assignment(assignment, orig_csv, resub_csv)
+    puts "ASSIGNMENT #{assignment.id}"
+    orig_latte_ids, resub_latte_ids = get_latte_ids_and_validate_registrations(orig_csv, resub_csv, assignment)
+
+    student_arr = orig_latte_ids.keys
     tas = assignment.course.tas.all
     ta_ids = tas.map &:id
     ta_conflicts = tas.map {|ta| [ta.id, ta.conflicts.map(&:id)]}.to_h
-    # byebug
-    latte_ids = get_latte_ids_and_validate_registrations(csv, assignment)
-    # byebug
+
     assignments = assign_groups(student_arr,ta_ids,ta_conflicts)
-    submissions = assignments.flat_map do |ta, students|
+    resubs = assignments.flat_map do |ta, students|
       students.map do |student|
-        Submission.new(ta_id: ta, student_id: student, assignment_id: assignment.resubmit.id, latte_id: latte_ids[student])
+        Submission.new(grade_received: false, ta_id: ta, student_id: student, assignment_id: assignment.resubmit.id, latte_id: resub_latte_ids[student])
       end
     end
+    resubs.map &:save!
 
+    submissions = resubs.map do |r|
+      Submission.new(grade_received: false, ta_id: r.ta_id, student_id: r.student_id, assignment_id: assignment.id, latte_id: orig_latte_ids[r.student_id], resubmission_id: r.id)
+    end
     submissions.map &:save!
-    puts submissions.map(&:id)
+
+    puts submissions.map(&:assignment_id)
   end
 
-  def get_latte_ids_and_validate_registrations(csv, assignment)
-    headers = csv[0]
+  def get_latte_ids_and_validate_registrations(orig_csv, resub_csv, assignment)
+    headers = orig_csv[0]
     id_index = headers.index "﻿Identifier"
     email_index = headers.index "Email address"
     name_index = headers.index "Full name"
 
-    data = csv.drop(1)
-    latte_ids = Hash.new
-    data.each do |curr|
+    orig_data = orig_csv.drop(1)
+    resub_data = resub_csv.drop(1)
+    orig_latte_ids = Hash.new
+    resub_latte_ids = Hash.new
+    orig_data.each do |curr|
       email = curr[email_index]
       name = curr[name_index]
 
-      latte_id = curr[id_index]
-      latte_id.slice! "Participant "
-      latte_id = latte_id.to_i
+      orig_latte_id = to_latte_id(curr[id_index])
 
       student = Student.find_or_create_by email: email
       if name != student.name
@@ -57,14 +63,21 @@ module AssignmentsHelper
         student.save!
       end
 
-      if !student.courses.include? assignment.course
-        student.courses << assignment.course
-      end
+      student.courses << assignment.course unless student.courses.include? assignment.course
 
-      latte_ids[student.id] = latte_id
+      orig_latte_ids[student.id] = orig_latte_id
+
+      resub_student_index = resub_data.map { |d| d[email_index] }.index email
+      resub_latte_id = resub_data[resub_student_index][id_index]
+      resub_latte_ids[student.id] = to_latte_id(resub_latte_id)
 
     end
-    latte_ids
+    [orig_latte_ids, resub_latte_ids]
+  end
+
+  def to_latte_id(s)
+    s.slice! 'Participant '
+    s.to_i
   end
 
   def csv_lines
@@ -84,21 +97,27 @@ module AssignmentsHelper
   end
 
   def comment(submission)
-    if submission.resubmission.has_grade?
+    if submission.resubmission.grade_received
       sub_comment(submission) + sub_comment(submission.resubmission)
     else
       sub_comment(submission)
     end
   end
 
+
   def sub_comment(submission)
-    s = "#{"\n-----\nRESUBMISSION:\n" if submission.is_resubmission?}TESTS PASSED: #{submission.tests_passed}
+    return 'NO SUBMISSION' unless submission.grade_received
+    return 'INVALID SUBMISSION' unless submission.is_valid
+    
+    s = submission.is_resubmission? ? "\n-----\nRESUBMISSION:\n" : ''
+    s += "TESTS PASSED: #{submission.tests_passed}
 TOTAL TESTS: #{submission.total_tests}
 TEST GRADE: #{submission.test_grade}"
     s += "\n-----
 TA GRADE: #{submission.ta_grade}
 GRADING TA: #{submission.ta.name}
 #{"-----\n#{submission.ta_comment}" if submission.ta_comment}" unless submission.ta_grade.nil?
-    s
+    s.delete("\r").gsub("\n", "<br>")
   end
+
 end

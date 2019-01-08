@@ -10,9 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 2018_12_29_045950) do
-
+ActiveRecord::Schema.define(version: 2019_01_07_023218) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,12 +50,13 @@ ActiveRecord::Schema.define(version: 2018_12_29_045950) do
     t.integer "latte_id"
     t.integer "tests_passed"
     t.integer "total_tests"
-    t.decimal "test_grade"
     t.decimal "ta_grade"
     t.integer "ta_id"
     t.text "ta_comment"
     t.integer "student_id"
     t.integer "resubmission_id"
+    t.boolean "grade_received"
+    t.boolean "is_valid"
     t.index ["assignment_id"], name: "index_submissions_on_assignment_id"
     t.index ["latte_id"], name: "index_submissions_on_latte_id"
   end

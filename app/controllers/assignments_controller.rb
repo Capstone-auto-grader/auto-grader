@@ -29,6 +29,7 @@ class AssignmentsController < ApplicationController
     uploader = AttachmentUploader.new
     uploader.store! params[:assignment][:subm_file]
     @assignment = Assignment.find(params[:assignment][:id])
+    # byebug
     respond_to do |format|
       ValidateZipFileJob.perform_later uploader.filename, @assignment.id
       format.html { redirect_to course_path(@assignment.course_id),notice: 'Assignment submissions were successfully uploaded' }
@@ -37,8 +38,9 @@ class AssignmentsController < ApplicationController
   end
 
   def grades
+    @grades_remaining = @assignment.submissions.where.not(zip_uri: nil).where(grade_received: false).count
     if is_superuser(@assignment.course.id)
-      @partition = Submission.where(assignment_id: @assignment.id).sort_by{|s| s.student.name}
+      @partition = @assignment.submissions.sort_by{|s| s.student.name}
     else
       @partition = Submission.where(assignment_id: @assignment.id, ta_id: current_user.id).sort_by{|s| s.student.name}
     end
@@ -56,12 +58,16 @@ class AssignmentsController < ApplicationController
   end
 
   def update_grade
-    Submission.find(params[:submission][:id]).update(ta_grade: params[:submission][:ta_grade].to_i)
+    ta_grade = params[:submission][:ta_grade]
+    ta_grade = ta_grade.to_i unless ta_grade.nil?
+    ta_comment = params[:submission][:ta_comment]
+    Submission.find(params[:submission][:id]).update(ta_grade: ta_grade, ta_comment: ta_comment)
     redirect_to assignment_grades_path
   end
 
   def download_csv
     @submissions = @assignment.submissions
+    @submissions = @submissions.where.not(ta_grade: nil) unless @assignment.test_grade_weight == 100
     respond_to do |format|
       format.csv do
         headers['Content-Disposition'] = "attachment; filename=\"AutoGrader_#{@assignment.name}.csv\""
@@ -93,8 +99,9 @@ class AssignmentsController < ApplicationController
         resubmit.save!
         @assignment.resubmit = resubmit
         @assignment.save!
-        @csv = CSV.read(params[:assignment][:csv].path)
-        create_submissions_from_assignment @assignment, @csv
+        @orig_csv = CSV.read(params[:assignment][:orig_csv].path)
+        @resub_csv = CSV.read(params[:assignment][:resub_csv].path)
+        create_submissions_from_assignment @assignment, @orig_csv, @resub_csv
         format.html { redirect_to course_path(@assignment.course), notice: 'Assignment was successfully created.' }
         format.json { render :show, status: :created, location: @assignment }
       else
