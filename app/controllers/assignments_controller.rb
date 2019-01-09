@@ -28,7 +28,6 @@ class AssignmentsController < ApplicationController
     uploader = AttachmentUploader.new
     uploader.store! params[:assignment][:subm_file]
     @assignment = Assignment.find(params[:assignment][:id])
-    # byebug
     respond_to do |format|
       UploadZipFileJob.perform_later uploader.filename, @assignment.id
       format.html { redirect_to assignment_grades_path(@assignment.id), notice: 'Assignment submissions were successfully uploaded' }
@@ -83,6 +82,12 @@ class AssignmentsController < ApplicationController
     buckob = S3_BUCKET.object File.basename(uploader.path)
     buckob.upload_file uploader.path
     p = assignment_params
+    ec_hash = Hash.new
+    p[:extra_credit].remove("\r").split("\n").each do |line|
+      pair = line.split(', ')
+      ec_hash[pair[0]] = pair[1].to_i
+    end
+    p[:extra_credit] = ec_hash
     file = params[:assignment][:uploaded_file]
     uploader = AttachmentUploader.new
     uploader.store! file
@@ -143,6 +148,6 @@ class AssignmentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def assignment_params
-      params.require(:assignment).permit(:name, :course_id, :assignment_test, :test_uri, :test_grade_weight)
+      params.require(:assignment).permit(:name, :course_id, :assignment_test, :extra_credit, :test_uri, :test_grade_weight)
     end
 end

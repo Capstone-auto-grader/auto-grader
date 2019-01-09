@@ -8,6 +8,10 @@ class Submission < ApplicationRecord
     resubmission.nil?
   end
 
+  def original
+    Submission.find_by(resubmission_id: id)
+  end
+
   def test_grade
     if !is_valid || !grade_received || total_tests.zero?
       0.0
@@ -22,7 +26,7 @@ class Submission < ApplicationRecord
     test_weight = assignment.test_grade_weight / 100.0
     ta_weight = 1 - test_weight
 
-    ta_grade = self.ta_grade || Submission.find_by(resubmission_id: id).ta_grade
+    ta_grade = self.ta_grade || original.ta_grade
 
     original_result = (test_weight * test_grade) + (ta_weight * ta_grade)
     if is_resubmission? || !resubmission.grade_received

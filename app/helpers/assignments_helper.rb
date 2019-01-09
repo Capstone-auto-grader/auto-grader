@@ -97,12 +97,8 @@ module AssignmentsHelper
   end
 
   def comment(submission)
-    if submission.resubmission.grade_received
-      s = sub_comment(submission)
-      s += sub_comment(submission.resubmission)
-    else
-      s = sub_comment(submission)
-    end
+    s = sub_comment(submission)
+    s += sub_comment(submission.resubmission) if submission.resubmission.grade_received
     s.delete("\r").gsub("\n", '<br>')
   end
 
@@ -115,10 +111,14 @@ module AssignmentsHelper
     s += "TESTS PASSED: #{submission.tests_passed}
 TOTAL TESTS: #{submission.total_tests}
 TEST GRADE: #{submission.test_grade}"
+
     s += "\n-----
 TA GRADE: #{submission.ta_grade}
-GRADING TA: #{submission.ta.name}
-#{"-----\n#{submission.ta_comment}" if submission.ta_comment}" unless submission.ta_grade.nil?
+GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
+
+    s += "-----\n#{submission.ta_comment}" unless submission.ta_comment.nil?
+
+    s += "\n-----\nEXTRA CREDIT POINTS: #{submission.extra_credit_points}" unless submission.assignment.extra_credit.empty?
 
     s
   end

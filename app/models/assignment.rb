@@ -5,4 +5,6 @@ class Assignment < ApplicationRecord
   has_many :grades
 
   belongs_to :resubmit, class_name: 'Assignment', foreign_key: :resubmit_id, optional: true
+
+  serialize :extra_credit, Hash
 end

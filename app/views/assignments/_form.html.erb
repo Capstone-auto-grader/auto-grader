@@ -23,6 +23,7 @@
           <%= f.label :csv, label: "Resubmit Grading CSV" %>
           <%= f.file_field :resub_csv, label: "Resubmit Grading CSV",required: true,  class:"form-control-file" %>
           <p></p>
+          <%= f.input :extra_credit, label: 'Extra credit tests (testName, testValue\n...)',input_html: {value: '', class: "form-control"}, required: true %>
           <%= f.button :submit %>
         <% end %>
         </div>
