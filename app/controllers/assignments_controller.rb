@@ -1,7 +1,7 @@
 class AssignmentsController < ApplicationController
   include AssignmentsHelper
   include SessionsHelper
-  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades, :download_csv]
+  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades, :download_csv, :download_partition]
   before_action :require_login
 
   # GET /assignments
@@ -42,6 +42,28 @@ class AssignmentsController < ApplicationController
     else
       @partition = Submission.where(assignment_id: @assignment.id, ta_id: current_user.id).sort_by{|s| s.student.name}
     end
+  end
+
+  def download_partition
+    @partition = Submission.where(assignment_id: @assignment.id, ta_id: current_user.id).select{ |submission| ! submission.zip_uri.nil?}
+    #
+    uris = @partition.map { |submission| submission.zip_uri.split('/')[1]+ "-ta-new" }
+    # zip_stream = Zip::OutputStream.write_buffer do |zip|
+    #   uris.each do |file_name|
+    #     file_obj = S3_BUCKET.object file_name
+    #     zip.put_next_entry "#{file_name}.zip"
+    #     zip.print file_obj.get.body.read
+    #   end
+    # end
+    #
+    # zip_stream.rewind
+    path = create_zip_from_submission_uris uris
+    send_data File.open(path).read,
+              filename: "#{@assignment.name}-partition.zip",
+              type: 'application/zip',
+              disposition: 'attachment',
+              stream: 'true',
+              buffer_size: '4096'
   end
 
   def download
