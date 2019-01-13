@@ -37,7 +37,7 @@ Rails.application.routes.draw do
   get 'courses/:id/deleteStudent', to: 'courses#delete_student', as: 'delete_student'
   get '/assignments/:id/grades/download', to: 'assignments#download', as: 'assigments_download'
   get '/assignments/:id/grades/download-partition', to: 'assignments#download_partition', as: 'download_partition'
-
+  get '/assignments/:id/grades/download-partition-su', to: 'assignments#download_partition_superuser', as: 'download_partition_superuser'
 
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html

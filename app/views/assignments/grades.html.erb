@@ -1,5 +1,10 @@
 <%= (button_to "Download CSV for LATTE", download_csv_assignments_path(id: @assignment.id, format: :csv), class: "btn btn-primary") if !@assignment.resubmit_id.nil? %>
-<%= link_to 'Download partition', download_partition_path,html_options= { class: "btn btn-primary", role: "button", target: :_blank  } %>
+<% if is_superuser(@assignment.course.id) %>
+  <%= link_to 'Download All Assignments', download_partition_superuser_path,html_options= { class: "btn btn-primary", role: "button", target: :_blank, style: "width: 100%; margin-bottom: 20px;"  } %>
+<% end %>
+
+<%= link_to 'Download partition', download_partition_path,html_options= { class: "btn btn-primary", role: "button", target: :_blank, style: "width: 100%;"  } %>
+<br /> <br />
 <h3> <%= @grades_remaining == 0 ? 'ALL UPLOADED SUBMISSIONS GRADED' : "#{pluralize(@grades_remaining, 'grade').upcase} REMAINING" %> </h3>
 <table class="table">
   <thead class = "thead-dark">
