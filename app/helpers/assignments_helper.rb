@@ -25,9 +25,7 @@ module AssignmentsHelper
 
     tas.each do |t|
       ret_hash[t].each do |s|
-        byebug if conflicts[t].include? s
         find_swap(t, s, tas, conflicts, ret_hash) if conflicts[t].include? s
-        byebug if conflicts[t].include? s
       end
     end
 
@@ -35,7 +33,6 @@ module AssignmentsHelper
   end
 
   def find_swap(ta, student, tas, conflicts, hash)
-    byebug
     start_index = (tas.index(ta) + (tas.count/2)) % tas.count
     candidate_swaps = tas.rotate(start_index).reject { |c| conflicts[c].include? student }
     candidate_swaps.each do |new_ta|
