@@ -1,32 +1,67 @@
 require 'zip'
+include CoursesHelper
+
 module AssignmentsHelper
-  def assign_groups(students, tas, conflicts)
-    shuffled_students = students.shuffle
-    ret_hash = tas.map { |t| [t,[]] }.to_h
-    while ! shuffled_students.empty?
-      tmp = []
-      while conflicts[tas[0]].include?(student = shuffled_students.pop)
-        tmp << student
-      end
-      if !student.nil?
-        ret_hash[tas[0]] << student
-      end
-      shuffled_students += tmp
-      tas = tas.rotate
+
+  def get_group_offset(course_id)
+    course = Course.find(course_id)
+    last = course.assignments.last
+    if last.nil?
+      0
+    else
+      (last.group_offset + 1) % course.tas.count
     end
+  end
+
+  def assign_tas(assignment, tas, conflicts)
+    enrollments = assignment.course.takes_class
+    offset = assignment.group_offset
+    ta_count = tas.count
+    ret_hash = tas.map { |t| [t, []] }.to_h
+    enrollments.each do |e|
+      index = (e.group + offset) % ta_count
+      ret_hash[tas[index]] << e.student.id
+    end
+
+    tas.each do |t|
+      ret_hash[t].each do |s|
+        byebug if conflicts[t].include? s
+        find_swap(t, s, tas, conflicts, ret_hash) if conflicts[t].include? s
+        byebug if conflicts[t].include? s
+      end
+    end
+
     ret_hash
+  end
+
+  def find_swap(ta, student, tas, conflicts, hash)
+    byebug
+    start_index = (tas.index(ta) + (tas.count/2)) % tas.count
+    candidate_swaps = tas.rotate(start_index).reject { |c| conflicts[c].include? student }
+    candidate_swaps.each do |new_ta|
+      hash[new_ta].shuffle.each do |new_student|
+        unless conflicts[ta].include? new_student
+          hash[ta].delete student
+          hash[new_ta] << student
+
+          hash[new_ta].delete new_student
+          hash[ta] << new_student
+          return
+        end
+      end
+    end
   end
 
   def create_submissions_from_assignment(assignment, orig_csv, resub_csv)
     puts "ASSIGNMENT #{assignment.id}"
     orig_latte_ids, resub_latte_ids = get_latte_ids_and_validate_registrations(orig_csv, resub_csv, assignment)
 
-    student_arr = orig_latte_ids.keys
-    tas = assignment.course.tas.all
-    ta_ids = tas.map &:id
-    ta_conflicts = tas.map {|ta| [ta.id, ta.conflicts.map(&:id)]}.to_h
+    reassign_groups(assignment.course)
 
-    assignments = assign_groups(student_arr,ta_ids,ta_conflicts)
+    tas = assignment.course.tas.all
+    ta_conflicts = tas.map {|ta| [ta.id, ta.conflict_students.map(&:id)]}.to_h
+
+    assignments = assign_tas(assignment, tas.pluck(:id), ta_conflicts)
     resubs = assignments.flat_map do |ta, students|
       students.map do |student|
         Submission.new(grade_received: false, ta_id: ta, student_id: student, assignment_id: assignment.resubmit.id, latte_id: resub_latte_ids[student])
@@ -130,7 +165,7 @@ GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
     Zip::File.open(zfpath, Zip::File::CREATE) do |zipfile|
       folders.each do |directory|
         Dir.glob(File.join(directory, '**', '{*,.*}')).each do |file|
-          zipfile.add(file.sub('/tmp/', ''), file)
+          zipfile.add(file.sub("#{Dir.tmpdir}/", ''), file)
         end
       end
     end
@@ -140,22 +175,36 @@ GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
   def unzip_from_s3_to_folder(uri)
     tmpdir = Dir.mktmpdir
     s3_file = S3_BUCKET.object(uri)
-    uri = download_to_tempfile(s3_file)
-    extract_zip(uri, tmpdir)
+    # puts uri
+    new_uri = download_to_tempfile(s3_file)
+    puts "ENTERING EXTRACT ZIP #{uri}"
+    extract_zip(new_uri, tmpdir)
+    puts "EXITING EXTRACT ZIP #{uri}"
+    puts uri
+    puts tmpdir
     tmpdir
   end
 
   def download_to_tempfile(object)
+    puts "DOWNLOADING TO TEMPFILE"
+    puts object.key
     tempfile = Tempfile.new
     tempfile.binmode
+    puts "WRITING TO #{object.key}"
     tempfile.write(open(object.presigned_url(:get, expires_in: 60)).read)
     tempfile.flush
+    puts "WROTE TO#{object.key}"
+    tempfile.close
+    puts tempfile.path
+    puts "AAA #{`ls #{tempfile.path}`}"
     tempfile.path
   end
 
   def extract_zip(file, destination)
     # FileUtils.mkdir_p(destination)
-
+    puts file
+    puts `ls #{file}`
+    puts "LISTED FILE"
     Zip::File.open(file) do |zip_file|
       zip_file.each do |f|
         fpath = File.join(destination, f.name)

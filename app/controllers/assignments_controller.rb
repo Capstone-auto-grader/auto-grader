@@ -121,6 +121,7 @@ class AssignmentsController < ApplicationController
       ec_hash[pair[0]] = pair[1].to_i
     end
     p[:extra_credit] = ec_hash
+    p[:group_offset] = get_group_offset(p[:course_id])
     file = params[:assignment][:uploaded_file]
     uploader = AttachmentUploader.new
     uploader.store! file

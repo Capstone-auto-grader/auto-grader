@@ -4,4 +4,6 @@ class Student < ApplicationRecord
 
   has_many :submissions
   has_many :assignments, through: :submissions
+
+  has_many :ta_conflicts, foreign_key: :conflict_student_id
 end

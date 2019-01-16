@@ -32,17 +32,19 @@ require 'faker'
 # courses[0].tas
 #
 
-ta = User.create(name: 'Zihao Wang', email:'ta@autograder.com', password: '123456')
+# ta = User.create(name: 'Zihao Wang', email:'ta@autograder.com', password: '123456')
 professor = User.create(name: 'Calum Middlemiss', email: 'prof@autograder.com', password: '123456')
 
 # student = User.create(name: 'Eli Esrig', email: 'student@autograder.com', password: '123456')
 
 course = Course.create(name: 'COSI 166')
-course.students << Student.create(name: ta.name, email: ta.email)
+# course.students << Student.create(name: ta.name, email: ta.email)
 course1 = Course.create(name: 'COSI 12B')
 course.professors << professor
 course1.professors << professor
-course1.tas << ta
+tas = ['Ari Carr', 'Sam Stern', 'Cam Braunstein', 'Adi Berkowitz', 'Adam Fleishaker', 'Belle Scott', 'Evalyn Berleant', 'Mitchell Dodell']
+tas.each { |t|  course1.tas << User.new(name: t, email: "#{t[0]}#{t.split(' ')[1]}@autograder.com".downcase, password: '123456') }
+# course1.tas << ta
 # 10.times do
 #   course.students << Student.create(name: Faker::Name.name, email: Faker::Internet.email)
 # end

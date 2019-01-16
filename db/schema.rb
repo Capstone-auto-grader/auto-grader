@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_08_230914) do
+ActiveRecord::Schema.define(version: 2019_01_16_030006) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 2019_01_08_230914) do
     t.integer "test_grade_weight"
     t.integer "resubmit_id"
     t.text "extra_credit"
+    t.integer "group_offset"
     t.index ["course_id"], name: "index_assignments_on_course_id"
   end
 
@@ -73,8 +74,7 @@ ActiveRecord::Schema.define(version: 2019_01_08_230914) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.bigint "conflict_id"
-    t.index ["conflict_id"], name: "index_ta_conflicts_on_conflict_id"
+    t.integer "conflict_student_id"
     t.index ["user_id"], name: "index_ta_conflicts_on_user_id"
   end
 
@@ -83,6 +83,7 @@ ActiveRecord::Schema.define(version: 2019_01_08_230914) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "student_id"
+    t.integer "group"
   end
 
   create_table "teaches_classes", force: :cascade do |t|
@@ -103,5 +104,4 @@ ActiveRecord::Schema.define(version: 2019_01_08_230914) do
   end
 
   add_foreign_key "ta_conflicts", "users"
-  add_foreign_key "ta_conflicts", "users", column: "conflict_id"
 end
