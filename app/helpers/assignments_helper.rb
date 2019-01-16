@@ -124,44 +124,34 @@ GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
     s
   end
 
-  def create_zip_from_submission_uris(submissions)
-    folders = submissions.map{ |submission| unzip_from_s3_to_folder(submission)}
-    zfpath = Rails.root.join('tmp', "student-partition-#{SecureRandom.hex(8)}.zip")
-    Zip::File.open(zfpath, Zip::File::CREATE) do |zipfile|
-      folders.each do |directory|
-        Dir.glob(File.join(directory, '**', '{*,.*}')).each do |file|
-          zipfile.add(file.sub('/tmp/', ''), file)
-        end
-      end
-    end
-    return zfpath
-  end
 
-  def unzip_from_s3_to_folder(uri)
-    tmpdir = Dir.mktmpdir
-    s3_file = S3_BUCKET.object(uri)
-    uri = download_to_tempfile(s3_file)
-    extract_zip(uri, tmpdir)
-    tmpdir
-  end
 
-  def download_to_tempfile(object)
-    tempfile = Tempfile.new
-    tempfile.binmode
-    tempfile.write(open(object.presigned_url(:get, expires_in: 60)).read)
-    tempfile.flush
-    tempfile.path
-  end
-
-  def extract_zip(file, destination)
-    # FileUtils.mkdir_p(destination)
-
-    Zip::File.open(file) do |zip_file|
-      zip_file.each do |f|
-        fpath = File.join(destination, f.name)
-        zip_file.extract(f, fpath) unless File.exist?(fpath)
-      end
-    end
-  end
+  # def unzip_from_s3_to_folder(uri)
+  #   puts uri
+  #   tmpdir = Dir.mktmpdir
+  #   s3_file = S3_BUCKET.object(uri)
+  #   uri = download_to_tempfile(s3_file)
+  #   extract_zip(uri, tmpdir)
+  #   tmpdir
+  # end
+  #
+  # def download_to_tempfile(object)
+  #   tempfile = Tempfile.new
+  #   tempfile.binmode
+  #   tempfile.write(open(object.presigned_url(:get, expires_in: 60)).read)
+  #   tempfile.flush
+  #   tempfile.path
+  # end
+  #
+  # def extract_zip(file, destination)
+  #   # FileUtils.mkdir_p(destination)
+  #
+  #   Zip::File.open(file) do |zip_file|
+  #     zip_file.each do |f|
+  #       fpath = File.join(destination, f.name)
+  #       zip_file.extract(f, fpath) unless File.exist?(fpath)
+  #     end
+  #   end
+  # end
 
 end
