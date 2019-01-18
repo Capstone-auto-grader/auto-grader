@@ -29,6 +29,11 @@ module AssignmentsHelper
       end
     end
 
+    tas.each do |ta|
+      SubmissionBatch.create(user_id: ta, assignment: @assignment)
+      SubmissionBatch.create(user_id: ta, assignment: @assignment.resubmit)
+    end
+
     ret_hash
   end
 
@@ -156,58 +161,43 @@ GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
     s
   end
 
-  def create_zip_from_submission_uris(submissions)
-    folders = submissions.map{ |submission| unzip_from_s3_to_folder(submission)}
-    zfpath = Rails.root.join('tmp', "student-partition-#{SecureRandom.hex(8)}.zip")
-    Zip::File.open(zfpath, Zip::File::CREATE) do |zipfile|
-      folders.each do |directory|
-        Dir.glob(File.join(directory, '**', '{*,.*}')).each do |file|
-          zipfile.add(file.sub("#{Dir.tmpdir}/", ''), file)
-        end
-      end
-    end
-    return zfpath
-  end
 
-  def unzip_from_s3_to_folder(uri)
-    tmpdir = Dir.mktmpdir
-    s3_file = S3_BUCKET.object(uri)
-    # puts uri
-    new_uri = download_to_tempfile(s3_file)
-    puts "ENTERING EXTRACT ZIP #{uri}"
-    extract_zip(new_uri, tmpdir)
-    puts "EXITING EXTRACT ZIP #{uri}"
-    puts uri
-    puts tmpdir
-    tmpdir
-  end
+  def create_zip_from_batch(submissions, assignment_id, ta_id)
+    uri = URI.parse("#{ENV['GRADING_SERVER']}/batch")
+    http = Net::HTTP.new(uri.host, uri.port)
+    req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
+    req.body = {image_name: 'batch', zip_name: "#{assignment_id}-#{ta_id}-submissions.zip", uris: submissions, assignment_id: assignment_id, ta_id:ta_id}.to_json
+    # puts req.body
+    puts "REQ"
+    puts http.request req
 
-  def download_to_tempfile(object)
-    puts "DOWNLOADING TO TEMPFILE"
-    puts object.key
-    tempfile = Tempfile.new
-    tempfile.binmode
-    puts "WRITING TO #{object.key}"
-    tempfile.write(open(object.presigned_url(:get, expires_in: 60)).read)
-    tempfile.flush
-    puts "WROTE TO#{object.key}"
-    tempfile.close
-    puts tempfile.path
-    puts "AAA #{`ls #{tempfile.path}`}"
-    tempfile.path
   end
-
-  def extract_zip(file, destination)
-    # FileUtils.mkdir_p(destination)
-    puts file
-    puts `ls #{file}`
-    puts "LISTED FILE"
-    Zip::File.open(file) do |zip_file|
-      zip_file.each do |f|
-        fpath = File.join(destination, f.name)
-        zip_file.extract(f, fpath) unless File.exist?(fpath)
-      end
-    end
-  end
+  # def unzip_from_s3_to_folder(uri)
+  #   puts uri
+  #   tmpdir = Dir.mktmpdir
+  #   s3_file = S3_BUCKET.object(uri)
+  #   uri = download_to_tempfile(s3_file)
+  #   extract_zip(uri, tmpdir)
+  #   tmpdir
+  # end
+  #
+  # def download_to_tempfile(object)
+  #   tempfile = Tempfile.new
+  #   tempfile.binmode
+  #   tempfile.write(open(object.presigned_url(:get, expires_in: 60)).read)
+  #   tempfile.flush
+  #   tempfile.path
+  # end
+  #
+  # def extract_zip(file, destination)
+  #   # FileUtils.mkdir_p(destination)
+  #
+  #   Zip::File.open(file) do |zip_file|
+  #     zip_file.each do |f|
+  #       fpath = File.join(destination, f.name)
+  #       zip_file.extract(f, fpath) unless File.exist?(fpath)
+  #     end
+  #   end
+  # end
 
 end

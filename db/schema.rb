@@ -10,6 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+
 ActiveRecord::Schema.define(version: 2019_01_16_030006) do
 
   # These are extensions that must be enabled in order to support this database
@@ -40,6 +41,17 @@ ActiveRecord::Schema.define(version: 2019_01_16_030006) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "submission_batches", force: :cascade do |t|
+    t.bigint "assignment_id"
+    t.bigint "user_id"
+    t.string "zip_uri"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "validated"
+    t.index ["assignment_id"], name: "index_submission_batches_on_assignment_id"
+    t.index ["user_id"], name: "index_submission_batches_on_user_id"
   end
 
   create_table "submissions", force: :cascade do |t|
@@ -103,5 +115,7 @@ ActiveRecord::Schema.define(version: 2019_01_16_030006) do
     t.datetime "reset_sent_at"
   end
 
+  add_foreign_key "submission_batches", "assignments"
+  add_foreign_key "submission_batches", "users"
   add_foreign_key "ta_conflicts", "users"
 end
