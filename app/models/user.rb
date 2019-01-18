@@ -5,8 +5,8 @@ class User < ApplicationRecord
     has_many :taships, through: :t_as_class, source: :course
     has_many :professorships, through: :teaches_class, source: :course
     has_many :ta_assignments, class_name: 'Submission', foreign_key: :ta_id
-    has_many :ta_conflicts
-    has_many :conflicts, through: :ta_conflicts
+    has_many :conflicts, class_name: 'TaConflict'
+    has_many :conflict_students, through: :conflicts
     before_save { self.email = email.downcase }
     validates :name,  presence: true, length: { maximum: 50 }
     VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
