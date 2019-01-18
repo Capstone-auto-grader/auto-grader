@@ -14,6 +14,10 @@ module AssignmentsHelper
       shuffled_students += tmp
       tas = tas.rotate
     end
+    tas.each do |ta|
+      SubmissionBatch.create(user_id: ta, assignment: @assignment)
+      SubmissionBatch.create(user_id: ta, assignment: @assignment.resubmit)
+    end
     ret_hash
   end
 
@@ -125,7 +129,15 @@ GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
   end
 
 
-
+  def create_zip_from_batch(submissions, assignment_id, ta_id)
+    uri = URI.parse("#{ENV['GRADING_SERVER']}/batch")
+    http = Net::HTTP.new(uri.host, uri.port)
+    req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
+    req.body = {image_name: 'batch', zip_name: "#{assignment_id}-#{ta_id}-submissions.zip", uris: submissions, assignment_id: assignment_id, ta_id:ta_id}.to_json
+    # puts req.body
+    puts "REQ"
+    puts http.request req
+  end
   # def unzip_from_s3_to_folder(uri)
   #   puts uri
   #   tmpdir = Dir.mktmpdir
