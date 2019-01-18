@@ -6,6 +6,7 @@
 <%#= link_to 'Download partition', download_partition_path,html_options= { class: "btn btn-primary", role: "button", target: :_blank, style: "width: 100%;"  } %>
 <br /> <br />
 <h3> <%= @grades_remaining == 0 ? 'ALL UPLOADED SUBMISSIONS GRADED' : "#{pluralize(@grades_remaining, 'grade').upcase} REMAINING" %> </h3>
+<h4><%= mail_to '', 'Email your students!', bcc: @partition.map{ |s| s.student.email }.join(', ') %></h4>
 <table class="table">
   <thead class = "thead-dark">
   <tr>
