@@ -1,0 +1,3 @@
+<% @assignment.course.tas.each do |ta| %>
+  <%= link_to "#{ta.name} partition", download_partition_path(ta_id: ta.id), html_options= {class: 'btn btn-primary', target: :_blank, style: "width: 100%;"} %>
+<% end %>`

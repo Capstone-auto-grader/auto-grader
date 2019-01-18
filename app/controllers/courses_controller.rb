@@ -101,18 +101,16 @@ class CoursesController < ApplicationController
     set_course
     if User.where(email: params[:email]).size == 0
       @add_failed = true
-      render 'get_ta'
     else
       @ta = User.where(email: params[:email]).first
       if @course.tas.where(id: @ta.id).size == 0
         @course.tas << @ta
         @successful = true
-        render 'get_ta'
       else
         @add_ta_already = true
-        render 'get_ta'
       end
     end
+    render 'get_ta'
   end
 
   def get_student
@@ -126,11 +124,10 @@ class CoursesController < ApplicationController
     if @course.students.where(id: @student.id).size == 0
       @course.students << @student
       @successful = true;
-      render 'get_student'
     else
       @add_student_already = true
-      render 'get_student'
     end
+    render 'get_student'
   end
 
   def delete_ta

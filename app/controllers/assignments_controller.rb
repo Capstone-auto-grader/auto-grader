@@ -1,7 +1,7 @@
 class AssignmentsController < ApplicationController
   include AssignmentsHelper
   include SessionsHelper
-  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades, :download_csv]
+  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades, :download_csv, :download_partition, :show_partition]
   before_action :require_login
 
   # GET /assignments
@@ -44,6 +44,50 @@ class AssignmentsController < ApplicationController
     end
   end
 
+  def show_partition
+  end
+
+  def download_partition
+    # @partition = Submission.where(assignment_id: @assignment.id, ta_id: params[:ta_id]).select{ |submission| ! submission.zip_uri.nil?}
+    object_name = SubmissionBatch.find_by(user_id: params[:ta_id], assignment: @assignment).zip_uri
+
+    # uris = @partition.map { |submission| submission.zip_uri.split('/')[1]+ "-ta-new" }
+    # zip_stream = Zip::OutputStream.write_buffer do |zip|
+    #   uris.each do |file_name|
+    #     file_obj = S3_BUCKET.object file_name
+    #     zip.put_next_entry "#{file_name}.zip"
+    #     zip.print file_obj.get.body.read
+    #   end
+    # end
+    #
+    # zip_stream.rewind
+    # send_data File.open(path).read,
+    #           filename: "#{@assignment.name}-partition.zip",
+    #           type: 'application/zip',
+    #           disposition: 'attachment',
+    #           stream: 'true',
+    #           buffer_size: '4096'
+
+    zip_file = S3_BUCKET.object(object_name).presigned_url(:get, expires_in: 60)
+    send_data open(zip_file).read,
+              filename: "#{object_name}",
+              type: "application/zip",
+              disposition: 'attachment',
+              stream: 'true',
+              buffer_size: '4096'
+  end
+
+  # def download_partition_superuser
+  #   @partition = Submission.where(assignment_id: @assignment.id).select{ |submission| ! submission.zip_uri.nil?}
+  #   uris = @partition.map { |submission| submission.zip_uri.split('/')[1]+ "-ta-new" }
+  #   path = create_zip_from_submission_uris uris
+  #   send_data File.open(path).read,
+  #             filename: "#{@assignment.name}-partition.zip",
+  #             type: 'application/zip',
+  #             disposition: 'attachment',
+  #             stream: 'true',
+  #             buffer_size: '4096'
+  # end
   def download
     object_name = params[:grade].split("/")[1]
     zip_file = S3_BUCKET.object(object_name).presigned_url(:get, expires_in: 60)
@@ -88,6 +132,7 @@ class AssignmentsController < ApplicationController
       ec_hash[pair[0]] = pair[1].to_i
     end
     p[:extra_credit] = ec_hash
+    p[:group_offset] = get_group_offset(p[:course_id])
     file = params[:assignment][:uploaded_file]
     uploader = AttachmentUploader.new
     uploader.store! file
