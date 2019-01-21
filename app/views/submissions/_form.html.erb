@@ -1,4 +1,26 @@
-<%= simple_form_for @submission, url: assignment_submissions_path do |f| %>
-  <%= f.file_field :subm_file, label: "Submission zip" %>
-  <%= f.button :submit %>
-<%end %>
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-primary">
+      <div class="panel-heading"></div>
+      <div class = "panel-body center-div">
+        <p></p>
+        <%= simple_form_for @submission, url: assignment_submission_path do |f| %>
+          <div class="form-group">
+            <%= f.association :ta, label: "TA", required: false, collection: @submission.assignment.course.tas, selected: @submission.ta.id, input_html: {class:"form-control"} %>
+          </div>
+
+          <p></p>
+          <%= f.input :tests_passed, label: "Tests passed (out of #{@submission.total_tests})", input_html: {class:"form-control"} %>
+          <p></p>
+          <%= f.input :ta_grade, label: "TA grade", input_html: {class:"form-control"} %>
+          <%= f.input :late_penalty, label: "Lateness penalty", input_html: {class: "form-control"} %>
+          <%= f.input :extra_credit_points, label: "Extra credit", input_html: {class:"form-control"} %>
+          <%= f.input :final_grade_override, label: "Override final grade", input_html: {class: "form-control", value: @submission.final_grade} %>
+          <%= f.input :ta_comment, label: "TA comment", input_html: {class: "form-control"} %>
+          <%= f.input :comment_override, label: "Comment override", input_html: {class: "form-control", value: comment(@submission)} %>
+          <%= f.button :submit %>
+        <% end %>
+        </div>
+      </div>
+    </div>
+  </div>

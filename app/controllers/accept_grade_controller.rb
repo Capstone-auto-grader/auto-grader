@@ -36,18 +36,10 @@ class AcceptGradeController < ApplicationController
       remaining_grades = submission.assignment.submissions.where.not(zip_uri: nil).where(grade_received: false).count
       puts remaining_grades
       if remaining_grades == 0
+        puts "CREATING BATCHES"
         submission.assignment.course.tas.each do |ta|
-          puts "CREATING SUBMISSIONS"
-          puts submission
-          puts ta.id
-          puts submission.assignment.id
-          group = Submission.where(ta: ta, assignment: submission.assignment).where.not(zip_uri: nil).map do |subm|
-            # puts subm.id
-            "#{subm.zip_uri}-ta-new"
-          end
-          create_zip_from_batch group,submission.assignment.id,ta.id
+          create_zip_from_batch group, submission.assignment.id, ta.id
         end
-
       end
     end
   end
@@ -60,5 +52,6 @@ class AcceptGradeController < ApplicationController
     batch.update_attribute(:zip_uri, params[:zip_name])
     batch.update_attribute(:validated, true)
     puts batch
+    puts "ACCEPTED BATCH FOR #{User.find(ta_id).name}"
   end
 end

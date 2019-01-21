@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-
-ActiveRecord::Schema.define(version: 2019_01_16_030006) do
+ActiveRecord::Schema.define(version: 2019_01_21_004625) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +26,7 @@ ActiveRecord::Schema.define(version: 2019_01_16_030006) do
     t.integer "resubmit_id"
     t.text "extra_credit"
     t.integer "group_offset"
+    t.boolean "submitted_once"
     t.index ["course_id"], name: "index_assignments_on_course_id"
   end
 
@@ -71,6 +71,9 @@ ActiveRecord::Schema.define(version: 2019_01_16_030006) do
     t.boolean "grade_received"
     t.boolean "is_valid"
     t.decimal "extra_credit_points"
+    t.decimal "final_grade_override"
+    t.integer "late_penalty"
+    t.text "comment_override"
     t.index ["assignment_id"], name: "index_submissions_on_assignment_id"
     t.index ["latte_id"], name: "index_submissions_on_latte_id"
   end
