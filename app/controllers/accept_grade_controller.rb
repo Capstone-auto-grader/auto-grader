@@ -61,4 +61,8 @@ class AcceptGradeController < ApplicationController
     batch.update_attribute(:validated, true)
     puts batch
   end
+
+  def accept_moss
+
+  end
 end
