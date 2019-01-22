@@ -123,6 +123,12 @@ class AssignmentsController < ApplicationController
   def create
     uploader = AttachmentUploader.new
     uploader.store! params[:assignment][:assignment_test]
+    base = Tempfile.new
+    base.write params[:assignment][:base_uri].read
+    base.rewind
+    base_obj = S3_BUCKET.object File.basename(base.path)
+    base_obj.upload_file base.path
+
     buckob = S3_BUCKET.object File.basename(uploader.path)
     buckob.upload_file uploader.path
     p = assignment_params

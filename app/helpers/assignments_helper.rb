@@ -172,6 +172,15 @@ GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
     puts http.request req
 
   end
+
+  def request_moss_grade(uris, assignment_id)
+    uri = URI.parse("#{ENV['GRADING_SERVER']}/moss")
+    http = Net::HTTP.new(uri.host, uri.port)
+    req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
+    req.body ={assignment_id: assignment_id, uris: uris, base_uri: Assignment.find(assignment_id).base_uri}.to_json
+    puts http.request req
+
+  end
   # def unzip_from_s3_to_folder(uri)
   #   puts uri
   #   tmpdir = Dir.mktmpdir

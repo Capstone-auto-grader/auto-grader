@@ -48,6 +48,8 @@ class AcceptGradeController < ApplicationController
           create_zip_from_batch group,submission.assignment.id,ta.id
         end
 
+        all_subm_uris = Assignment.find(submission.assignment_id).submissions.select(&:is_valid).map &:zip_uri
+
       end
     end
   end
@@ -55,7 +57,6 @@ class AcceptGradeController < ApplicationController
   def accept_batch
     assignment_id = params[:assignment_id]
     ta_id = params[:ta_id]
-
     batch = SubmissionBatch.find_by(assignment_id: assignment_id, user_id: ta_id)
     batch.update_attribute(:zip_uri, params[:zip_name])
     batch.update_attribute(:validated, true)
@@ -63,6 +64,9 @@ class AcceptGradeController < ApplicationController
   end
 
   def accept_moss
-
+    assignment_id = params[:assignment_id]
+    moss_url = params[:moss_url]
+    assignment = Assignment.find(assignment_id)
+    assignment.update_attribute(:moss_url, moss_url)
   end
 end

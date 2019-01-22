@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   root 'welcome#index'
   post 'grades', to: 'accept_grade#accept_grade'
   post 'batch', to: 'accept_grade#accept_batch'
+  post '/moss', to: 'accept_grade#accept_moss'
   get '/submissions', to: 'submissions#index'
   resources :password_resets, only: [:new, :create, :edit, :update]
   get '/assignments/:id/grades', to: 'assignments#grades', as: 'assignment_grades'
