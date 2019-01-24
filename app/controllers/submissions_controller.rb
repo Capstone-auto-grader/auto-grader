@@ -1,9 +1,6 @@
-include AssignmentsHelper
-
 class SubmissionsController < ApplicationController
   before_action :set_submission, only: [:show, :edit, :update, :destroy]
   before_action :require_login
-  before_action :verify_superuser, only: [:edit, :update]
   # GET /submissions
   # GET /submissions.json
   def index
@@ -34,10 +31,6 @@ class SubmissionsController < ApplicationController
   def edit
   end
 
-  def verify_superuser
-    redirect_to assignment_grades_path(@submission.assignment.id) unless is_superuser(@submission.assignment.course.id)
-  end
-
   # POST /submissions
   # POST /submissions.json
   def create
@@ -64,20 +57,9 @@ class SubmissionsController < ApplicationController
   # PATCH/PUT /submissions/1
   # PATCH/PUT /submissions/1.json
   def update
-    old_ta_id = @submission.ta.id
-    submission_params[:ta_id] = submission_params[:ta_id].to_i
-
-    submission_params.delete(:comment_override) if submission_params[:comment_override] == comment(@submission)
-    @submission.update(final_grade_override: nil) if submission_params[:final_grade_override].empty?
-
     respond_to do |format|
       if @submission.update(submission_params)
-        unless old_ta_id == @submission.ta.id
-          [User.find(old_ta_id), @submission.ta].each do |ta|
-            create_zip_from_batch @submission.assignment.id, ta.id
-          end
-        end
-        format.html { redirect_to assignment_grades_path(@submission.assignment_id), notice: 'Submission was successfully updated.' }
+        format.html { redirect_to @submission, notice: 'Submission was successfully updated.' }
         format.json { render :show, status: :ok, location: @submission }
       else
         format.html { render :edit }
@@ -104,6 +86,6 @@ class SubmissionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def submission_params
-      params.require(:submission).permit(:subm_file, :ta_id, :tests_passed, :ta_grade, :late_penalty, :extra_credit_points, :final_grade_override, :ta_comment, :comment_override)
+      params.require(:submission).permit(:subm_file)
     end
 end
