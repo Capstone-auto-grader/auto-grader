@@ -38,7 +38,7 @@ class AcceptGradeController < ApplicationController
       if remaining_grades == 0
         puts "CREATING BATCHES"
         submission.assignment.course.tas.each do |ta|
-          create_zip_from_batch group, submission.assignment.id, ta.id
+          create_zip_from_batch submission.assignment.id, ta.id
         end
       end
     end
