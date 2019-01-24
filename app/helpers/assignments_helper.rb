@@ -66,13 +66,13 @@ module AssignmentsHelper
     assignments = assign_tas(assignment, tas.pluck(:id), ta_conflicts)
     resubs = assignments.flat_map do |ta, students|
       students.map do |student|
-        Submission.new(grade_received: false, ta_id: ta, student_id: student, assignment_id: assignment.resubmit.id, latte_id: resub_latte_ids[student], late_penalty: 0)
+        Submission.new(grade_received: false, ta_id: ta, student_id: student, assignment_id: assignment.resubmit.id, latte_id: resub_latte_ids[student])
       end
     end
     resubs.map &:save!
 
     submissions = resubs.map do |r|
-      Submission.new(grade_received: false, ta_id: r.ta_id, student_id: r.student_id, assignment_id: assignment.id, latte_id: orig_latte_ids[r.student_id], resubmission_id: r.id, late_penalty: 0)
+      Submission.new(grade_received: false, ta_id: r.ta_id, student_id: r.student_id, assignment_id: assignment.id, latte_id: orig_latte_ids[r.student_id], resubmission_id: r.id)
     end
     submissions.map &:save!
 
@@ -135,7 +135,6 @@ module AssignmentsHelper
   end
 
   def comment(submission)
-    return submission.comment_override unless submission.comment_override.nil?
     s = sub_comment(submission)
     s += sub_comment(submission.resubmission) if submission.resubmission.grade_received
     s.delete("\r").gsub("\n", '<br>')
@@ -156,22 +155,49 @@ TA GRADE: #{submission.ta_grade}
 GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
 
     s += "-----\n#{submission.ta_comment}" unless submission.ta_comment.nil?
-    s += "-----\nLATE PENALTY: -#{submission.late_penalty}" unless submission.late_penalty.zero?
+
     s += "\n-----\nEXTRA CREDIT POINTS: #{submission.extra_credit_points}" unless submission.assignment.extra_credit.empty?
 
     s
   end
 
 
-  def create_zip_from_batch(assignment_id, ta_id)
-    submissions = Submission.where(ta_id: ta_id, assignment_id: assignment_id).where.not(zip_uri: nil).map { |s| "#{s.zip_uri}-ta-new"}
+  def create_zip_from_batch(submissions, assignment_id, ta_id)
     uri = URI.parse("#{ENV['GRADING_SERVER']}/batch")
     http = Net::HTTP.new(uri.host, uri.port)
     req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
-    req.body = {image_name: 'batch', zip_name: "#{assignment_id}-#{ta_id}-submissions.zip", uris: submissions, assignment_id: assignment_id, ta_id: ta_id}.to_json
+    req.body = {image_name: 'batch', zip_name: "#{assignment_id}-#{ta_id}-submissions.zip", uris: submissions, assignment_id: assignment_id, ta_id:ta_id}.to_json
     # puts req.body
     puts "REQ"
     puts http.request req
 
   end
+  # def unzip_from_s3_to_folder(uri)
+  #   puts uri
+  #   tmpdir = Dir.mktmpdir
+  #   s3_file = S3_BUCKET.object(uri)
+  #   uri = download_to_tempfile(s3_file)
+  #   extract_zip(uri, tmpdir)
+  #   tmpdir
+  # end
+  #
+  # def download_to_tempfile(object)
+  #   tempfile = Tempfile.new
+  #   tempfile.binmode
+  #   tempfile.write(open(object.presigned_url(:get, expires_in: 60)).read)
+  #   tempfile.flush
+  #   tempfile.path
+  # end
+  #
+  # def extract_zip(file, destination)
+  #   # FileUtils.mkdir_p(destination)
+  #
+  #   Zip::File.open(file) do |zip_file|
+  #     zip_file.each do |f|
+  #       fpath = File.join(destination, f.name)
+  #       zip_file.extract(f, fpath) unless File.exist?(fpath)
+  #     end
+  #   end
+  # end
+
 end
