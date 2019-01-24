@@ -174,4 +174,41 @@ GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
     puts http.request req
 
   end
+
+  def request_moss_grade(uris, assignment_id)
+    uri = URI.parse("#{ENV['GRADING_SERVER']}/moss")
+    http = Net::HTTP.new(uri.host, uri.port)
+    req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
+    req.body ={assignment_id: assignment_id, uris: uris, base_uri: Assignment.find(assignment_id).base_uri}.to_json
+    puts http.request req
+
+  end
+  # def unzip_from_s3_to_folder(uri)
+  #   puts uri
+  #   tmpdir = Dir.mktmpdir
+  #   s3_file = S3_BUCKET.object(uri)
+  #   uri = download_to_tempfile(s3_file)
+  #   extract_zip(uri, tmpdir)
+  #   tmpdir
+  # end
+  #
+  # def download_to_tempfile(object)
+  #   tempfile = Tempfile.new
+  #   tempfile.binmode
+  #   tempfile.write(open(object.presigned_url(:get, expires_in: 60)).read)
+  #   tempfile.flush
+  #   tempfile.path
+  # end
+  #
+  # def extract_zip(file, destination)
+  #   # FileUtils.mkdir_p(destination)
+  #
+  #   Zip::File.open(file) do |zip_file|
+  #     zip_file.each do |f|
+  #       fpath = File.join(destination, f.name)
+  #       zip_file.extract(f, fpath) unless File.exist?(fpath)
+  #     end
+  #   end
+  # end
+
 end
