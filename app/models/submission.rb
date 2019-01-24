@@ -21,6 +21,7 @@ class Submission < ApplicationRecord
   end
 
   def final_grade
+    return final_grade_override unless final_grade_override.nil?
     return 0 unless is_valid
 
     test_weight = assignment.test_grade_weight / 100.0
@@ -35,6 +36,6 @@ class Submission < ApplicationRecord
       resubmit_result = (original_result + resubmission.final_grade) / 2
       result = [original_result, resubmit_result].max
     end
-    result.round(2)
+    result.round(2) - late_penalty
   end
 end
