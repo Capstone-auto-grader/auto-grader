@@ -1,43 +1,44 @@
 <%= (button_to "Download CSV for LATTE", download_csv_assignments_path(id: @assignment.id, format: :csv), class: "btn btn-primary") if !@assignment.resubmit_id.nil? %>
-<%# if is_superuser(@assignment.course.id) %>
-  <%#= link_to 'Download All Assignments', download_partition_superuser_path,html_options= { class: "btn btn-primary", role: "button", target: :_blank, style: "width: 100%; margin-bottom: 20px;"  } %>
-<%# end %>
+<% if is_superuser(@assignment.course.id) %>
+  <%# <%= link_to 'Download All Assignments', download_partition_superuser_path,html_options= { class: "btn btn-primary", role: "button", target: :_blank, style: "width: 100%; margin-bottom: 20px;"  } %> %>
+<% end %>
 
-<%#= link_to 'Download partition', download_partition_path,html_options= { class: "btn btn-primary", role: "button", target: :_blank, style: "width: 100%;"  } %>
+<%= link_to 'Download partition', download_partition_path, html_options= { class: "btn btn-primary", role: "button", target: :_blank, style: "width: 100%;" } %>
 <br /> <br />
 <h3> <%= @grades_remaining == 0 ? 'ALL UPLOADED SUBMISSIONS GRADED' : "#{pluralize(@grades_remaining, 'grade').upcase} REMAINING" %> </h3>
 <h4><%= mail_to '', 'Email your students!', bcc: @partition.map{ |s| s.student.email }.join(', ') %></h4>
 <table class="table">
   <thead class = "thead-dark">
   <tr>
-    <th>Student</th>
-    <th>Test Grade</th>
-    <th>TA Grade</th>
+    <th style="width: 10%">Student</th>
+    <th style="width: 10%">Test Grade</th>
+    <th style="width: 10%">TA Grade</th>
+    <th style="width: 10%">Final Grade</th>
     <th>TA Comment</th>
     <th colspan="3"></th>
   </tr>
   </thead>
   <tbody>
-    <% @partition.each do |submission| %>
-    <%= simple_form_for(submission, method: :post, url: assignment_grades_post_path) do |f| %>
-      <tr>
-        <%= f.input :id, as: :hidden %>
-        <td><%= submission.student.name %></td>
-        <td><%= status_or_grade(submission) %></td>
-        <p></p>
-        <td><%= f.input :ta_grade, label: false,  input_html: {value: submission.ta_grade,style: 'width: 100px', class:"form-control"} %></td>
-        <td><%= f.input :ta_comment, label: false,  input_html: {value: submission.ta_comment,class:"form-control"} %></td>
-        <td> <%= f.button :submit ,html_options= { class: "btn btn-primary", role: "button"}%></td>
-        <% if !submission.nil? %>
-          <%# if submission.zip_uri %>
-            <%#puts submission.zip_uri %>
-            <%#end %>
-          <td> <%= link_to 'Download', assigments_download_path(grade: submission.zip_uri),html_options= { class: "btn btn-primary", role: "button", target: :_blank  } %> </td>
+    <%= form_tag assignment_grades_post_path do %>
+      <% @partition.each do |submission| %>
+        <%= fields_for "submissions[]", submission do |f| %>
+        <tr>
+          <td><%= submission.student.name %></td>
+          <td><%= status_or_grade(submission) %></td>
+          <td><%= f.number_field :ta_grade, label: false,  input_html: {value: submission.ta_grade, width: '50%', class:"form-control"} %></td>
+          <td><%= submission.final_grade unless submission.ta_grade.nil? %></td>
+          <td><%= f.text_area :ta_comment, label: false,  input_html: {value: submission.ta_comment,class:"form-control"} %></td>
+          <td> <%= link_to 'Edit Submission', edit_assignment_submission_path(id: submission.id, assignment_id: @assignment.id), html_options= { class: "btn btn-primary", role: "button" } if is_superuser(@assignment.course_id) %> </td>
+          <% if !submission.nil? %>
+            <td> <%= link_to 'Download', assigments_download_path(grade: submission.zip_uri),html_options= { class: "btn btn-primary", role: "button", target: :_blank  } %> </td>
           <% else %>
-          <td> No Submission </td>
+            <td> No Submission </td>
+          <% end %>
+        </tr>
         <% end %>
-      </tr>
-    <% end %>
-    <% end %>
+      <% end %>
   </tbody>
 </table>
+
+<%= submit_tag 'Update Grades', html_options= { class: "btn btn-primary", role: "button"}%>
+<% end %>

@@ -28,6 +28,8 @@ ActiveRecord::Schema.define(version: 2019_01_21_220033) do
     t.integer "group_offset"
     t.text "moss_url"
     t.text "base_uri"
+    t.boolean "submitted_once"
+
     t.index ["course_id"], name: "index_assignments_on_course_id"
   end
 
@@ -72,6 +74,9 @@ ActiveRecord::Schema.define(version: 2019_01_21_220033) do
     t.boolean "grade_received"
     t.boolean "is_valid"
     t.decimal "extra_credit_points"
+    t.decimal "final_grade_override"
+    t.integer "late_penalty"
+    t.text "comment_override"
     t.index ["assignment_id"], name: "index_submissions_on_assignment_id"
     t.index ["latte_id"], name: "index_submissions_on_latte_id"
   end

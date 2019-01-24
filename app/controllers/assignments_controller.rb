@@ -28,6 +28,11 @@ class AssignmentsController < ApplicationController
     uploader = AttachmentUploader.new
     uploader.store! params[:assignment][:subm_file]
     @assignment = Assignment.find(params[:assignment][:id])
+    if @assignment.submitted_once
+      @assignment.submissions.where(grade_received: false).update_all(late_penalty: 20)
+    else
+      @assignment.update(submitted_once: true)
+    end
     respond_to do |format|
       UploadZipFileJob.perform_later uploader.filename, @assignment.id
       format.html { redirect_to assignment_grades_path(@assignment.id), notice: 'Assignment submissions were successfully uploaded' }
@@ -36,37 +41,19 @@ class AssignmentsController < ApplicationController
   end
 
   def grades
-    @grades_remaining = @assignment.submissions.where.not(zip_uri: nil).where(grade_received: false).count
     if is_superuser(@assignment.course.id)
       @partition = @assignment.submissions.sort_by{|s| s.student.name}
     else
       @partition = Submission.where(assignment_id: @assignment.id, ta_id: current_user.id).sort_by{|s| s.student.name}
     end
+    @grades_remaining = @partition.reject { |s| s.grade_received || s.zip_uri.nil? }.count
   end
 
   def show_partition
   end
 
   def download_partition
-    # @partition = Submission.where(assignment_id: @assignment.id, ta_id: params[:ta_id]).select{ |submission| ! submission.zip_uri.nil?}
-    object_name = SubmissionBatch.find_by(user_id: params[:ta_id], assignment: @assignment).zip_uri
-
-    # uris = @partition.map { |submission| submission.zip_uri.split('/')[1]+ "-ta-new" }
-    # zip_stream = Zip::OutputStream.write_buffer do |zip|
-    #   uris.each do |file_name|
-    #     file_obj = S3_BUCKET.object file_name
-    #     zip.put_next_entry "#{file_name}.zip"
-    #     zip.print file_obj.get.body.read
-    #   end
-    # end
-    #
-    # zip_stream.rewind
-    # send_data File.open(path).read,
-    #           filename: "#{@assignment.name}-partition.zip",
-    #           type: 'application/zip',
-    #           disposition: 'attachment',
-    #           stream: 'true',
-    #           buffer_size: '4096'
+    object_name = SubmissionBatch.find_by(user_id: current_user.id, assignment: @assignment).zip_uri
 
     zip_file = S3_BUCKET.object(object_name).presigned_url(:get, expires_in: 60)
     send_data open(zip_file).read,
@@ -77,17 +64,6 @@ class AssignmentsController < ApplicationController
               buffer_size: '4096'
   end
 
-  # def download_partition_superuser
-  #   @partition = Submission.where(assignment_id: @assignment.id).select{ |submission| ! submission.zip_uri.nil?}
-  #   uris = @partition.map { |submission| submission.zip_uri.split('/')[1]+ "-ta-new" }
-  #   path = create_zip_from_submission_uris uris
-  #   send_data File.open(path).read,
-  #             filename: "#{@assignment.name}-partition.zip",
-  #             type: 'application/zip',
-  #             disposition: 'attachment',
-  #             stream: 'true',
-  #             buffer_size: '4096'
-  # end
   def download
     object_name = params[:grade].split("/")[1]
     zip_file = S3_BUCKET.object(object_name).presigned_url(:get, expires_in: 60)
@@ -100,10 +76,13 @@ class AssignmentsController < ApplicationController
   end
 
   def update_grade
-    ta_grade = params[:submission][:ta_grade]
-    ta_grade = ta_grade.to_i unless ta_grade.nil?
-    ta_comment = params[:submission][:ta_comment]
-    Submission.find(params[:submission][:id]).update(ta_grade: ta_grade, ta_comment: ta_comment)
+    params[:submissions].keys.each do |id|
+      submission_params = params[:submissions][id]
+      ta_grade = submission_params[:ta_grade]
+      ta_grade = ta_grade.to_i unless ta_grade.nil?
+      ta_comment = submission_params[:ta_comment]
+      Submission.find(id).update(ta_grade: ta_grade, ta_comment: ta_comment)
+    end
     redirect_to assignment_grades_path
   end
 
@@ -140,6 +119,7 @@ class AssignmentsController < ApplicationController
     p[:extra_credit] = ec_hash
     p[:group_offset] = get_group_offset(p[:course_id])
     file = params[:assignment][:uploaded_file]
+    p[:submitted_once] = false
     uploader = AttachmentUploader.new
     uploader.store! file
     p[:test_uri] = "#{S3_BUCKET.name}/#{buckob.key}"
@@ -199,6 +179,6 @@ class AssignmentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def assignment_params
-      params.require(:assignment).permit(:name, :course_id, :assignment_test, :extra_credit, :test_uri, :test_grade_weight)
+      params.require(:assignment).permit(:name, :course_id, :assignment_test, :extra_credit, :test_uri, :test_grade_weight, :submitted_once)
     end
 end
