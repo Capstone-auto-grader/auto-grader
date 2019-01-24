@@ -49,6 +49,7 @@ class AcceptGradeController < ApplicationController
         end
 
         all_subm_uris = Assignment.find(submission.assignment_id).submissions.select(&:is_valid).map &:zip_uri
+        request_moss_grade all_subm_uris, submission.assignment_id
 
       end
     end
