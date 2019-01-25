@@ -124,6 +124,7 @@ class AssignmentsController < ApplicationController
     uploader = AttachmentUploader.new
     uploader.store! file
     p[:test_uri] = "#{S3_BUCKET.name}/#{buckob.key}"
+    p[:base_uri] = "#{S3_BUCKET.name}/#{base_obj.key}"
     @assignment = Assignment.new(p)
 
     respond_to do |format|
