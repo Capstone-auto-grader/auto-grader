@@ -3,7 +3,7 @@ module CoursesHelper
   def reassign_groups(course)
     ta_count = course.tas.count
     enrollments = course.takes_class
-    enrollments = course.takes_class.where(group: nil) if ta_count - 1 == enrollments.pluck(:group).max
+    enrollments = course.takes_class.where(group: nil) if ta_count - 1 == enrollments.pluck(:group).reject(&:nil?).max
 
     enrollments.shuffle.each do |e|
       freq = Hash.new(0)
