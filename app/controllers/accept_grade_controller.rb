@@ -5,6 +5,9 @@ class AcceptGradeController < ApplicationController
     status = params[:status]
     submission = Submission.find(params[:id].to_i)
     if submission
+      if submission.security_hash != params[:sec]
+        return
+      end
       if status == 'ok'
         # TODO: Convert grade to int on frontend
         extra_credit = submission.assignment.extra_credit

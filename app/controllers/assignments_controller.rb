@@ -41,11 +41,15 @@ class AssignmentsController < ApplicationController
   end
 
   def grades
-    if is_superuser(@assignment.course.id)
-      @partition = @assignment.submissions.sort_by{|s| s.student.name}
-    else
+
+   if is_ta(@assignment.course.id)
+
       @partition = Submission.where(assignment_id: @assignment.id, ta_id: current_user.id).sort_by{|s| s.student.name}
-    end
+      puts "NORMAL"
+   elsif is_superuser(@assignment.course.id)
+     puts "SUPERUSER"
+     @partition = @assignment.submissions.sort_by{|s| s.student.name}
+   end
     @grades_remaining = @partition.reject { |s| s.grade_received || s.zip_uri.nil? }.count
   end
 
