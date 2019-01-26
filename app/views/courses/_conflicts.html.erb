@@ -1,0 +1,17 @@
+<%= form_tag(conflict_add_path, :method => "post", id: "search-form", remote: true) do %>
+<table>
+<tr><td><%= collection_select(:student, nil, @non_conflict_students.sort_by(&:name), :id, :name, {include_blank: true}) %></td>
+<%= hidden_field_tag :id, @course.id %>
+<td><%= submit_tag "Add", class: 'btn btn-primary'%></td></tr>
+</table>
+<% end %>
+<h5>You will <strong>never</strong> be assigned these students:</h5>
+<table><ul>
+  <% @conflict_students.each do |s| %>
+<tr>
+  <td><li><%= "#{s.name} - #{s.email}" %></li></td>
+  <td><%= link_to 'Remove',  conflict_remove_path(id: @course.id, student: s.id), data: { confirm: 'Are you sure?' }, method: :post, remote: true %></td>
+</tr
+<% end %>
+</ul>
+</table>
