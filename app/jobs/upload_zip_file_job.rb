@@ -1,6 +1,7 @@
 require 'zip'
 require 'net/http'
 require 'tempfile'
+require 'securerandom'
 class UploadZipFileJob < ApplicationJob
   queue_as :default
 
@@ -31,7 +32,7 @@ class UploadZipFileJob < ApplicationJob
     uri = URI.parse("#{ENV['GRADING_SERVER']}/grade")
     http = Net::HTTP.new(uri.host, uri.port)
     req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
-    req.body = { proj_id: submission.id, proj_zip: submission.zip_uri, test_zip: submission.assignment.test_uri, image_name: 'java', student_name: submission.student.name}.to_json
+    req.body = { proj_id: submission.id, proj_zip: submission.zip_uri, test_zip: submission.assignment.test_uri, image_name: 'java', student_name: submission.student.name, sec: submission.security_hash}.to_json
     puts req.body
     http.request req
   end
@@ -40,7 +41,8 @@ class UploadZipFileJob < ApplicationJob
     tempfile = build_tempfile(zip, submission)
     buckob = S3_BUCKET.object s3_name(submission)
     buckob.upload_file tempfile.path
-    submission.update_attribute(:zip_uri, "#{S3_BUCKET.name}/#{buckob.key}")
+    sec_hash = SecureRandom.hex(16)
+    submission.update_attributes(zip_uri: "#{S3_BUCKET.name}/#{buckob.key}", security_hash: sec_hash)
   end
 
   def s3_name(submission)
