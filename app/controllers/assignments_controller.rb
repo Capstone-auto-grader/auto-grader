@@ -69,7 +69,7 @@ class AssignmentsController < ApplicationController
   end
 
   def download
-    object_name = params[:grade].split("/")[1]
+    object_name = params[:grade].split("/")[1] + '-ta-new'
     zip_file = S3_BUCKET.object(object_name).presigned_url(:get, expires_in: 60)
     send_data open(zip_file).read,
               filename: "#{Time.now.to_date}.zip",
