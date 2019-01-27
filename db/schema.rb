@@ -26,9 +26,9 @@ ActiveRecord::Schema.define(version: 2019_01_26_222159) do
     t.integer "resubmit_id"
     t.text "extra_credit"
     t.integer "group_offset"
+    t.boolean "submitted_once"
     t.text "moss_url"
     t.text "base_uri"
-    t.boolean "submitted_once"
     t.index ["course_id"], name: "index_assignments_on_course_id"
   end
 
