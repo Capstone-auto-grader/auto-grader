@@ -1,6 +1,10 @@
-<%= (button_to "Download CSV for LATTE", download_csv_assignments_path(id: @assignment.id, format: :csv), class: "btn btn-primary") if !@assignment.resubmit_id.nil? %>
+<h1><%= @assignment.name %></h1>
 <% if is_superuser(@assignment.course.id) %>
-  <%# <%= link_to 'Download All Assignments', download_partition_superuser_path,html_options= { class: "btn btn-primary", role: "button", target: :_blank, style: "width: 100%; margin-bottom: 20px;"  } %>
+
+<%= (button_to "Download CSV for LATTE", download_csv_assignments_path(id: @assignment.id, format: :csv), class: "btn btn-primary") if !@assignment.resubmit_id.nil? %>
+  <% unless @assignment.moss_url.nil? %>
+  <h3><%= link_to 'Moss report', @assignment.moss_url %></h3>
+  <% end %>
 <% end %>
 <%if is_ta(@assignment.course.id) %>
   <%= link_to 'Download partition', download_partition_path, html_options= { class: "btn btn-primary", role: "button", target: :_blank, style: "width: 100%;" } %>

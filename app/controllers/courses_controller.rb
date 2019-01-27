@@ -1,5 +1,5 @@
 class CoursesController < ApplicationController
-  before_action :set_course, only: [:show, :edit, :update, :destroy]
+  before_action :set_course, only: [:show, :edit, :update, :destroy, :conflict_add, :conflict_remove]
   before_action :require_login
   # GET /courses
   # GET /courses.json
@@ -16,6 +16,26 @@ class CoursesController < ApplicationController
     @courses = @current_user.taships
   end
 
+  def conflict_add
+    current_user.conflict_students << Student.find(params[:student].first.to_i) unless params[:student].first.empty?
+    @conflict_students = current_user.conflict_students
+    @non_conflict_students = @course.students - @conflict_students
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
+  def conflict_remove
+    TaConflict.where(conflict_ta: current_user, conflict_student: params[:student]).first.destroy
+    @conflict_students = current_user.conflict_students
+    @non_conflict_students = @course.students - @conflict_students
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
   # GET /courses/1
   # GET /courses/1.json
   def show
@@ -26,6 +46,7 @@ class CoursesController < ApplicationController
     elsif is_ta(params[:id])
       @assignments= @course.assignments.order(:created_at)
       @recently_edited = @assignments[-2]
+      show_ta
       render 'courses/show_ta'
     else
       render 'courses/show'
@@ -44,8 +65,11 @@ class CoursesController < ApplicationController
   end
 
   def show_ta
-    @assignments= @course.assignments.order(:created_at).reverse
+    @assignments = @course.assignments.order(:created_at).reverse
     @recently_edited = @assignments.first
+
+    @conflict_students = current_user.conflict_students
+    @non_conflict_students = @course.students - @conflict_students
   end
 
   # GET /courses/1/edit

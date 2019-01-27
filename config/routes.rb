@@ -41,6 +41,9 @@ Rails.application.routes.draw do
   get '/assignments/:id/grades/download-partition', to: 'assignments#download_partition', as: 'download_partition'
   get '/assignments/:id/grades/partitions', to: 'assignments#show_partition', as: 'show_partition'
 
+  post '/conflict_add', to: 'courses#conflict_add', as: 'conflict_add'
+  post '/conflict_remove', to: 'courses#conflict_remove', as: 'conflict_remove'
+
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
