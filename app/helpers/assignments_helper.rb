@@ -72,7 +72,7 @@ module AssignmentsHelper
     resubs.map &:save!
 
     submissions = resubs.map do |r|
-      Submission.new(grade_received: false, ta_id: r.ta_id, student_id: r.student_id, assignment_id: assignment.id, latte_id: orig_latte_ids[r.student_id], resubmission_id: r.id, late_penalty: 0)
+      Submission.new(grade_received: false, ta_id: r.ta_id, ta_grade: 0, student_id: r.student_id, assignment_id: assignment.id, latte_id: orig_latte_ids[r.student_id], resubmission_id: r.id, late_penalty: 0)
     end
     submissions.map &:save!
 

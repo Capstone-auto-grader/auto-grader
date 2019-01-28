@@ -18,7 +18,11 @@
     <th style="width: 10%">Student</th>
     <th style="width: 10%">Test Grade</th>
     <th style="width: 10%">TA Grade</th>
+    <th style="width: 10%">Extra Credit</th>
     <th style="width: 10%">Final Grade</th>
+    <% if is_superuser(@assignment.course.id) %>
+    <th style="width: 10%">Grading TA</th>
+    <% end %>
     <th>TA Comment</th>
     <th colspan="3"></th>
   </tr>
@@ -30,8 +34,12 @@
         <tr>
           <td><%= submission.student.name %></td>
           <td><%= status_or_grade(submission) %></td>
-          <td><%= f.number_field :ta_grade, label: false,  input_html: {value: submission.ta_grade, width: '50%', class:"form-control"} %></td>
+          <td><%= f.number_field :ta_grade, label: false, step: :any, input_html: {value: submission.ta_grade, width: '50%', class:"form-control"} %></td>
+          <td><%= submission.extra_credit_points %></td>
           <td><%= submission.final_grade unless submission.ta_grade.nil? %></td>
+          <% if is_superuser(@assignment.course.id) %>
+          <td><%= submission.ta.name %></td>
+          <% end %>
           <td><%= f.text_area :ta_comment, label: false,  input_html: {value: submission.ta_comment,class:"form-control"} %></td>
           <td> <%= link_to 'Edit Submission', edit_assignment_submission_path(id: submission.id, assignment_id: @assignment.id), html_options= { class: "btn btn-primary", role: "button" } if is_superuser(@assignment.course_id) %> </td>
           <% if !submission.nil? %>

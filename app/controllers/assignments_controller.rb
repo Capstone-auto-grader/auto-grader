@@ -41,15 +41,14 @@ class AssignmentsController < ApplicationController
   end
 
   def grades
-
-   if is_ta(@assignment.course.id)
-
-      @partition = Submission.where(assignment_id: @assignment.id, ta_id: current_user.id).sort_by{|s| s.student.name}
+    if is_ta(@assignment.course.id)
+      @partition = Submission.where(assignment_id: @assignment.id, ta_id: current_user.id)
       puts "NORMAL"
-   elsif is_superuser(@assignment.course.id)
-     puts "SUPERUSER"
-     @partition = @assignment.submissions.sort_by{|s| s.student.name}
-   end
+    elsif is_superuser(@assignment.course.id)
+      puts "SUPERUSER"
+      @partition = @assignment.submissions
+    end
+    @partition = @partition.sort_by{|s| [((s.ta_grade.nil? || s.ta_grade.zero?) ? 0 : 1), s.student.name]}
     @grades_remaining = @partition.reject { |s| s.grade_received || s.zip_uri.nil? }.count
   end
 
@@ -83,7 +82,6 @@ class AssignmentsController < ApplicationController
     params[:submissions].keys.each do |id|
       submission_params = params[:submissions][id]
       ta_grade = submission_params[:ta_grade]
-      ta_grade = ta_grade.to_i unless ta_grade.nil?
       ta_comment = submission_params[:ta_comment]
       Submission.find(id).update(ta_grade: ta_grade, ta_comment: ta_comment)
     end
