@@ -1,6 +1,6 @@
 <h1><%= @assignment.name %></h1>
-<% if is_superuser(@assignment.course.id) %>
-
+<% if @is_superuser %>
+<h3><%= "Average test grade: #{@average}" %></h3>
 <%= (button_to "Download CSV for LATTE", download_csv_assignments_path(id: @assignment.id, format: :csv), class: "btn btn-primary") if !@assignment.resubmit_id.nil? %>
   <% unless @assignment.moss_url.nil? %>
   <h3><%= link_to 'Moss report', @assignment.moss_url %></h3>

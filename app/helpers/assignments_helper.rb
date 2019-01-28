@@ -3,6 +3,11 @@ include CoursesHelper
 
 module AssignmentsHelper
 
+  def get_avg_test(assignment)
+      100 * (all_subs = Submission.where(assignment_id: 1)
+      all_subs.average(:tests_passed).to_f / all_subs.first.total_tests).round(4)
+  end
+
   def get_group_offset(course_id)
     course = Course.find(course_id)
     last = course.assignments.last
