@@ -62,6 +62,11 @@ class CoursesController < ApplicationController
   def show_teacher
     @assignments= @course.assignments.order(:created_at).reverse
     @recently_edited = @assignments.first
+
+    if is_ta(@course.id)
+      @conflict_students = current_user.conflict_students
+      @non_conflict_students = @course.students - @conflict_students
+    end
   end
 
   def show_ta

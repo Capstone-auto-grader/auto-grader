@@ -11,7 +11,7 @@
 <tr>
   <td><li><%= "#{s.name} - #{s.email}" %></li></td>
   <td><%= link_to 'Remove',  conflict_remove_path(id: @course.id, student: s.id), data: { confirm: 'Are you sure?' }, method: :post, remote: true %></td>
-</tr
+</tr>
 <% end %>
 </ul>
 </table>
