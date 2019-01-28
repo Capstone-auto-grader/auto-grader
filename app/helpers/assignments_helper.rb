@@ -6,7 +6,10 @@ module AssignmentsHelper
   def get_avg_test(assignment)
       all_subs = Submission.where(assignment_id: assignment.id)
 
-      (100 * (all_subs.average(:tests_passed) || 0).to_f / ((all_subs.where.not(total_tests: nil).first.total_tests) || 1)).round(2)
+      test_avg = all_subs.average(:tests_passed) || 0
+      num_tests = all_subs.where.not(total_tests: nil).pluck(:total_tests).max || 1
+
+      test_avg = (100 * test_avg.to_f / num_tests).round(2)
   end
 
   def get_group_offset(course_id)
