@@ -53,3 +53,9 @@
   <% end %>
 
 </table>
+<%if is_ta @course.id %>
+  <h3 style="margin-top:1em">Conflicts of Interest</h3>
+  <div id = 'conflicts'>
+    <%= render partial: 'conflicts' %>
+  </div>
+<% end %>
