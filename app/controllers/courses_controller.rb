@@ -42,6 +42,10 @@ class CoursesController < ApplicationController
     if is_superuser(params[:id])
       @assignments= @course.assignments.order(:created_at)
       @recently_edited = @assignments[-2]
+      if is_ta(@course.id)
+        @conflict_students = current_user.conflict_students
+        @non_conflict_students = @course.students - @conflict_students
+      end
       render 'courses/show_professor'
     elsif is_ta(params[:id])
       @assignments= @course.assignments.order(:created_at)
@@ -63,10 +67,7 @@ class CoursesController < ApplicationController
     @assignments= @course.assignments.order(:created_at).reverse
     @recently_edited = @assignments.first
 
-    if is_ta(@course.id)
-      @conflict_students = current_user.conflict_students
-      @non_conflict_students = @course.students - @conflict_students
-    end
+
   end
 
   def show_ta
