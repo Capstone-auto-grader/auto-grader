@@ -43,7 +43,7 @@
           <td><%= f.text_area :ta_comment, label: false,  input_html: {value: submission.ta_comment,class:"form-control"} %></td>
           <td> <%= link_to 'Edit Submission', edit_assignment_submission_path(id: submission.id, assignment_id: @assignment.id), html_options= { class: "btn btn-primary", role: "button" } if is_superuser(@assignment.course_id) %> </td>
           <% if !submission.nil? %>
-            <td> <%= link_to 'Download', assigments_download_path(grade: submission.zip_uri),html_options= { class: "btn btn-primary", role: "button", target: :_blank  } %> </td>
+            <td> <%= link_to 'Download', assigments_download_path(grade: submission.zip_uri, id: submission.id),html_options= { class: "btn btn-primary", role: "button", target: :_blank  } %> </td>
           <% else %>
             <td> No Submission </td>
           <% end %>
