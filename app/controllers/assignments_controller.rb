@@ -41,14 +41,20 @@ class AssignmentsController < ApplicationController
   end
 
   def grades
+    @is_superuser = is_superuser(@assignment.course.id)
     if is_ta(@assignment.course.id)
       @partition = Submission.where(assignment_id: @assignment.id, ta_id: current_user.id)
       puts "NORMAL"
-    elsif is_superuser(@assignment.course.id)
+      if @is_superuser
+        @other_submissions = (@assignment.submissions - @partition).sort_by { |s| [((s.ta_grade.nil? || s.ta_grade.zero?) ? 0 : 1), s.student.name] }
+        @average = get_avg_test(@assignment)
+      end
+    elsif @is_superuser
       puts "SUPERUSER"
       @partition = @assignment.submissions
+      @average = get_avg_test(@assignment)
     end
-    @partition = @partition.sort_by{|s| [((s.ta_grade.nil? || s.ta_grade.zero?) ? 0 : 1), s.student.name]}
+    @partition = @partition.sort_by{ |s| [((s.ta_grade.nil? || s.ta_grade.zero?) ? 0 : 1), s.student.name] }
     @grades_remaining = @partition.reject { |s| s.grade_received || s.zip_uri.nil? }.count
   end
 
