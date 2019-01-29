@@ -1,16 +1,16 @@
 <h1><%= @assignment.name %></h1>
 <% if @is_superuser %>
+<h3> <%= @grades_remaining == 0 ? 'ALL UPLOADED SUBMISSIONS GRADED' : "#{pluralize(@grades_remaining, 'grade').upcase} REMAINING" %> </h3>
+<% unless @assignment.moss_url.nil? %>
+<h3><%= link_to 'Moss report', @assignment.moss_url %></h3>
+<% end %>
 <h3><%= "Average test grade: #{@average}" %></h3>
 <%= (button_to "Download CSV for LATTE", download_csv_assignments_path(id: @assignment.id, format: :csv), class: "btn btn-primary") if !@assignment.resubmit_id.nil? %>
-  <% unless @assignment.moss_url.nil? %>
-  <h3><%= link_to 'Moss report', @assignment.moss_url %></h3>
-  <% end %>
 <% end %>
 <%if is_ta(@assignment.course.id) %>
   <%= link_to 'Download partition', download_partition_path, html_options= { class: "btn btn-primary", role: "button", target: :_blank, style: "width: 100%;" } %>
 <%end %>
 <br /> <br />
-<h3> <%= @grades_remaining == 0 ? 'ALL UPLOADED SUBMISSIONS GRADED' : "#{pluralize(@grades_remaining, 'grade').upcase} REMAINING" %> </h3>
 <h4><%= mail_to '', 'Email your students!', bcc: @partition.map{ |s| s.student.email }.join(', ') %></h4>
 
 <%= render partial: 'submission_table', locals: {subs: @partition} %>
