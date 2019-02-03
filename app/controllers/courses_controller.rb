@@ -8,12 +8,9 @@ class CoursesController < ApplicationController
     if !@current_user.professorships.empty?
       @courses = @current_user.professorships
     elsif !@current_user.taships.empty?
-      redirect_to ta_index_path
+      @courses = @current_user.taships
     end
-  end
-
-  def ta_index
-    @courses = @current_user.taships
+    redirect_to @courses.first if @courses.count == 1
   end
 
   def conflict_add

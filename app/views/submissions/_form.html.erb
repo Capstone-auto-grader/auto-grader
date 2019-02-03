@@ -10,14 +10,18 @@
           </div>
 
           <p></p>
-          <%= f.input :tests_passed, label: "Tests passed (out of #{@submission.total_tests})", input_html: {class:"form-control"} %>
+          <%= f.input :is_valid, label: "Valid submission?", input_html: {class:"form-control"} %>
+          <hr>
+          <%= f.input :tests_passed, label: "Tests passed", input_html: {class:"form-control"} %>
+          <%= f.input :total_tests, label: "Total # of tests", input_html: {class:"form-control"} %>
           <p></p>
           <%= f.input :ta_grade, label: "TA grade", input_html: {class:"form-control"} %>
+          <p></p>
           <%= f.input :late_penalty, label: "Lateness penalty", input_html: {class: "form-control"} %>
           <%= f.input :extra_credit_points, label: "Extra credit", input_html: {class:"form-control"} %>
           <%= f.input :final_grade_override, label: "Override final grade (Overrides any resubmit calculations!)", input_html: {class: "form-control", value: @submission.final_grade} %>
           <%= f.input :ta_comment, label: "TA comment", input_html: {class: "form-control"} %>
-          <%= f.input :comment_override, label: "Comment override", input_html: {class: "form-control", value: comment(@submission)} unless @submission.is_resubmission? %>
+          <%= f.input :comment_override, label: "Comment override", input_html: {class: "form-control"} unless @submission.is_resubmission? %>
           <%= f.button :submit %>
         <% end %>
         </div>

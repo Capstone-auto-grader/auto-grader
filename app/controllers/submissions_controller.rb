@@ -67,8 +67,15 @@ class SubmissionsController < ApplicationController
     old_ta_id = @submission.ta.id
     submission_params[:ta_id] = submission_params[:ta_id].to_i
 
-    submission_params.delete(:comment_override) if submission_params[:comment_override] == comment(@submission)
-    @submission.update(final_grade_override: nil) if submission_params[:final_grade_override].empty?
+    if submission_params[:final_grade_override].empty? || submission_params[:final_grade_override].to_i.zero?
+      @submission.update(final_grade_override: nil)
+      params[:submission].delete(:final_grade_override)
+    end
+
+    if submission_params[:comment_override].empty?
+      @submission.update(comment_override: nil)
+      params[:submission].delete(:comment_override)
+    end
 
     respond_to do |format|
       if @submission.update(submission_params)
@@ -104,6 +111,6 @@ class SubmissionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def submission_params
-      params.require(:submission).permit(:subm_file, :ta_id, :tests_passed, :ta_grade, :late_penalty, :extra_credit_points, :final_grade_override, :ta_comment, :comment_override)
+      params.require(:submission).permit(:subm_file, :ta_id, :tests_passed, :total_tests, :ta_grade, :is_valid, :late_penalty, :extra_credit_points, :final_grade_override, :ta_comment, :comment_override)
     end
 end
