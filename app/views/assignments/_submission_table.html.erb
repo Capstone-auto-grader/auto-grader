@@ -6,7 +6,7 @@
     <th style="width: 10%">TA Grade</th>
     <th style="width: 10%">Extra Credit</th>
     <th style="width: 10%">Final Grade</th>
-    <% if @is_superuser && subs.first.ta != current_user %>
+    <% if subs.first.ta != current_user %>
     <th style="width: 10%">Grading TA</th>
     <% end %>
     <th>TA Comment</th>
@@ -20,13 +20,25 @@
         <tr>
           <td><%= submission.student.name %></td>
           <td><%= status_or_grade(submission) %></td>
-          <td><%= f.number_field :ta_grade, label: false, step: :any, input_html: {value: submission.ta_grade, width: '50%', class:"form-control"} %></td>
+          <td>
+          <% if is_superuser(@assignment.course.id) || subs.first.ta == current_user %>
+          <%= f.number_field :ta_grade, label: false, step: :any, input_html: {value: submission.ta_grade, width: '50%', class:"form-control"} %>
+          <% else %>
+          <%= submission.ta_grade %>
+          <% end %>
+          </td>
           <td><%= submission.extra_credit_points %></td>
           <td><%= submission.final_grade unless submission.ta_grade.nil? %></td>
-          <% if is_superuser(@assignment.course.id) && subs.first.ta != current_user %>
+          <% if subs.first.ta != current_user %>
           <td><%= submission.ta.name %></td>
           <% end %>
-          <td><%= f.text_area :ta_comment, label: false,  input_html: {value: submission.ta_comment,class:"form-control"} %></td>
+          <td>
+          <% if is_superuser(@assignment.course.id) || subs.first.ta == current_user %>
+          <%= f.text_area :ta_comment, label: false,  input_html: {value: submission.ta_comment,class:"form-control"} %>
+          <% else %>
+          <%= submission.ta_comment %>
+          <% end %>
+          </td>
           <td> <%= link_to 'Edit Submission', edit_assignment_submission_path(id: submission.id, assignment_id: @assignment.id), html_options= { class: "btn btn-primary", role: "button" } if @is_superuser %> </td>
           <% if !submission.nil? %>
             <td> <%= link_to 'Download', assigments_download_path(grade: submission.zip_uri, id: submission.id),html_options= { class: "btn btn-primary", role: "button", target: :_blank  } %> </td>
@@ -39,5 +51,5 @@
   </tbody>
 </table>
 
-<%= submit_tag 'Update Grades', html_options= { class: "btn btn-primary", role: "button"}%>
+<%= (submit_tag 'Update Grades', html_options= { class: "btn btn-primary", role: "button"}) if is_superuser(@assignment.course.id) || subs.first.ta == current_user %>
 <% end %>
