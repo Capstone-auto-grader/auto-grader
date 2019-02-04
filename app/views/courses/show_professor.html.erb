@@ -42,7 +42,7 @@
       <td><%= assignment.submissions.where.not(submissions: {zip_uri: nil}).length%>/<%= num_students %></td>
       <td>
         <%= simple_form_for assignment, url: upload_submissions_path do |f| %>
-          <%= f.file_field :subm_file, label: "Submission zip" %>
+          <%= f.file_field :subm_file, label: "Submission zip", accept: 'application/zip' %>
           <%= f.hidden_field :id, value: assignment.id %>
           <%= f.button :submit, "Upload submissions", html_options= { class: "btn btn-primary", role: "button"} %>
         <%end %>
