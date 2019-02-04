@@ -22,7 +22,7 @@ class Submission < ApplicationRecord
 
   def final_grade
     return final_grade_override unless final_grade_override.nil?
-    return 0 unless is_valid
+    return 0 if !is_valid || zip_uri.nil?
 
     test_weight = assignment.test_grade_weight / 100.0
     ta_weight = 1 - test_weight
