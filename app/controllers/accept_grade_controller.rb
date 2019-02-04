@@ -25,6 +25,7 @@ class AcceptGradeController < ApplicationController
         if submission.is_resubmission?
           ec_points -= (submission.original.extra_credit_points || 0)
           ec_points /= 2.0
+          ec_points = [ec_points, 0].max
         end
         tests_passed = total_tests - (failures.count - ec_failures)
         submission.tests_passed = tests_passed
