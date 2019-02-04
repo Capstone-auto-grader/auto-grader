@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_26_222159) do
+ActiveRecord::Schema.define(version: 2019_01_30_151456) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,8 +29,6 @@ ActiveRecord::Schema.define(version: 2019_01_26_222159) do
     t.boolean "submitted_once"
     t.text "moss_url"
     t.text "base_uri"
-    t.boolean "submitted_once"
-
     t.index ["course_id"], name: "index_assignments_on_course_id"
   end
 
@@ -121,6 +119,7 @@ ActiveRecord::Schema.define(version: 2019_01_26_222159) do
     t.string "name"
     t.string "reset_digest"
     t.datetime "reset_sent_at"
+    t.boolean "is_admin"
   end
 
   add_foreign_key "submission_batches", "assignments"
