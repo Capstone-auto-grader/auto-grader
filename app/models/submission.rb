@@ -36,6 +36,6 @@ class Submission < ApplicationRecord
       resubmit_result = (original_result + resubmission.final_grade) / 2
       result = [original_result, resubmit_result].max
     end
-    [result.round(2) - late_penalty, 0].max
+    [result.round(2) - late_penalty, 0.0].max
   end
 end
