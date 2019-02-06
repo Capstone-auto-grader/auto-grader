@@ -1,3 +1,4 @@
+<%= form_tag assignment_grades_post_path do %>
 <table class="table">
   <thead class = "thead-dark">
   <tr>
@@ -13,10 +14,8 @@
     <th colspan="3"></th>
   </tr>
   </thead>
-  <td>
-    <tbody>
-  <tr> <td>
-  <%= form_tag assignment_grades_post_path do %>
+  <tbody>
+
       <% subs.each do |submission| %>
         <%= fields_for "submissions[]", submission do |f| %>
         <tr>
@@ -37,12 +36,9 @@
           <% end %>
         </tr>
         <% end %>
+      <% end %>
+  </tbody>
+</table>
 
-
-    <% end %>
-    </tr></td>
-    </tbody>
-    </table>
-
-    <%= submit_tag 'Update Grades', html_options= { class: "btn btn-primary", role: "button"}%>
+<%= submit_tag 'Update Grades', html_options= { class: "btn btn-primary", role: "button"}%>
 <% end %>
