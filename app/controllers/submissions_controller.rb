@@ -67,12 +67,12 @@ class SubmissionsController < ApplicationController
     old_ta_id = @submission.ta.id
     submission_params[:ta_id] = submission_params[:ta_id].to_i
 
-    if submission_params[:final_grade_override].empty? || submission_params[:final_grade_override].to_i.zero?
+    if submission_params[:final_grade_override].to_i.zero?
       @submission.update(final_grade_override: nil)
       params[:submission].delete(:final_grade_override)
     end
 
-    if submission_params[:comment_override].empty?
+    if submission_params[:comment_override].nil? || submission_params[:comment_override].empty?
       @submission.update(comment_override: nil)
       params[:submission].delete(:comment_override)
     end
