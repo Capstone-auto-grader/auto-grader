@@ -2,15 +2,16 @@
 <table class="table">
   <thead class = "thead-dark">
   <tr>
-    <th style="width: 10%">Student</th>
-    <th style="width: 10%">Test Grade</th>
-    <th style="width: 10%">TA Grade</th>
-    <th style="width: 10%">Extra Credit</th>
-    <th style="width: 10%">Final Grade</th>
+    <th>Student</th>
+    <th >Email</th>
+    <th>Test Grade</th>
+    <th>TA Grade</th>
+    <th>Extra Credit</th>
+    <th>Final Grade</th>
     <% if subs.first.ta != current_user %>
     <th style="width: 10%">Grading TA</th>
     <% end %>
-    <th>TA Comment</th>
+    <th style="width: 20%">TA Comment</th>
     <th colspan="3"></th>
   </tr>
   </thead>
@@ -20,6 +21,7 @@
         <%= fields_for "submissions[]", submission do |f| %>
         <tr>
           <td><%= submission.student.name %></td>
+          <td><%= submission.student.email %></td>
           <td><%= status_or_grade(submission) %></td>
           <td>
           <% if is_superuser(@assignment.course.id) || subs.first.ta == current_user %>
@@ -33,9 +35,9 @@
           <% if subs.first.ta != current_user %>
           <td><%= submission.ta.name %></td>
           <% end %>
-          <td>
+          <td style="width: 50%">
           <% if is_superuser(@assignment.course.id) || subs.first.ta == current_user %>
-          <%= f.text_area :ta_comment, label: false,  input_html: {value: submission.ta_comment,class:"form-control"} %>
+          <%= f.text_area :ta_comment, label: false,  value: submission.ta_comment ,class:"form-control", style: 'width: 100%;' %>
           <% else %>
           <%= submission.ta_comment %>
           <% end %>
