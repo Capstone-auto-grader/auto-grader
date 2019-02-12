@@ -164,9 +164,9 @@ TEST GRADE: #{submission.test_grade}"
 TA GRADE: #{submission.ta_grade}
 GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
 
-    s += "-----\n#{submission.ta_comment}" unless submission.ta_comment.nil?
-    s += "-----\nLATE PENALTY: -#{submission.late_penalty}" unless submission.late_penalty.zero?
-    s += "\n-----\nEXTRA CREDIT POINTS: #{submission.extra_credit_points}" unless submission.assignment.extra_credit.empty?
+    s += "\n-----\n#{submission.ta_comment}" unless submission.ta_comment.nil?
+    s += "\n-----\nLATE PENALTY: -#{submission.late_penalty}" unless submission.late_penalty.zero?
+    s += "\n-----\nEXTRA CREDIT POINTS: #{submission.extra_credit_points}" unless submission.extra_credit_points.nil? || submission.extra_credit_points.zero?
 
     s
   end
