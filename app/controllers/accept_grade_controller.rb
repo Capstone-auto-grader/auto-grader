@@ -11,7 +11,7 @@ class AcceptGradeController < ApplicationController
       if status == 'ok'
         # TODO: Convert grade to int on frontend
         extra_credit = submission.assignment.extra_credit
-        total_tests = params[:number_of_tests] - extra_credit.keys.count
+        total_tests = ((params[:number_of_tests] - extra_credit.keys.count) || 0)
         ec_points = 0
         ec_failures = 0
         failures = params[:failures].keys
