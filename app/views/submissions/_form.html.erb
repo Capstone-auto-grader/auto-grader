@@ -19,7 +19,7 @@
           <p></p>
           <%= f.input :late_penalty, label: "Lateness penalty", input_html: {class: "form-control"} %>
           <%= f.input :extra_credit_points, label: "Extra credit", input_html: {class:"form-control"} %>
-          <%= f.input :final_grade_override, label: "Override final grade (Overrides any resubmit calculations!)", input_html: {class: "form-control", value: @submission.final_grade} %>
+          <%= f.input :final_grade_override, label: "Override final grade (Overrides any resubmit calculations!)", input_html: {class: "form-control"} %>
           <%= f.input :ta_comment, label: "TA comment", input_html: {class: "form-control"} %>
           <%= f.input :comment_override, label: "Comment override", input_html: {class: "form-control"} unless @submission.is_resubmission? %>
           <%= f.button :submit %>
