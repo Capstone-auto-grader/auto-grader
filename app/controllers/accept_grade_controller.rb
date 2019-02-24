@@ -32,6 +32,10 @@ class AcceptGradeController < ApplicationController
         submission.total_tests = total_tests
         submission.extra_credit_points = ec_points
         submission.is_valid = true
+      elsif status == "CompilerError"
+        submission.is_valid = true
+        submissions.tests_passed = 0
+        submissions.total_tests = 1
       else
         submission.is_valid = false
       end
