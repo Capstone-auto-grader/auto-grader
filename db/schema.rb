@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_30_151456) do
+ActiveRecord::Schema.define(version: 2019_02_25_184639) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,9 +26,10 @@ ActiveRecord::Schema.define(version: 2019_01_30_151456) do
     t.integer "resubmit_id"
     t.text "extra_credit"
     t.integer "group_offset"
-    t.boolean "submitted_once"
     t.text "moss_url"
     t.text "base_uri"
+    t.boolean "submitted_once"
+    t.string "container_name"
     t.index ["course_id"], name: "index_assignments_on_course_id"
   end
 
