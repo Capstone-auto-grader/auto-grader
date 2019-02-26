@@ -1,7 +1,7 @@
 class AssignmentsController < ApplicationController
   include AssignmentsHelper
   include SessionsHelper
-  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades, :download_csv, :download_partition, :show_partition]
+  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades, :download_latte_csv, :download_tom_csv, :download_partition, :show_partition]
   before_action :require_login
 
   # GET /assignments
@@ -97,15 +97,23 @@ class AssignmentsController < ApplicationController
     redirect_to assignment_grades_path
   end
 
-  def download_csv
-    @submissions = @assignment.submissions
-    @submissions = @submissions.where.not(ta_grade: nil) unless @assignment.test_grade_weight == 100
+  def download_csv(lines)
+    @lines = lines
     respond_to do |format|
       format.csv do
         headers['Content-Disposition'] = "attachment; filename=\"AutoGrader_#{@assignment.name}.csv\""
         headers['Content-Type'] ||= 'text/csv'
       end
     end
+    render 'download_csv'
+  end
+
+  def download_latte_csv
+    download_csv(latte_csv_lines)
+  end
+
+  def download_tom_csv
+    download_csv(tom_csv_lines)
   end
 
   # POST /assignments

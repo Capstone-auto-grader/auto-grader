@@ -127,11 +127,13 @@ module AssignmentsHelper
     s.to_i
   end
 
-  def csv_lines
+  def latte_csv_lines
+    submissions = @assignment.submissions
+    submissions = submissions.where.not(ta_grade: nil) unless @assignment.test_grade_weight == 100
     headers = ['Identifier', 'Full name', 'Email address', 'Status', 'Grade', 'Maximum Grade', 'Grade can be changed', 'Last modified (submission)', 'Last modified (grade)', 'Feedback comments']
     lines = []
     lines << headers
-    @submissions.each do |s|
+    submissions.each do |s|
       curr_sub = []
       curr_sub[0] = "Participant #{s.latte_id}"
       curr_sub[1] = s.student.name
@@ -139,6 +141,25 @@ module AssignmentsHelper
       curr_sub[4] = s.final_grade
       curr_sub[9] = comment(s)
       lines << curr_sub
+    end
+    lines
+  end
+
+  def tom_csv_lines
+    submissions = @assignment.submissions.sort_by { |s| s.student.name }
+    total_tests = submissions.select { |s| !s.total_tests.nil? }.first.total_tests
+    headers = %w[NAME EMAIL
+                 COMMENT NUM_TESTS
+                 NUM_FAILS SUBMIT_GRADE
+                 RESUBMIT_GRADE TA_GRADE
+                 TA_NAME FINAL_GRADE]
+    lines = [headers]
+    submissions.each do |s|
+      lines << [s.student.name, s.student.email,
+                comment(s), total_tests,
+                s.tests_passed ? total_tests - s.tests_passed : 0, s.test_grade,
+                s.resubmission.test_grade, s.ta_grade,
+                s.ta.name, s.final_grade]
     end
     lines
   end
