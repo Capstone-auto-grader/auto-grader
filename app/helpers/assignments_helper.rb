@@ -175,11 +175,15 @@ module AssignmentsHelper
     s = submission.is_resubmission? ? "\n-----\nRESUBMISSION:\n" : ''
 
     return s + 'NO SUBMISSION' unless submission.grade_received
-    return s + 'INVALID SUBMISSION' unless submission.is_valid
 
-    s += "TESTS PASSED: #{submission.tests_passed}
+    if submission.is_valid?
+      s += "TESTS PASSED: #{submission.tests_passed}
 TOTAL TESTS: #{submission.total_tests}
 TEST GRADE: #{submission.test_grade}"
+    else
+      s += 'INVALID SUBMISSION'
+    end
+
 
     s += "\n-----
 TA GRADE: #{submission.ta_grade}
