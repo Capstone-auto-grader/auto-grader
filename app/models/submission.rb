@@ -13,7 +13,7 @@ class Submission < ApplicationRecord
   end
 
   def test_grade
-    if !is_valid || !grade_received || total_tests.zero?
+    if !is_valid || !grade_received || total_tests.nil? || total_tests.zero?
       0.0
     else
       ((tests_passed.to_f * 100) / total_tests).round(3)
