@@ -144,7 +144,7 @@ class AssignmentsController < ApplicationController
     p[:submitted_once] = false
     uploader = AttachmentUploader.new
     uploader.store! file
-    p[:test_uri] = "#{S3_BUCKET.name}/#{buckob.key}"
+    p[:test_uri] = "#{S3_BUCKET.name}/#{buckob.key}" unless buckob.nil?
     p[:base_uri] = "#{S3_BUCKET.name}/#{base_obj.key}"
     @assignment = Assignment.new(p)
 
