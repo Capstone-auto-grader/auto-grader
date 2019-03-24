@@ -127,9 +127,11 @@ class AssignmentsController < ApplicationController
     base.rewind
     base_obj = S3_BUCKET.object File.basename(base.path)
     base_obj.upload_file base.path
+    unless uploader.path.nil?
+      buckob = S3_BUCKET.object File.basename(uploader.path)
+      buckob.upload_file uploader.path
+    end
 
-    buckob = S3_BUCKET.object File.basename(uploader.path)
-    buckob.upload_file uploader.path
     p = assignment_params
     ec_hash = Hash.new
     p[:extra_credit].remove("\r").split("\n").each do |line|
