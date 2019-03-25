@@ -15,6 +15,8 @@ class Submission < ApplicationRecord
   def test_grade
     if !is_valid || !grade_received || total_tests.nil? || total_tests.zero?
       0.0
+    elsif total_tests == 0
+      "No unit tests"
     else
       ((tests_passed.to_f * 100) / total_tests).round(3)
     end
