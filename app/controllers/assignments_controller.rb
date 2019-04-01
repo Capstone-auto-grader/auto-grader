@@ -1,7 +1,7 @@
 class AssignmentsController < ApplicationController
   include AssignmentsHelper
   include SessionsHelper
-  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades, :download_latte_csv, :download_tom_csv, :download_partition, :show_partition]
+  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades, :download_latte_csv, :download_tom_csv, :download_partition, :show_partition, :download_invalid]
   before_action :require_login
 
   # GET /assignments
@@ -73,6 +73,27 @@ class AssignmentsController < ApplicationController
               disposition: 'attachment',
               stream: 'true',
               buffer_size: '4096'
+  end
+
+  def download_invalid
+    invalid_uris = @assignment.submissions.where(is_valid: false).map &:zip_uri
+    zip_stream = Zip::OutputStream.write_buffer do |zip|
+      invalid_uris.each do |file_name|
+        name = file_name.split('/')[1]
+        file_obj = S3_BUCKET.object(name)
+        zip.put_next_entry "#{name}.zip"
+        zip.print file_obj.get.body.read
+
+      end
+    end
+    zip_stream.rewind
+    send_data zip_stream.read,
+              filename: "#{@assignment.id}-invalid.zip",
+              type: "application/zip",
+              disposition: 'attachment',
+              stream: 'true',
+              buffer_size: '4096'
+
   end
 
   def download

@@ -42,7 +42,7 @@ Rails.application.routes.draw do
   get '/assignments/:id/grades/download', to: 'assignments#download', as: 'assigments_download'
   get '/assignments/:id/grades/download-partition', to: 'assignments#download_partition', as: 'download_partition'
   get '/assignments/:id/grades/partitions', to: 'assignments#show_partition', as: 'show_partition'
-
+  get '/assignments/:id/grades/invalid', to: 'assignments#download_invalid', as: 'download_invalid'
   post '/conflict_add', to: 'courses#conflict_add', as: 'conflict_add'
   post '/conflict_remove', to: 'courses#conflict_remove', as: 'conflict_remove'
 
