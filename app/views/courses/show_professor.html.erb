@@ -45,7 +45,7 @@
           <%= f.file_field :subm_file, label: "Submission zip", accept: 'application/zip' %>
           <%= f.hidden_field :id, value: assignment.id %>
           <%= f.button :submit, "Upload submissions", html_options= { class: "btn btn-primary", role: "button"} %>
-        <%end %>
+        <% end %>
         <%= link_to 'Edit', edit_assignment_path(assignment), html_options= { class: "btn btn-primary", role: "button"}  %>
         <%= link_to 'Submissions', assignment_grades_path(assignment), html_options= { class: "btn btn-primary", role: "button"}  %>
       </td>

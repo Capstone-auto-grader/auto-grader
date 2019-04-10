@@ -1,27 +1,4 @@
-require 'zip'
-require 'net/http'
-require 'tempfile'
-require 'securerandom'
-class UploadZipFileJob < ApplicationJob
-  queue_as :default
-
-  def perform(zip_uri, assignment_id)
-    upload_each_file zip_uri, assignment_id
-  end
-
-  def upload_each_file(zip_name, assignment_id)
-    uploader = AttachmentUploader.new
-    uploader.retrieve_from_store! zip_name
-    Zip::File.open(uploader.path) do |submission_folder|
-      submission_folder.each do |zip|
-        split_name = zip.name.split('_')
-        latte_id = split_name[1]
-        submission = Submission.find_by(assignment_id: assignment_id, latte_id: latte_id)
-
-        submit(zip, submission) unless submission.grade_received
-      end
-    end
-  end
+module UploadHelper
 
   def submit(zip, submission)
     upload_tempfile_to_s3(zip, submission)
@@ -39,7 +16,7 @@ class UploadZipFileJob < ApplicationJob
   end
 
   def upload_tempfile_to_s3(zip, submission)
-    tempfile = build_tempfile(zip, submission)
+    tempfile = build_tempfile(zip)
     buckob = S3_BUCKET.object s3_name(submission)
     buckob.upload_file tempfile.path
     sec_hash = SecureRandom.hex(16)
@@ -53,11 +30,12 @@ class UploadZipFileJob < ApplicationJob
     "#{uid}_#{pa_name}_#{latte_id}_#{Time.new.to_i}"
   end
 
-  def build_tempfile(zip, submission)
+  def build_tempfile(zip)
     tempfile = Tempfile.new
     tempfile.binmode
     tempfile.write zip.get_input_stream.read
     tempfile.flush
     tempfile
   end
+
 end

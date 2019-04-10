@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   get '/assignments/:id/grades', to: 'assignments#grades', as: 'assignment_grades'
   post '/assignments/:id/grades' , to: 'assignments#update_grade', as: 'assignment_grades_post'
   patch '/assignments/:id/upload_submissions', to: 'assignments#upload_submissions', as: 'upload_submissions'
+  patch '/assignments/:id/submissions/:sub_id/upload_individual_submission', to: 'assignments#upload_individual_submission', as: 'upload_individual_submission'
   get 'courses/:id/addTA', to: 'courses#get_ta', as: 'add_ta'
   post 'courses/:id/addTA', to: 'courses#add_ta'
   get 'courses/:id/addStudent', to: 'courses#get_student', as: 'add_student'
