@@ -65,14 +65,6 @@ class SubmissionsController < ApplicationController
   # PATCH/PUT /submissions/1.json
   def update
     old_ta_id = @submission.ta.id
-    if(! params[:submission][:subm_file].nil?)
-      uploader = AttachmentUploader.new
-      uploader.store! params[:submission][:subm_file]
-      byebug
-      UploadIndividualZipFileJob.perform_later uploader.filename,@submission.assignment.id
-    else
-      puts "NO FILE"
-    end
     submission_params[:ta_id] = submission_params[:ta_id].to_i
 
     if submission_params[:final_grade_override].to_i.zero?
