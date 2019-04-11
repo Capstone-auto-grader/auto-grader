@@ -12,7 +12,8 @@ class UploadIndividualZipFileJob < ApplicationJob
     # What do?
 
     submission = Submission.find(submission_id)
-    submit(uploader, submission) unless submission.grade_received
+    submit(open(uploader.path), submission) unless submission.grade_received
+
   end
   
 end
