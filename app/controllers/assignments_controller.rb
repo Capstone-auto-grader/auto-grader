@@ -34,7 +34,7 @@ class AssignmentsController < ApplicationController
       @assignment.update(submitted_once: true)
     end
     respond_to do |format|
-      UploadZipFileJob.perform_later uploader.filename, @assignment.id
+      UploadBulkZipFileJob.perform_later uploader.filename, @assignment.id
       format.html { redirect_to assignment_grades_path(@assignment.id), notice: 'Assignment submissions were successfully uploaded' }
       format.json { render :show, status: :created, location: @assignment }
     end
