@@ -12,6 +12,8 @@ class UploadIndividualZipFileJob < ApplicationJob
     # What do?
 
     submission = Submission.find(submission_id)
+    puts uploader.path
+    byebug
     submit(open(uploader.path), submission) unless submission.grade_received
 
   end

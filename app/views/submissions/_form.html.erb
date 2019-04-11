@@ -22,12 +22,13 @@
           <%= f.input :final_grade_override, label: "Override final grade (Overrides any resubmit calculations!)", input_html: {class: "form-control"} %>
           <%= f.input :ta_comment, label: "TA comment", input_html: {class: "form-control"} %>
           <%= f.input :comment_override, label: "Comment override", input_html: {class: "form-control"} unless @submission.is_resubmission? %>
-          <%= simple_form_for @submission, url: upload_individual_submission_path(sub_id: @submission.id) do |g| %>
-            <%= g.file_field :subm_file, label: "Submission zip", accept: 'application/zip' %>
-            <%= g.hidden_field :id, value: @submission.id %>
-            <%= g.button :submit, "Upload new submission file", html_options= { class: "btn btn-primary", role: "button"} %>
-          <% end %>
+
           <%= f.button :submit %>
+        <% end %>
+        <%= simple_form_for @submission, url: upload_individual_submission_path(sub_id: @submission.id), method: :patch do |g| %>
+          <%= g.file_field :subm_file, label: "Submission zip", accept: 'application/zip' %>
+          <%= g.hidden_field :id, value: @submission.id %>
+          <%= g.button :submit, "Upload new submission file", html_options= { class: "btn btn-primary", role: "button"} %>
         <% end %>
         </div>
       </div>
