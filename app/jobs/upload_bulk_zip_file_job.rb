@@ -19,7 +19,7 @@ class UploadBulkZipFileJob < ApplicationJob
         latte_id = split_name[1]
         submission = Submission.find_by(assignment_id: assignment_id, latte_id: latte_id)
 
-        submit(zip, submission) unless submission.grade_received
+        submit(zip.get_input_stream, submission) unless submission.grade_received
       end
     end
   end

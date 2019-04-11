@@ -33,7 +33,7 @@ module UploadHelper
   def build_tempfile(zip)
     tempfile = Tempfile.new
     tempfile.binmode
-    tempfile.write zip.get_input_stream.read
+    tempfile.write zip.read
     tempfile.flush
     tempfile
   end
