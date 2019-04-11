@@ -15,5 +15,5 @@ class UploadIndividualZipFileJob < ApplicationJob
     submit(open(uploader.path), submission) unless submission.grade_received
 
   end
-  
+
 end
