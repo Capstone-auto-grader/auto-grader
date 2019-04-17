@@ -34,7 +34,20 @@ class AssignmentsController < ApplicationController
       @assignment.update(submitted_once: true)
     end
     respond_to do |format|
-      UploadZipFileJob.perform_later uploader.filename, @assignment.id
+      UploadBulkZipFileJob.perform_later uploader.filename, @assignment.id
+      format.html { redirect_to assignment_grades_path(@assignment.id), notice: 'Assignment submissions were successfully uploaded' }
+      format.json { render :show, status: :created, location: @assignment }
+    end
+  end
+
+  def upload_individual_submission
+    uploader = AttachmentUploader.new
+    uploader.store! params[:submission][:subm_file]
+    @submission = Submission.find(params[:submission][:id])
+    @submission.update(grade_received: false)
+    @assignment = @submission.assignment
+    respond_to do |format|
+      UploadIndividualZipFileJob.perform_later uploader.filename, @submission.id
       format.html { redirect_to assignment_grades_path(@assignment.id), notice: 'Assignment submissions were successfully uploaded' }
       format.json { render :show, status: :created, location: @assignment }
     end

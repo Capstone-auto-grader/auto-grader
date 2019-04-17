@@ -1,9 +1,9 @@
-include AssignmentsHelper
-
 class SubmissionsController < ApplicationController
+  include AssignmentsHelper
   before_action :set_submission, only: [:show, :edit, :update, :destroy]
   before_action :require_login
   before_action :verify_superuser, only: [:edit, :update]
+  skip_before_action :verify_authenticity_token
   # GET /submissions
   # GET /submissions.json
   def index
@@ -51,7 +51,7 @@ class SubmissionsController < ApplicationController
       if @submission.save!
         #TODO: WE NEED TO TEST THIS
         puts "OK"
-        ValidateZipFileJob.perform_later uploader.filename,@submission.assignment.id
+        UploadBulkZipFileJob.perform_later uploader.filename,@submission.assignment.id
         format.html { redirect_to course_path(@submission.assignment.course_id),notice: 'Submission was successfully created.' }
         format.json { render :show, status: :created, location: @submission }
       else
@@ -65,6 +65,14 @@ class SubmissionsController < ApplicationController
   # PATCH/PUT /submissions/1.json
   def update
     old_ta_id = @submission.ta.id
+    if(! params[:submission][:subm_file].nil?)
+      uploader = AttachmentUploader.new
+      uploader.store! params[:submission][:subm_file]
+      byebug
+      UploadIndividualZipFileJob.perform_later uploader.filename,@submission.assignment.id
+    else
+      puts "NO FILE"
+    end
     submission_params[:ta_id] = submission_params[:ta_id].to_i
 
     if submission_params[:final_grade_override].to_i.zero?
@@ -111,6 +119,6 @@ class SubmissionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def submission_params
-      params.require(:submission).permit(:subm_file, :ta_id, :tests_passed, :total_tests, :ta_grade, :is_valid, :late_penalty, :extra_credit_points, :final_grade_override, :ta_comment, :comment_override)
+      params.require(:submission).permit(:ta_id, :subm_file, :tests_passed, :total_tests, :ta_grade, :is_valid, :late_penalty, :extra_credit_points, :final_grade_override, :ta_comment, :comment_override)
     end
 end
