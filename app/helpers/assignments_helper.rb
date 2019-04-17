@@ -173,22 +173,7 @@ module AssignmentsHelper
 
   def sub_comment(submission)
     s = submission.is_resubmission? ? "\n-----\nRESUBMISSION:\n" : ''
-
-    return s + 'NO SUBMISSION' unless submission.grade_received
-
-    if submission.is_valid?
-      s += "TESTS PASSED: #{submission.tests_passed}
-TOTAL TESTS: #{submission.total_tests}
-TEST GRADE: #{submission.test_grade}"
-    else
-      s += 'INVALID SUBMISSION'
-    end
-
-
-    s += "\n-----
-TA GRADE: #{submission.ta_grade}
-GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
-
+    s += "GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
     s += "\n-----\n#{submission.ta_comment}" unless submission.ta_comment.nil?
     s += "\n-----\nLATE PENALTY: -#{submission.late_penalty}" unless submission.late_penalty.zero?
     s += "\n-----\nEXTRA CREDIT POINTS: #{submission.extra_credit_points}" unless submission.extra_credit_points.nil? || submission.extra_credit_points.zero?
