@@ -9,11 +9,9 @@ class UploadIndividualZipFileJob < ApplicationJob
   def perform(zip_name, submission_id)
     uploader = AttachmentUploader.new
     uploader.retrieve_from_store! zip_name
-    # What do?
 
     submission = Submission.find(submission_id)
     puts uploader.path
-    byebug
     submit(open(uploader.path), submission) unless submission.grade_received
 
   end
