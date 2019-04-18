@@ -167,7 +167,7 @@ module AssignmentsHelper
   def comment(submission)
     return submission.comment_override unless submission.comment_override.nil?
     s = sub_comment(submission)
-    s += sub_comment(submission.resubmission) if submission.resubmission.grade_received
+    s += sub_comment(submission.resubmission) unless submission.resubmission.ta_grade.nil?
     s.delete("\r").gsub("\n", '<br>')
   end
 
