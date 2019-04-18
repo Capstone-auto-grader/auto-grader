@@ -36,7 +36,7 @@ class Submission < ApplicationRecord
       test = (test_weight * test_grade)
     end
     original_result = test + (ta_weight * ta_grade)
-    if is_resubmission? || !resubmission.grade_received
+    if is_resubmission? || !resubmission.ta_grade.nil?
       result = original_result
     else
       resubmit_result = (original_result + resubmission.final_grade) / 2
