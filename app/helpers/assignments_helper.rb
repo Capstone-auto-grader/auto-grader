@@ -147,7 +147,7 @@ module AssignmentsHelper
 
   def tom_csv_lines
     submissions = @assignment.submissions.sort_by { |s| s.student.name }
-    total_tests = submissions.select { |s| !s.total_tests.nil? }.first.total_tests
+    total_tests = 0
     headers = %w[NAME EMAIL
                  COMMENT NUM_TESTS
                  NUM_FAILS SUBMIT_GRADE
@@ -157,8 +157,8 @@ module AssignmentsHelper
     submissions.each do |s|
       lines << [s.student.name, s.student.email,
                 comment(s), total_tests,
-                s.tests_passed ? total_tests - s.tests_passed : 0, s.test_grade,
-                s.resubmission.test_grade, s.ta_grade,
+                0, 0,
+                0, s.ta_grade,
                 s.ta.name, s.final_grade]
     end
     lines
