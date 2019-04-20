@@ -56,7 +56,7 @@ class AcceptGradeController < ApplicationController
     batch.update_attribute(:zip_uri, params[:zip_name])
     batch.update_attribute(:validated, true)
     puts SubmissionBatch.where(assignment_id: assignment_id, validated: nil).length
-    if SubmissionBatch.where(assignment_id: assignment_id, validated: nil).length == 0
+    if SubmissionBatch.where(assignment_id: assignment_id, zip_uri: nil).length == 0
       all_subm_uris = Assignment.find(assignment_id).submissions.map(&:zip_uri).reject{|elem| elem.nil?}
       request_moss_grade all_subm_uris, assignment_id
     end
