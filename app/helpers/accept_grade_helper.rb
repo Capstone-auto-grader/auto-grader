@@ -14,7 +14,7 @@ module AcceptGradeHelper
       end
     end
 
-    weighted_test_grade = .3 * (lexer_tests_passed / lexer_tests) + .4 * (parser_tests_passed / parser_tests) + .2 * (interpreter_tests_passed / interpreter_tests) + .1 * (compiler_tests_passed / compiler_tests)
+    weighted_test_grade = 0.3 * (lexer_tests_passed / lexer_tests) + 0.4 * (parser_tests_passed / parser_tests) + 0.2 * (interpreter_tests_passed / interpreter_tests) + 0.1 * (compiler_tests_passed / compiler_tests)
 
     submission.test_grade_override = (weighted_test_grade * 100).round(3)
   end
