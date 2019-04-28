@@ -1,6 +1,6 @@
 class AcceptGradeController < ApplicationController
   skip_before_action :verify_authenticity_token
-  include AssignmentsHelper
+  include AssignmentsHelper, AcceptGradeHelper
   def accept_grade
     status = params[:status]
     submission = Submission.find(params[:id].to_i)
@@ -32,6 +32,9 @@ class AcceptGradeController < ApplicationController
         submission.total_tests = total_tests
         submission.extra_credit_points = ec_points
         submission.is_valid = true
+        if submission.assignment.name.include?('PA10')
+          handle_pitoscript(submission, failures)
+        end
       else
         submission.is_valid = false
       end

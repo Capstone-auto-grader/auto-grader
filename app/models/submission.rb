@@ -17,8 +17,10 @@ class Submission < ApplicationRecord
       0.0
     elsif total_tests == 0
       "No unit tests"
-    else
+    elsif !test_grade_override
       ((tests_passed.to_f * 100) / total_tests).round(3)
+    else
+      test_grade_override
     end
   end
 

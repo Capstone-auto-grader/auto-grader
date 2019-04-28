@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_25_184639) do
+ActiveRecord::Schema.define(version: 2019_04_28_154956) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(version: 2019_02_25_184639) do
     t.integer "late_penalty"
     t.text "comment_override"
     t.text "security_hash"
+    t.decimal "test_grade_override"
     t.index ["assignment_id"], name: "index_submissions_on_assignment_id"
     t.index ["latte_id"], name: "index_submissions_on_latte_id"
   end
