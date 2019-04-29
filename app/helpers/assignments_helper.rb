@@ -147,7 +147,8 @@ module AssignmentsHelper
 
   def tom_csv_lines
     submissions = @assignment.submissions.sort_by { |s| s.student.name }
-    total_tests = submissions.reject(:nil?).select { |s| !s.total_tests.nil? }.first.total_tests
+    puts submissions
+    total_tests = submissions.select { |s| !s.total_tests.nil? }.first.total_tests
     headers = %w[NAME EMAIL
                  COMMENT NUM_TESTS
                  NUM_FAILS SUBMIT_GRADE
