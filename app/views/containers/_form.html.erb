@@ -1,0 +1,14 @@
+
+<%= simple_form_for(@container) do |f| %>
+  <%= f.error_notification %>
+  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+
+  <div class="form-group">
+    <%= f.input :name, required: true, input_html: {class:"form-control"} %>
+    <%= f.file_field :tar, label: "Docker tar file", class: "form-control-file", accept: "application/tar" %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>
