@@ -3,6 +3,8 @@
 <h3> <%= @grades_remaining == 0 ? 'ALL UPLOADED SUBMISSIONS GRADED' : "#{pluralize(@grades_remaining, 'grade').upcase} REMAINING" %> </h3>
 <% unless @assignment.moss_url.nil? %>
 <h3><%= link_to 'Moss report', @assignment.moss_url %></h3>
+  <% else %>
+    <%= button_to "Run moss", run_moss_path, class: 'btn btn-primary', disable: @assignment.moss_running %>
 <% end %>
 <h3><%= "Average test grade: #{@average}" %></h3>
 <table>

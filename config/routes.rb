@@ -46,7 +46,8 @@ Rails.application.routes.draw do
   get '/assignments/:id/grades/invalid', to: 'assignments#download_invalid', as: 'download_invalid'
   post '/conflict_add', to: 'courses#conflict_add', as: 'conflict_add'
   post '/conflict_remove', to: 'courses#conflict_remove', as: 'conflict_remove'
-
+  post '/submissions/:id/rerun', to: 'submissions#rerun', as: 'rerun_submission'
+  post '/assignments/:id/run-moss', to: 'assignments#run_moss', as: 'run_moss'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

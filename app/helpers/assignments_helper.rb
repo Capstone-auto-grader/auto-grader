@@ -73,31 +73,45 @@ module AssignmentsHelper
     ta_conflicts = tas.map {|ta| [ta.id, ta.conflict_students.map(&:id)]}.to_h
 
     assignments = assign_tas(assignment, tas.pluck(:id), ta_conflicts)
-    resubs = assignments.flat_map do |ta, students|
-      students.map do |student|
-        Submission.new(grade_received: false, ta_id: ta, student_id: student, assignment_id: assignment.resubmit.id, latte_id: resub_latte_ids[student], late_penalty: 0)
+    if resub_csv
+      resubs = assignments.flat_map do |ta, students|
+        students.map do |student|
+          Submission.new(grade_received: false, ta_id: ta, student_id: student, assignment_id: assignment.resubmit.id, latte_id: resub_latte_ids[student], late_penalty: 0)
+        end
       end
-    end
-    resubs.map &:save!
+      resubs.map &:save!
 
-    submissions = resubs.map do |r|
-      Submission.new(grade_received: false, ta_id: r.ta_id, ta_grade: 0, student_id: r.student_id, assignment_id: assignment.id, latte_id: orig_latte_ids[r.student_id], resubmission_id: r.id, late_penalty: 0)
+      submissions = resubs.map do |r|
+        Submission.new(grade_received: false, ta_id: r.ta_id, ta_grade: 0, student_id: r.student_id, assignment_id: assignment.id, latte_id: orig_latte_ids[r.student_id], resubmission_id: r.id, late_penalty: 0)
+      end
+      submissions.map &:save!
+    else
+      submissions = assignments.flat_map do |ta, students|
+        students.map do |student|
+          Submission.new(grade_received: false, ta_id: ta, student_id: student, assignment_id: assignment.id, latte_id: orig_latte_ids[student], late_penalty: 0)
+        end
+      end
+      submissions.map &:save!
     end
-    submissions.map &:save!
+
 
     puts submissions.map(&:assignment_id)
   end
 
   def get_latte_ids_and_validate_registrations(orig_csv, resub_csv, assignment)
     headers = orig_csv[0]
-    id_index = headers.index "﻿Identifier"
+    id_index = headers.index "Identifier"
     email_index = headers.index "Email address"
     name_index = headers.index "Full name"
 
     orig_data = orig_csv.drop(1)
-    resub_data = resub_csv.drop(1)
+
     orig_latte_ids = Hash.new
-    resub_latte_ids = Hash.new
+    if resub_csv
+      resub_data = resub_csv.drop(1)
+      resub_latte_ids = Hash.new
+    end
+
     orig_data.each do |curr|
       email = curr[email_index]
       name = curr[name_index]
@@ -113,10 +127,12 @@ module AssignmentsHelper
       student.courses << assignment.course unless student.courses.include? assignment.course
 
       orig_latte_ids[student.id] = orig_latte_id
+      if resub_csv
+        resub_student_index = resub_data.map { |d| d[email_index] }.index email
+        resub_latte_id = resub_data[resub_student_index][id_index]
+        resub_latte_ids[student.id] = to_latte_id(resub_latte_id)
+      end
 
-      resub_student_index = resub_data.map { |d| d[email_index] }.index email
-      resub_latte_id = resub_data[resub_student_index][id_index]
-      resub_latte_ids[student.id] = to_latte_id(resub_latte_id)
 
     end
     [orig_latte_ids, resub_latte_ids]
@@ -167,7 +183,10 @@ module AssignmentsHelper
   def comment(submission)
     return submission.comment_override unless submission.comment_override.nil?
     s = sub_comment(submission)
-    s += sub_comment(submission.resubmission) if submission.resubmission.grade_received
+    if submission.resubmission
+      s += sub_comment(submission.resubmission) if submission.resubmission.grade_received
+    end
+
     s.delete("\r").gsub("\n", '<br>')
   end
 
@@ -191,7 +210,7 @@ GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
 
     s += "\n-----\n#{submission.ta_comment}" unless submission.ta_comment.nil?
     s += "\n-----\nLATE PENALTY: -#{submission.late_penalty}" unless submission.late_penalty.zero?
-    s += "\n-----\nEXTRA CREDIT POINTS: #{submission.extra_credit_points}" unless submission.extra_credit_points.nil? || submission.extra_credit_points.zero?
+    # s += "\n-----\nEXTRA CREDIT POINTS: #{submission.extra_credit_points}" unless submission.extra_credit_points.nil? || submission.extra_credit_points.zero?
 
     s
   end
@@ -205,7 +224,13 @@ GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
     req.body = {image_name: 'batch', zip_name: "#{assignment_id}-#{ta_id}-submissions.zip", uris: submissions, assignment_id: assignment_id, ta_id: ta_id}.to_json
     # puts req.body
     puts "REQ"
-    puts http.request req
+    begin
+      puts http.request req
+    rescue
+      puts "RETRYING"
+      sleep rand(10)
+      puts http.request req
+    end
 
   end
 
