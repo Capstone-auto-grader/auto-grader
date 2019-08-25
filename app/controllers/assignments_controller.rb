@@ -28,6 +28,7 @@ class AssignmentsController < ApplicationController
     @assignment.update_attribute(:moss_running, true)
     all_subm_uris = Assignment.find(@assignment.id).submissions.map(&:zip_uri).reject{|elem| elem.nil?}
     request_moss_grade all_subm_uris, @assignment.id
+    return redirect_to assignment_grades_path @assignment
   end
 
   def upload_submissions

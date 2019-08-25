@@ -22,7 +22,7 @@ class AcceptGradeController < ApplicationController
         #     ec_points += points
         #   end
         # end
-        # if submission.is_resubmission?
+        # if submission.is_resubmassion?
         #   ec_points -= (submission.original.extra_credit_points || 0)
         #   ec_points /= 2.0
         #   ec_points = [ec_points, 0].max
