@@ -12,8 +12,10 @@
           <p></p>
           <%= f.input :is_valid, label: "Valid submission?", input_html: {class:"form-control"} %>
           <hr>
+          <%= if @submission.assignment.has_tests %>
           <%= f.input :tests_passed, label: "Tests passed", input_html: {class:"form-control"} %>
           <%= f.input :total_tests, label: "Total # of tests", input_html: {class:"form-control"} %>
+          <% end %>
           <p></p>
           <%= f.input :ta_grade, label: "TA grade", input_html: {class:"form-control"} %>
           <p></p>
