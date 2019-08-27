@@ -217,7 +217,7 @@ GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
 
 
   def create_zip_from_batch(assignment_id, ta_id)
-    submissions = Submission.where(ta_id: ta_id, assignment_id: assignment_id).where.not(zip_uri: nil).map { |s| "#{s.zip_uri}-ta-new"}
+    submissions = Submission.where(ta_id: ta_id, assignment_id: assignment_id).where.not(zip_uri: nil).map { |s| s.assignment.has_tests ? "#{s.zip_uri}-ta-new" : s.zip_uri}
     uri = URI.parse("#{ENV['GRADING_SERVER']}/batch")
     http = Net::HTTP.new(uri.host, uri.port)
     req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})

@@ -38,4 +38,10 @@ module UploadHelper
     tempfile
   end
 
+  def make_batches(assignment)
+    assignment.course.tas.each do |ta|
+      create_zip_from_batch submission.assignment.id, ta.id
+    end
+  end
+
 end

@@ -1,6 +1,7 @@
 class AcceptGradeController < ApplicationController
   skip_before_action :verify_authenticity_token
   include AssignmentsHelper
+  include UploadHelper
   def accept_grade
     status = params[:status]
     submission = Submission.find(params[:id].to_i)
@@ -45,9 +46,7 @@ class AcceptGradeController < ApplicationController
       remaining_grades = submission.assignment.submissions.where.not(zip_uri: nil).where(grade_received: false).count
       if remaining_grades == 0 && params[:rerun] != "true"
         puts "CREATING BATCHES"
-        submission.assignment.course.tas.each do |ta|
-          create_zip_from_batch submission.assignment.id, ta.id
-        end
+        make_batches submission.assignment
       end
       if params['rerun'] == "true"
         create_zip_from_batch submission.assignment.id, submission.ta.id
