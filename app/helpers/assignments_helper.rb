@@ -195,17 +195,18 @@ module AssignmentsHelper
 
     return s + 'NO SUBMISSION' unless submission.grade_received
 
-    if submission.is_valid?
-      s += "TESTS PASSED: #{submission.tests_passed}
-TOTAL TESTS: #{submission.total_tests}
-TEST GRADE: #{submission.test_grade}"
-    else
+    ta_grade_label = 'GRADE'
+    if !submission.is_valid
       s += 'INVALID SUBMISSION'
+    elsif submission.assignment.has_tests
+      s += "TESTS PASSED: #{submission.tests_passed}
+  TOTAL TESTS: #{submission.total_tests}
+  TEST GRADE: #{submission.test_grade}"
+      ta_grade_label = 'TA GRADE'
     end
 
-
     s += "\n-----
-TA GRADE: #{submission.ta_grade}
+#{ta_grade_label}: #{submission.ta_grade}
 GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
 
     s += "\n-----\n#{submission.ta_comment}" unless submission.ta_comment.nil?
