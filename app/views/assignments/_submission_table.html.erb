@@ -3,8 +3,8 @@
   <thead class = "thead-dark">
   <tr>
     <th style="width: 10%">Student</th>
-    <%= if @assignment.has_tests %>
-    <th style="width: 10%">Test Grade</th>
+    <% if @assignment.has_tests %>
+      <th style="width: 10%">Test Grade</th>
     <% end %>
     <th style="width: 10%">TA Grade</th>
 <!--    <th style="width: 10%">Extra Credit</th>-->
@@ -22,7 +22,9 @@
         <%= fields_for "submissions[]", submission do |f| %>
         <tr>
           <td><%= submission.student.name %></td>
-          <td><%= status_or_grade(submission) if @assignment.has_tests %></td>
+          <% if @assignment.has_tests %>
+            <td><%= status_or_grade(submission) %></td>
+          <% end %>
           <td>
           <% if is_superuser(@assignment.course.id) || subs.first.ta == current_user %>
           <%= f.number_field :ta_grade, label: false, step: :any, input_html: {value: submission.ta_grade, width: '50%', class:"form-control"} %>

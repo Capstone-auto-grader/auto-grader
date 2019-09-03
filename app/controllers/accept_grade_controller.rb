@@ -1,6 +1,6 @@
 class AcceptGradeController < ApplicationController
   skip_before_action :verify_authenticity_token
-  include AssignmentsHelper
+  include AssignmentsHelper, Ec2Helper
   include UploadHelper
   def accept_grade
     status = params[:status]
@@ -47,6 +47,9 @@ class AcceptGradeController < ApplicationController
       if remaining_grades == 0 && params[:rerun] != "true"
         puts "CREATING BATCHES"
         make_batches submission.assignment
+
+      else
+        puts "RERUN #{params[:rerun]} REMAINING #{remaining_grades}"
       end
       if params['rerun'] == "true"
         create_zip_from_batch submission.assignment.id, submission.ta.id
@@ -62,6 +65,7 @@ class AcceptGradeController < ApplicationController
     batch.update_attribute(:validated, true)
     puts SubmissionBatch.where(assignment_id: assignment_id, validated: false).length
     # if SubmissionBatch.where(assignment_id: assignment_id, validated: false).length == 0
+    #   stop_daemon
     #   all_subm_uris = Assignment.find(assignment_id).submissions.map(&:zip_uri).reject{|elem| elem.nil?}
     #   request_moss_grade all_subm_uris, assignment_id
     #   puts "MOSS GRADE STARTED"
@@ -74,5 +78,6 @@ class AcceptGradeController < ApplicationController
     assignment = Assignment.find(assignment_id)
     assignment.update_attribute(:moss_url, moss_url)
     assignment.update_attribute(:moss_running, false)
+    # stop_daemon
   end
 end

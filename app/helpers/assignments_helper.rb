@@ -1,5 +1,5 @@
 require 'zip'
-include CoursesHelper
+include CoursesHelper, Ec2Helper
 
 module AssignmentsHelper
 
@@ -39,8 +39,11 @@ module AssignmentsHelper
     end
 
     tas.each do |ta|
-      SubmissionBatch.create(user_id: ta, assignment: @assignment)
-      SubmissionBatch.create(user_id: ta, assignment: @assignment.resubmit)
+      SubmissionBatch.create(user_id: ta, assignment: @assignment, validated: false)
+      if @assignment.has_resubmission
+        SubmissionBatch.create(user_id: ta, assignment: @assignment.resubmit, validated: false)
+      end
+
     end
 
     ret_hash
@@ -218,7 +221,11 @@ GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
 
 
   def create_zip_from_batch(assignment_id, ta_id)
-    submissions = Submission.where(ta_id: ta_id, assignment_id: assignment_id).where.not(zip_uri: nil).map { |s| s.assignment.has_tests ? "#{s.zip_uri}-ta-new" : s.zip_uri}
+    # sleep 10
+    puts "BATCH"
+    puts Submission.where(ta_id: ta_id, assignment_id: assignment_id).map &:zip_uri
+    submissions = Submission.where(ta_id: ta_id, assignment_id: assignment_id).where.not(zip_uri: nil).map { |s| s.assignment.has_tests ? "#{s.zip_uri}-ta-new:#{s.student.name.sub!(' ', '_')}" : "#{s.zip_uri}:#{s.student.name.sub!(' ', '_')}"}
+    puts "SUBMISSIONS #{submissions}"
     uri = URI.parse("#{ENV['GRADING_SERVER']}/batch")
     http = Net::HTTP.new(uri.host, uri.port)
     req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
@@ -236,6 +243,7 @@ GRADING TA: #{submission.ta.name}" unless submission.ta_grade.nil?
   end
 
   def request_moss_grade(uris, assignment_id)
+    start_daemon
     uri = URI.parse("#{ENV['GRADING_SERVER']}/moss")
     http = Net::HTTP.new(uri.host, uri.port)
     req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})

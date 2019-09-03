@@ -1,8 +1,13 @@
 module UploadHelper
-
-  def submit(zip, submission)
+  include AssignmentsHelper, Ec2Helper
+  def submit(zip, submission, has_tests: true)
+    puts "INNER HAS TESTS", has_tests
     upload_tempfile_to_s3(zip, submission)
-    post_submission_to_api(submission)
+    if has_tests
+      start_daemon
+      post_submission_to_api(submission)
+    end
+
   end
 
   def post_submission_to_api(submission, rerun = false)
@@ -39,8 +44,9 @@ module UploadHelper
   end
 
   def make_batches(assignment)
+    puts "MAKING BATCHES"
     assignment.course.tas.each do |ta|
-      create_zip_from_batch submission.assignment.id, ta.id
+      create_zip_from_batch assignment.id, ta.id
     end
   end
 
