@@ -1,6 +1,6 @@
 class SubmissionsController < ApplicationController
-  include AssignmentsHelper
-  before_action :set_submission, only: [:show, :edit, :update, :destroy]
+  include UploadHelper
+  before_action :set_submission, only: [:show, :edit, :update, :destroy, :rerun]
   before_action :require_login
   before_action :verify_superuser, only: [:edit, :update]
   skip_before_action :verify_authenticity_token
@@ -16,6 +16,11 @@ class SubmissionsController < ApplicationController
       @submissions = []
     end
 
+  end
+
+  def rerun
+    puts 'RERUNRERUN'
+    post_submission_to_api @submission, rerun=true
   end
 
   # GET /submissions/1
@@ -119,6 +124,6 @@ class SubmissionsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def submission_params
-      params.require(:submission).permit(:ta_id, :subm_file, :tests_passed, :total_tests, :ta_grade, :is_valid, :late_penalty, :extra_credit_points, :final_grade_override, :ta_comment, :comment_override)
+      params.require(:submission).permit(:ta_id, :subm_file, :tests_passed, :total_tests, :ta_grade, :is_valid, :late_penalty, :final_grade_override, :ta_comment, :comment_override)
     end
 end

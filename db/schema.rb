@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_25_184639) do
+ActiveRecord::Schema.define(version: 2019_08_23_003129) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,19 +24,29 @@ ActiveRecord::Schema.define(version: 2019_02_25_184639) do
     t.bigint "course_id"
     t.integer "test_grade_weight"
     t.integer "resubmit_id"
-    t.text "extra_credit"
     t.integer "group_offset"
     t.text "moss_url"
     t.text "base_uri"
     t.boolean "submitted_once"
+    t.boolean "has_tests"
+    t.boolean "has_resubmission"
     t.string "container_name"
+    t.boolean "moss_running"
     t.index ["course_id"], name: "index_assignments_on_course_id"
+  end
+
+  create_table "containers", force: :cascade do |t|
+    t.string "name"
+    t.string "uri"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "courses", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "s3_bucket"
   end
 
   create_table "students", force: :cascade do |t|
@@ -73,11 +83,11 @@ ActiveRecord::Schema.define(version: 2019_02_25_184639) do
     t.integer "resubmission_id"
     t.boolean "grade_received"
     t.boolean "is_valid"
-    t.decimal "extra_credit_points"
     t.decimal "final_grade_override"
     t.integer "late_penalty"
     t.text "comment_override"
     t.text "security_hash"
+    t.decimal "test_grade_override"
     t.index ["assignment_id"], name: "index_submissions_on_assignment_id"
     t.index ["latte_id"], name: "index_submissions_on_latte_id"
   end
