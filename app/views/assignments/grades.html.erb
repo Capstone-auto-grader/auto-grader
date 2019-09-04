@@ -3,11 +3,14 @@
 <h3> <%= @grades_remaining == 0 ? 'ALL UPLOADED SUBMISSIONS GRADED' : "#{pluralize(@grades_remaining, 'grade').upcase} REMAINING" %> </h3>
 <% unless @assignment.moss_url.nil? %>
 <h3><%= link_to 'Moss report', @assignment.moss_url %></h3>
+    <h3>  <%= button_to "Rerun moss", run_moss_path, class: 'btn btn-primary', disabled: @assignment.moss_running %></h3>
+  <% else %>
+    <%= button_to "Run moss", run_moss_path, class: 'btn btn-primary', disabled: @assignment.moss_running %>
 <% end %>
 <h3><%= "Average test grade: #{@average}" %></h3>
 <table>
 <tr>
-<td><%= (button_to "Download CSV for LATTE", download_latte_csv_assignments_path(id: @assignment.id, format: :csv), class: "btn btn-primary") if !@assignment.resubmit_id.nil? %></td>
+<td><%= (button_to "Download CSV for LATTE", download_latte_csv_assignments_path(id: @assignment.id, format: :csv), class: "btn btn-primary")%></td>
 <td><%= (button_to "Download Tom-style CSV", download_tom_csv_assignments_path(id: @assignment.id, format: :csv), class: "btn btn-primary") if !@assignment.resubmit_id.nil? %></td>
 <td><%=(button_to "Download invalids", download_invalid_path(id: @assignment.id), class: "btn btn-primary", method: :get) if @is_superuser %></td>
 </tr>
@@ -21,4 +24,7 @@
 
 <%= render partial: 'submission_table', locals: {subs: @partition} %>
 
+<% if !@other_submissions.nil? and @other_submissions.length > 0 %>
 <%= render partial: 'submission_table', locals: {subs: @other_submissions} unless @other_submissions.nil? %>
+
+<% end %>

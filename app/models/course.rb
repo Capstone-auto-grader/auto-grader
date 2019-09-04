@@ -6,4 +6,6 @@ class Course < ApplicationRecord
     has_many :tas, through: :t_as_class, source: :user
     has_many :professors, through: :teaches_class, source: :user
     has_many :assignments
+
+    validates :s3_bucket, presence: true, format: { with: /(?=^.{3,63}$)(?!^(\d+\.)+\d+$)(^(([a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*([a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$)/}
 end

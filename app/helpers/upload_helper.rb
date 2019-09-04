@@ -1,16 +1,21 @@
 module UploadHelper
-
-  def submit(zip, submission)
+  include AssignmentsHelper, Ec2Helper
+  def submit(zip, submission, has_tests: true)
+    puts "INNER HAS TESTS", has_tests
     upload_tempfile_to_s3(zip, submission)
-    post_submission_to_api(submission)
+    if has_tests
+      start_daemon
+      post_submission_to_api(submission)
+    end
+
   end
 
-  def post_submission_to_api(submission)
+  def post_submission_to_api(submission, rerun = false)
     uri = URI.parse("#{ENV['GRADING_SERVER']}/grade")
     http = Net::HTTP.new(uri.host, uri.port)
     req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
     image_name = submission.assignment.container_name.nil? ? 'java' :  submission.assignment.container_name
-    req.body = { proj_id: submission.id, proj_zip: submission.zip_uri, test_zip: submission.assignment.test_uri, image_name: image_name, student_name: submission.student.name, sec: submission.security_hash}.to_json
+    req.body = { proj_id: submission.id, proj_zip: submission.zip_uri, test_zip: submission.assignment.test_uri, image_name: image_name, student_name: submission.student.name, sec: submission.security_hash, rerun: rerun}.to_json
     puts req.body
     http.request req
   end
@@ -36,6 +41,13 @@ module UploadHelper
     tempfile.write zip.read
     tempfile.flush
     tempfile
+  end
+
+  def make_batches(assignment)
+    puts "MAKING BATCHES"
+    assignment.course.tas.each do |ta|
+      create_zip_from_batch assignment.id, ta.id
+    end
   end
 
 end

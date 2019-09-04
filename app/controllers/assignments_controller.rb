@@ -1,7 +1,7 @@
 class AssignmentsController < ApplicationController
   include AssignmentsHelper
   include SessionsHelper
-  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades, :download_latte_csv, :download_tom_csv, :download_partition, :show_partition, :download_invalid]
+  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades, :download_latte_csv, :download_tom_csv, :download_partition, :show_partition, :download_invalid, :run_moss]
   before_action :require_login
 
   # GET /assignments
@@ -22,6 +22,13 @@ class AssignmentsController < ApplicationController
 
   # GET /assignments/1/edit
   def edit
+  end
+
+  def run_moss
+    @assignment.update_attribute(:moss_running, true)
+    all_subm_uris = Assignment.find(@assignment.id).submissions.map(&:zip_uri).reject{|elem| elem.nil?}
+    request_moss_grade all_subm_uris, @assignment.id
+    return redirect_to assignment_grades_path @assignment
   end
 
   def upload_submissions
@@ -154,44 +161,58 @@ class AssignmentsController < ApplicationController
   # POST /assignments.json
   def create
     uploader = AttachmentUploader.new
-    uploader.store! params[:assignment][:assignment_test]
+    if params[:assignment][:assignment_test]
+      uploader.store! params[:assignment][:assignment_test]
+    end
+    p = assignment_params
     base = Tempfile.new
     base.binmode
     base.write params[:assignment][:base_uri].read
     base.rewind
     base_obj = S3_BUCKET.object File.basename(base.path)
     base_obj.upload_file base.path
-    unless uploader.path.nil?
+    unless uploader.path.nil? or not p[:has_tests]
       buckob = S3_BUCKET.object File.basename(uploader.path)
       buckob.upload_file uploader.path
+      p[:test_uri] = "#{S3_BUCKET.name}/#{buckob.key}" unless buckob.nil?
     end
 
-    p = assignment_params
-    ec_hash = Hash.new
-    p[:extra_credit].remove("\r").split("\n").each do |line|
-      pair = line.split(', ')
-      ec_hash[pair[0]] = pair[1].to_i
-    end
-    p[:extra_credit] = ec_hash
+
+
+
+    # ec_hash = Hash.new
+    # p[:extra_credit].remove("\r").split("\n").each do |line|
+    #   pair = line.split(', ')
+    #   ec_hash[pair[0]] = pair[1].to_i
+    # end
+    # p[:extra_credit] = ec_hash
     p[:group_offset] = get_group_offset(p[:course_id])
     file = params[:assignment][:uploaded_file]
     p[:submitted_once] = false
     uploader = AttachmentUploader.new
     uploader.store! file
-    p[:test_uri] = "#{S3_BUCKET.name}/#{buckob.key}" unless buckob.nil?
     p[:base_uri] = "#{S3_BUCKET.name}/#{base_obj.key}"
     @assignment = Assignment.new(p)
-
+    @assignment.moss_running = false
     respond_to do |format|
       if @assignment.save!
-        resubmit_params = p.clone
-        resubmit_params[:name] = "#{p[:name]} RESUBMIT"
-        resubmit = Assignment.new(resubmit_params)
-        resubmit.save!
-        @assignment.resubmit = resubmit
+        # byebug
+        if @assignment.has_resubmission
+          resubmit_params = p.clone
+          resubmit_params[:name] = "#{p[:name]} RESUBMIT"
+          resubmit = Assignment.new(resubmit_params)
+          resubmit.save!
+          @assignment.resubmit = resubmit
+        end
+
         @assignment.save!
         @orig_csv = CSV.read(params[:assignment][:orig_csv].path)
-        @resub_csv = CSV.read(params[:assignment][:resub_csv].path)
+        if params[:assignment][:resub_csv]
+          @resub_csv = CSV.read(params[:assignment][:resub_csv].path)
+        else
+          @resub_csv = nil
+        end
+
         create_submissions_from_assignment @assignment, @orig_csv, @resub_csv
         format.html { redirect_to course_path(@assignment.course), notice: 'Assignment was successfully created.' }
         format.json { render :show, status: :created, location: @assignment }
@@ -236,6 +257,6 @@ class AssignmentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def assignment_params
-      params.require(:assignment).permit(:name, :course_id, :assignment_test, :extra_credit, :test_uri, :base_uri, :test_grade_weight, :submitted_once)
+      params.require(:assignment).permit(:name, :course_id, :assignment_test, :extra_credit, :test_uri, :base_uri, :test_grade_weight, :submitted_once, :has_resubmission, :has_tests)
     end
 end

@@ -11,10 +11,13 @@
   <% end %>
 
   <div class="field">
-    <h3><%= form.label :name %>
-    <button type="submit" name="commit" data-disable-with="Update Name" class = "btn btn-primary">Update Name</button>
+    <h3>
+    <button type="submit" name="commit" data-disable-with="Update" class = "btn btn-primary">Submit</button>
     </h3>
+    <%= form.label :name %>
     <%= form.text_field :name %>
+    <%= form.label :s3_bucket %>
+    <%= form.text_field :s3_bucket %>
   </div>
 
 
