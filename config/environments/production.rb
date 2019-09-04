@@ -14,13 +14,15 @@ Rails.application.configure do
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
   ActionMailer::Base.smtp_settings = {
-      :port           => ENV['MAILGUN_SMTP_PORT'],
-      :address        => ENV['MAILGUN_SMTP_SERVER'],
-      :user_name      => ENV['MAILGUN_SMTP_LOGIN'],
-      :password       => ENV['MAILGUN_SMTP_PASSWORD'],
-      :domain         => 'yourapp.heroku.com',
+      :user_name => ENV['SENDGRID_USERNAME'],
+      :password => ENV['SENDGRID_PASSWORD'],
+      :domain => 'yourdomain.com',
+      :address => 'smtp.sendgrid.net',
+      :port => 587,
       :authentication => :plain,
+      :enable_starttls_auto => true
   }
+  config.action_mailer.perform_deliveries = true
   ActionMailer::Base.delivery_method = :smtp
 
   # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
