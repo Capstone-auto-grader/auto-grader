@@ -194,6 +194,9 @@ module AssignmentsHelper
   end
 
   def sub_comment(submission)
+    if submission.has_resubmission
+
+    end
     s = submission.is_resubmission? ? "\n-----\nRESUBMISSION:\n" : ''
 
     return s + 'NO SUBMISSION' if submission.zip_uri.nil?

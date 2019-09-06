@@ -5,7 +5,7 @@ class Submission < ApplicationRecord
   belongs_to :resubmission, class_name: 'Submission', foreign_key: :resubmission_id, optional: true
 
   def is_resubmission?
-    resubmission.nil?
+    has_resubmission and resubmission.nil?
   end
 
   def original
