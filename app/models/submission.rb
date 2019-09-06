@@ -24,7 +24,9 @@ class Submission < ApplicationRecord
 
   def final_grade
     return final_grade_override unless final_grade_override.nil?
-
+    unless self.assignment.has_tests
+      return self.ta_grade || original.ta_grade
+    end
     test_weight = assignment.test_grade_weight / 100.0
     ta_weight = 1 - test_weight
 

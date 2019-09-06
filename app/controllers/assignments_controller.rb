@@ -121,7 +121,7 @@ class AssignmentsController < ApplicationController
     object_name =  subm.is_valid ? (subm.zip_uri.split("/")[1] + '-ta-new') : subm.zip_uri.split("/")[1]
     zip_file = S3_BUCKET.object(object_name).presigned_url(:get, expires_in: 60)
     send_data open(zip_file).read,
-              filename: "#{subm.student.name.sub(/\s/,'_')}.zip",
+              filename: "#{subm.student.name.sub(/\s+/,'_')}.zip",
               type: "application/zip",
               disposition: 'attachment',
               stream: 'true',
