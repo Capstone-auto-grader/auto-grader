@@ -10,7 +10,10 @@ class CoursesController < ApplicationController
     elsif !@current_user.taships.empty?
       @courses = @current_user.taships
     end
-    redirect_to @courses.first if @courses.count == 1
+    if @courses
+      redirect_to @courses.first if @courses.count == 1
+    end
+
   end
 
   def conflict_add

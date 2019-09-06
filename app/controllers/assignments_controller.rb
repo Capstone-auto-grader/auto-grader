@@ -118,7 +118,7 @@ class AssignmentsController < ApplicationController
 
   def download
     subm = Submission.find(params[:id])
-    object_name =  subm.is_valid ? (params[:grade].split("/")[1] + '-ta-new') : params[:grade].split("/")[1]
+    object_name =  subm.is_valid ? (subm.zip_uri.split("/")[1] + '-ta-new') : subm.zip_uri.split("/")[1]
     zip_file = S3_BUCKET.object(object_name).presigned_url(:get, expires_in: 60)
     send_data open(zip_file).read,
               filename: "#{subm.student.name.sub(/\s/,'_')}.zip",
