@@ -4,6 +4,7 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY Gemfile Gemfile.lock ./
+RUN gem install byebug -v '10.0.2' --source 'https://rubygems.org/'
 RUN bundle install --binstubs
 
 COPY . .

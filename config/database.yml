@@ -84,6 +84,8 @@ test:
 #
 production:
   <<: *default
-  database: auto-grader_production
-  username: auto-grader
-  password: <%= ENV['AUTO-GRADER_DATABASE_PASSWORD'] %>
+  database: <%= ENV['RDS_DB_NAME'] %>
+  username: <%= ENV['RDS_USERNAME'] %>
+  password: <%= ENV['RDS_PASSWORD'] %>
+  host: <%= ENV['RDS_HOSTNAME'] %>
+  port: <%= ENV['RDS_PORT'] %>

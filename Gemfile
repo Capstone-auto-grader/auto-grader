@@ -3,6 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.5.3'
 gem 'simple_form'
+gem 'travis'
 gem 'csv'
 gem 'rails_admin'
 #  gem 'bootstrap-sass', '~> 3.3.7'
@@ -49,7 +50,7 @@ gem 'pry-rails'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'byebug'# , platforms: [:mri, :mingw, :x64_mingw]
   gem 'better_errors'
   gem "binding_of_caller"
 end

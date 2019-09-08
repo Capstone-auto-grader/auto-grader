@@ -27,3 +27,8 @@
 /config/master.key
 /config/local_env.yml
 /public/uploads
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
