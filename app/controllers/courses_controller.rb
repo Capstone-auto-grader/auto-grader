@@ -132,7 +132,7 @@ class CoursesController < ApplicationController
     set_course
     if User.where(email: params[:email]).size == 0
       # @add_failed = true
-      user = User.new(email: params[:email], password: SecureRandom.uuid, name: params[:name]).after_save()
+      user = User.new(email: params[:email], password: SecureRandom.uuid, name: params[:name])
       if user.save
         # puts "USER", user
         user.send_invite_email
