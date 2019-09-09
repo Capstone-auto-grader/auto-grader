@@ -1,6 +1,7 @@
 class CoursesController < ApplicationController
   before_action :set_course, only: [:show, :edit, :update, :destroy, :conflict_add, :conflict_remove]
   before_action :require_login
+  require 'securerandom'
   # GET /courses
   # GET /courses.json
   def index
@@ -130,7 +131,13 @@ class CoursesController < ApplicationController
   def add_ta
     set_course
     if User.where(email: params[:email]).size == 0
-      @add_failed = true
+      # @add_failed = true
+      user = User.new(email: params[:email], password: SecureRandom.uuid, name: params[:name])
+      if user.save
+        @successful = true
+      else
+        @add_failed = true
+      end
     else
       @ta = User.where(email: params[:email]).first
       if @course.tas.where(id: @ta.id).size == 0

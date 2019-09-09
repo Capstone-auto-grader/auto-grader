@@ -2,6 +2,7 @@
 
 <%= form_tag(add_ta_path, method: :post) do %>
     <%= render 'error_messages' %>
+    Name <%= text_field_tag :name %>
     Email <%= email_field_tag :email %>
     <%= submit_tag 'Add TA' %>
 <% end %>
