@@ -135,6 +135,7 @@ class CoursesController < ApplicationController
       user = User.new(email: params[:email], password: SecureRandom.uuid, name: params[:name])
       if user.save
         user.send_invite_email
+        @course.tas << user
         @successful = true
       else
         @add_failed = true
