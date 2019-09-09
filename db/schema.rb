@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_23_003129) do
+ActiveRecord::Schema.define(version: 2019_09_09_182251) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(version: 2019_08_23_003129) do
     t.string "reset_digest"
     t.datetime "reset_sent_at"
     t.boolean "is_admin"
+    t.boolean "init_password_valid"
   end
 
   add_foreign_key "submission_batches", "assignments"

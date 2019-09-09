@@ -53,7 +53,14 @@ class PasswordResetsController < ApplicationController
   end
 
   def check_expiration
-    if @user.password_reset_expired?
+    if @user.init_password_valid
+      if @user.welcome_password_expired?
+        @user.update_attribute(:init_password_valid, false)
+        flash[:danger] = "Welcome has expired."
+        redirect_to new_password_reset_url
+      end
+
+    elsif @user.password_reset_expired?
       flash[:danger] = "Password reset has expired."
       redirect_to new_password_reset_url
     end

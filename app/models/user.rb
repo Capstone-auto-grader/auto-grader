@@ -27,6 +27,13 @@ class User < ApplicationRecord
         puts UserMailer.smtp_settings
         UserMailer.password_reset(self).deliver_now
     end
+    def send_invite_email
+        self.reset_token = User.new_token
+        update_attribute(:reset_digest, User.digest(reset_token))
+        update_attribute(:reset_sent_at, Time.zone.now)
+        update_attribute(:init_password_valid, true)
+        UserMailer.welcome_email(self).deliver_now
+    end
     def authenticated?(attribute, token)
         digest = send("#{attribute}_digest")
         return false if digest.nil?
@@ -35,6 +42,10 @@ class User < ApplicationRecord
     #Returns true if a password reset has expired.
     def password_reset_expired?
         reset_sent_at < 2.hours.ago
+    end
+
+    def welcome_password_expired?
+        reset_sent_at < 1.week.ago
     end
     def User.digest(string)
         cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
