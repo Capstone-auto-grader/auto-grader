@@ -89,3 +89,9 @@ production:
   password: <%= ENV['RDS_PASSWORD'] %>
   host: <%= ENV['RDS_HOSTNAME'] %>
   port: <%= ENV['RDS_PORT'] %>
+
+heroku:
+  <<: *default
+  database: auto-grader_production
+  username: auto-grader
+  password: <%= ENV['AUTO-GRADER_DATABASE_PASSWORD'] %>
