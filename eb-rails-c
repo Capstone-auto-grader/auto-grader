@@ -1,0 +1,2 @@
+#!/bin/bash
+eb ssh -c 'cd /var/app/current && rails c'
