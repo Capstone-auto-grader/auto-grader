@@ -165,6 +165,7 @@ class AssignmentsController < ApplicationController
       uploader.store! params[:assignment][:assignment_test]
     end
     p = assignment_params
+    if params[:assignment][:base_uri]
     base = Tempfile.new
     base.binmode
     base.write params[:assignment][:base_uri].read

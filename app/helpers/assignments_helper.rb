@@ -103,6 +103,8 @@ module AssignmentsHelper
 
   def get_latte_ids_and_validate_registrations(orig_csv, resub_csv, assignment)
     headers = orig_csv[0]
+    puts headers
+    # TODO: figure out if this will always be consistent
     id_index = 0 # headers.index "Identifier"
     email_index = 2 # headers.index "Email address"
     name_index = 1 # headers.index "Full name"
