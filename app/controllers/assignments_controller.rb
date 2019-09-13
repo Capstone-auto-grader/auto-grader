@@ -166,12 +166,13 @@ class AssignmentsController < ApplicationController
     end
     p = assignment_params
     if params[:assignment][:base_uri]
-    base = Tempfile.new
-    base.binmode
-    base.write params[:assignment][:base_uri].read
-    base.rewind
-    base_obj = S3_BUCKET.object File.basename(base.path)
-    base_obj.upload_file base.path
+      base = Tempfile.new
+      base.binmode
+      base.write params[:assignment][:base_uri].read
+      base.rewind
+      base_obj = S3_BUCKET.object File.basename(base.path)
+      base_obj.upload_file base.path
+    end
     unless uploader.path.nil? or not p[:has_tests]
       buckob = S3_BUCKET.object File.basename(uploader.path)
       buckob.upload_file uploader.path
