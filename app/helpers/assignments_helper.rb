@@ -198,7 +198,7 @@ module AssignmentsHelper
   def sub_comment(submission)
     s = submission.is_resubmission? ? "\n-----\nRESUBMISSION:\n" : ''
 
-    return s + 'NO SUBMISSION' if submission.zip_uri.nil?
+    return s + 'NO SUBMISSION' if submission.zip_uri.nil? and submission.assignment.has_tests
 
     ta_grade_label = 'GRADE'
 
