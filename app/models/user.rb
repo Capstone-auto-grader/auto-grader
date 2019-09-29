@@ -23,16 +23,16 @@ class User < ApplicationRecord
     end
 
     #Sends password reset email
-    def send_password_reset_email
+    def send_password_reset_email(request)
         puts UserMailer.smtp_settings
-        UserMailer.password_reset(self).deliver_now
+        UserMailer.password_reset(self, request).deliver_now
     end
-    def send_invite_email
+    def send_invite_email(request)
         self.reset_token = User.new_token
         update_attribute(:reset_digest, User.digest(reset_token))
         update_attribute(:reset_sent_at, Time.zone.now)
         update_attribute(:init_password_valid, true)
-        UserMailer.welcome_email(self).deliver_now
+        UserMailer.welcome_email(self, request).deliver_now
     end
     def authenticated?(attribute, token)
         digest = send("#{attribute}_digest")
