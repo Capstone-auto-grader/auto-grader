@@ -49,7 +49,7 @@ Rails.application.routes.draw do
   post '/submissions/:id/rerun', to: 'submissions#rerun', as: 'rerun_submission'
   post '/assignments/:id/run-moss', to: 'assignments#run_moss', as: 'run_moss'
   get '/courses/:id/load_students', to: 'courses#get_load_students_form', as: 'get_load_students_form'
-  post '/assignments/:id/load_students', to: 'courses#load_students', as: 'load_students'
+  post '/courses/:id/load_students', to: 'courses#load_students', as: 'load_students'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

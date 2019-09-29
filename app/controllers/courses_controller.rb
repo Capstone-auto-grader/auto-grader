@@ -22,7 +22,6 @@ class CoursesController < ApplicationController
   end
 
   def load_students
-    byebug
     csv = CSV.read(params[:csv].path)
     get_latte_ids_and_validate_registrations(csv, nil, @course)
     redirect_to course_path(@course)
