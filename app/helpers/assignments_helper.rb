@@ -68,7 +68,7 @@ module AssignmentsHelper
 
   def create_submissions_from_assignment(assignment, orig_csv, resub_csv)
     puts "ASSIGNMENT #{assignment.id}"
-    orig_latte_ids, resub_latte_ids = get_latte_ids_and_validate_registrations(orig_csv, resub_csv, assignment)
+    orig_latte_ids, resub_latte_ids = get_latte_ids_and_validate_registrations(orig_csv, resub_csv, assignment.course)
 
     reassign_groups(assignment.course)
 
@@ -101,7 +101,7 @@ module AssignmentsHelper
     puts submissions.map(&:assignment_id)
   end
 
-  def get_latte_ids_and_validate_registrations(orig_csv, resub_csv, assignment)
+  def get_latte_ids_and_validate_registrations(orig_csv, resub_csv, course)
     headers = orig_csv[0]
     puts headers
     # TODO: figure out if this will always be consistent
@@ -129,7 +129,7 @@ module AssignmentsHelper
         student.save!
       end
 
-      student.courses << assignment.course unless student.courses.include? assignment.course
+      student.courses << course unless student.courses.include? course
 
       orig_latte_ids[student.id] = orig_latte_id
       if resub_csv

@@ -1,7 +1,8 @@
 class CoursesController < ApplicationController
-  before_action :set_course, only: [:show, :edit, :update, :destroy, :conflict_add, :conflict_remove]
+  before_action :set_course, only: [:show, :edit, :update, :destroy, :conflict_add, :conflict_remove, :load_students]
   before_action :require_login
   require 'securerandom'
+  include AssignmentsHelper
   # GET /courses
   # GET /courses.json
   def index
@@ -15,6 +16,16 @@ class CoursesController < ApplicationController
       redirect_to @courses.first if @courses.count == 1
     end
 
+  end
+
+  def get_load_students_form
+  end
+
+  def load_students
+    byebug
+    csv = CSV.read(params[:csv].path)
+    get_latte_ids_and_validate_registrations(csv, nil, @course)
+    redirect_to course_path(@course)
   end
 
   def conflict_add

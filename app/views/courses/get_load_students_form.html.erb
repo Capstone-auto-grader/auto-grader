@@ -1,0 +1,11 @@
+<h1>Load Students from Assignment CSV</h1>
+<%= form_tag(load_students_path, multipart: true, method: :post, class: "form_control") do %>
+<%= render 'error_messages' %>
+  <div class="form-group row">
+  <label for="csv" class="col-form-label">Student CSV from latte </label>
+    <div class="col-sm-10">
+  <%= file_field_tag("csv", accept: "application/csv", class: 'form-control') %>
+    </div>
+  </div>
+  <%= submit_tag "Submit", class: "btn btn-primary" %>
+<% end %>
