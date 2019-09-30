@@ -2,7 +2,7 @@ class AssignmentsController < ApplicationController
   include AssignmentsHelper
   include SessionsHelper
   include UploadHelper
-  before_action :set_assignment, only: [:trigger_make_batches, :show, :edit, :update, :destroy, :grades, :download_latte_csv, :download_tom_csv, :download_partition, :show_partition, :download_invalid, :run_moss]
+  before_action :set_assignment, only: [:trigger_create_batches, :show, :edit, :update, :destroy, :grades, :download_latte_csv, :download_tom_csv, :download_partition, :show_partition, :download_invalid, :run_moss]
   before_action :require_login
 
   # GET /assignments
