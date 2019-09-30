@@ -31,7 +31,7 @@ class AssignmentsController < ApplicationController
     return redirect_to assignment_grades_path @assignment
   end
 
-  def trigger_make_batches
+  def trigger_create_batches
     UploadHelper::make_batches(@assignment)
     return redirect_to assignment_grades_path @assignment
   end
