@@ -39,9 +39,10 @@ module AssignmentsHelper
     end
 
     tas.each do |ta|
-      SubmissionBatch.create(user_id: ta, assignment: @assignment, validated: false)
-      if @assignment.has_resubmission
-        SubmissionBatch.create(user_id: ta, assignment: @assignment.resubmit, validated: false)
+      SubmissionBatch.create(user_id: ta, assignment: assignment, validated: false)
+      puts assignment
+      if assignment.has_resubmission
+        SubmissionBatch.create(user_id: ta, assignment: assignment.resubmit, validated: false)
       end
 
     end
@@ -77,9 +78,9 @@ module AssignmentsHelper
 
     assignments = assign_tas(assignment, tas.pluck(:id), ta_conflicts)
     if resub_csv
-      resubs = assignments.flat_map do |ta, students|
-        students.map do |student|
-          Submission.new(grade_received: false, ta_id: ta, student_id: student, assignment_id: assignment.resubmit.id, latte_id: resub_latte_ids[student], late_penalty: 0)
+      resubs = assignments.flat_map do |ta_id, students|
+        students.map do |student_id|
+          Submission.new(grade_received: false, ta_id: ta_id, student_id: student_id, assignment_id: assignment.resubmit.id, latte_id: resub_latte_ids[student_id], late_penalty: 0)
         end
       end
       resubs.map &:save!
@@ -89,9 +90,9 @@ module AssignmentsHelper
       end
       submissions.map &:save!
     else
-      submissions = assignments.flat_map do |ta, students|
-        students.map do |student|
-          Submission.new(grade_received: false, ta_id: ta, student_id: student, assignment_id: assignment.id, latte_id: orig_latte_ids[student], late_penalty: 0)
+      submissions = assignments.flat_map do |ta_id, students|
+        students.map do |student_id|
+          Submission.new(grade_received: false, ta_id: ta_id, student_id: student_id, assignment_id: assignment.id, latte_id: orig_latte_ids[student_id], late_penalty: 0)
         end
       end
       submissions.map &:save!
@@ -101,6 +102,17 @@ module AssignmentsHelper
     puts submissions.map(&:assignment_id)
   end
 
+  def reassign_tas(assignment)
+    SubmissionBatch.where(assignment: assignment).map(&:destroy)
+    tas = assignment.course.tas.all
+    ta_conflicts = tas.map {|ta| [ta.id, ta.conflict_students.map(&:id)]}.to_h
+    assignments = assign_tas(assignment, tas.pluck(:id), ta_conflicts)
+    assignments.flat_map do |ta_id, students|
+      students.map do |student_id|
+        Submission.where(assignment: assignment, student_id: student_id).first.update_attribute(:ta_id, ta_id)
+      end
+    end
+  end
   def get_latte_ids_and_validate_registrations(orig_csv, resub_csv, course)
     headers = orig_csv[0]
     puts headers
