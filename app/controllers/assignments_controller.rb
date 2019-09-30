@@ -1,7 +1,7 @@
 class AssignmentsController < ApplicationController
   include AssignmentsHelper
   include SessionsHelper
-  before_action :set_assignment, only: [:show, :edit, :update, :destroy, :grades, :download_latte_csv, :download_tom_csv, :download_partition, :show_partition, :download_invalid, :run_moss]
+  before_action :set_assignment, only: [:trigger_make_batches, :show, :edit, :update, :destroy, :grades, :download_latte_csv, :download_tom_csv, :download_partition, :show_partition, :download_invalid, :run_moss]
   before_action :require_login
 
   # GET /assignments
@@ -28,6 +28,11 @@ class AssignmentsController < ApplicationController
     @assignment.update_attribute(:moss_running, true)
     all_subm_uris = Assignment.find(@assignment.id).submissions.map(&:zip_uri).reject{|elem| elem.nil?}
     request_moss_grade all_subm_uris, @assignment.id
+    return redirect_to assignment_grades_path @assignment
+  end
+
+  def trigger_make_batches
+    UploadHelper::make_batches(@assignment)
     return redirect_to assignment_grades_path @assignment
   end
 

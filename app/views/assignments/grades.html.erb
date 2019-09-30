@@ -7,6 +7,8 @@
   <% else %>
     <%= button_to "Run moss", run_moss_path, class: 'btn btn-primary', disabled: @assignment.moss_running %>
 <% end %>
+
+  <%= button_to "Create batches", create_batches_path(id: @assignment.id), class: "btn btn-primary" %>
 <h3><%= "Average test grade: #{@average}" %></h3>
 <table>
 <tr>

@@ -48,6 +48,7 @@ Rails.application.routes.draw do
   post '/conflict_remove', to: 'courses#conflict_remove', as: 'conflict_remove'
   post '/submissions/:id/rerun', to: 'submissions#rerun', as: 'rerun_submission'
   post '/assignments/:id/run-moss', to: 'assignments#run_moss', as: 'run_moss'
+  post '/assignments/:id/create-batches', to: 'assignments#trigger_create_batches', as: "create_batches"
   get '/courses/:id/load_students', to: 'courses#get_load_students_form', as: 'get_load_students_form'
   post '/courses/:id/load_students', to: 'courses#load_students', as: 'load_students'
 

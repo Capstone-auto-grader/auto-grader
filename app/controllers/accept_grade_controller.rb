@@ -3,6 +3,7 @@ class AcceptGradeController < ApplicationController
   include AssignmentsHelper, Ec2Helper
   include UploadHelper
   def accept_grade
+    puts "PARAMS", params
     status = params[:status]
     submission = Submission.find(params[:id].to_i)
     if submission
@@ -44,16 +45,16 @@ class AcceptGradeController < ApplicationController
       submission.grade_received = true
       submission.save!
       remaining_grades = submission.assignment.submissions.where.not(zip_uri: nil).where(grade_received: false).count
-      if remaining_grades == 0 && params[:rerun] != "true"
-        puts "CREATING BATCHES"
-        make_batches submission.assignment
-
-      else
-        puts "RERUN #{params[:rerun]} REMAINING #{remaining_grades}"
-      end
-      if params['rerun'] == "true"
-        create_zip_from_batch submission.assignment.id, submission.ta.id
-      end
+      # if remaining_grades == 0 && params[:rerun] != "true"
+      #   puts "CREATING BATCHES"
+      #   make_batches submission.assignment
+      #
+      # else
+      #   puts "RERUN #{params[:rerun]} REMAINING #{remaining_grades}"
+      # end
+      # if params['rerun'] == "true"
+      #   create_zip_from_batch submission.assignment.id, submission.ta.id
+      # end
     end
   end
 
