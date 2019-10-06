@@ -7,4 +7,5 @@ module SubmissionsHelper
 
     submission.is_valid ? submission.test_grade : 'Invalid submission'
   end
+
 end

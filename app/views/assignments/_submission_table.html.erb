@@ -5,6 +5,8 @@
     <th style="width: 10%">Student</th>
     <% if @assignment.has_tests %>
       <th style="width: 10%">Test Grade</th>
+      <% else %>
+      <th style="width: 10%">Submission Status</th>
     <% end %>
     <th style="width: 10%">TA Grade</th>
 <!--    <th style="width: 10%">Extra Credit</th>-->
@@ -24,6 +26,8 @@
           <td><%= submission.student.name %></td>
           <% if @assignment.has_tests %>
             <td><%= status_or_grade(submission) %></td>
+            <% else %>
+            <td><%= submission.zip_uri.nil? ? "No Submission" : "Submitted" %></td>
           <% end %>
           <td>
           <% if is_superuser(@assignment.course.id) || subs.first.ta == current_user %>
@@ -46,7 +50,7 @@
           </td>
           <td> <%= link_to 'Edit Submission', edit_assignment_submission_path(id: submission.id, assignment_id: @assignment.id), html_options= { class: "btn btn-primary", role: "button" } %> </td>
           <% if !submission.nil? %>
-            <td> <%= link_to 'Download', assigments_download_path(grade: submission.zip_uri, id: submission.id),html_options= { class: "btn btn-primary", role: "button", target: :_blank  } %> </td>
+            <td> <%= link_to 'Download', assigments_download_path(grade: submission.zip_uri, id: submission.id),html_options= { class: "btn btn-primary", role: "button", target: :_blank  } unless submission.zip_uri.nil?%> </td>
 
           <% else %>
             <td> No Submission </td>
