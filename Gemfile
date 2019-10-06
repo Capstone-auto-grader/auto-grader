@@ -79,3 +79,4 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 # Adds support for file upload
 gem 'carrierwave'
 gem 'aws-sdk'
+gem 'excon'

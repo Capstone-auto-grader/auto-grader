@@ -697,6 +697,7 @@ GEM
     erubi (1.7.1)
     ethon (0.12.0)
       ffi (>= 1.3.0)
+    excon (0.62.0)
     execjs (2.7.0)
     faker (1.9.1)
       i18n (>= 0.7)
@@ -927,6 +928,7 @@ DEPENDENCIES
   chromedriver-helper
   coffee-rails (~> 4.2)
   csv
+  excon
   faker
   jbuilder (~> 2.5)
   jquery-rails

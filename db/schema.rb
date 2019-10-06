@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_09_182251) do
+ActiveRecord::Schema.define(version: 2019_10_06_000928) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,16 +30,17 @@ ActiveRecord::Schema.define(version: 2019_09_09_182251) do
     t.boolean "submitted_once"
     t.boolean "has_tests"
     t.boolean "has_resubmission"
-    t.string "container_name"
     t.boolean "moss_running"
+    t.integer "container_id"
     t.index ["course_id"], name: "index_assignments_on_course_id"
   end
 
   create_table "containers", force: :cascade do |t|
     t.string "name"
-    t.string "uri"
+    t.string "s3_uri"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "remote_id"
   end
 
   create_table "courses", force: :cascade do |t|

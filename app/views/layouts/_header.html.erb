@@ -8,6 +8,9 @@
         <% if logged_in? %>
           <li class="nav-item"><%= link_to "Home", courses_path, class: "nav-link" %></li>
           <li class="nav-item"><%= (link_to "Admin", rails_admin_path, class: "nav-link") if current_user.is_admin %></li>
+          <%if current_user&.is_admin %>
+            <li class="nav-item"><%= link_to "Containers", containers_path, class: "nav-link" %></li>
+          <% end %>
           <li class="nav-item dropdown">
             <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
             <%=  current_user.name %> <b class="caret"></b>

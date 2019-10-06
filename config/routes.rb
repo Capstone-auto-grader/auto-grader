@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :containers
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
   resources :assignments do
     resources :submissions

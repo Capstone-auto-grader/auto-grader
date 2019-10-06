@@ -8,7 +8,9 @@
           <div class="form-group">
             <%= f.association :course, label: "Class", collection: @current_user.professorships, include_blank: false, input_html: {class:"form-control"} %>
           </div>
-
+          <div class="form-group">
+            <%=f.association :container, label: "Grading container", collection: Container.all, include_blank: false, input_html: {class:"form-control"}   %>
+          </div>
           <p></p>
           <%= f.input :name, label: "Assignment Name", required: true, input_html: {class:"form-control"} %>
           <p></p>

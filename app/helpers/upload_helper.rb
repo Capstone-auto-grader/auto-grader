@@ -14,8 +14,11 @@ module UploadHelper
     uri = URI.parse("#{ENV['GRADING_SERVER']}/grade")
     http = Net::HTTP.new(uri.host, uri.port)
     req = Net::HTTP::Post.new(uri.path, {'Content-Type' => 'application/json'})
-    image_name = submission.assignment.container_name.nil? ? 'java' :  submission.assignment.container_name
-    req.body = { proj_id: submission.id, proj_zip: submission.zip_uri, test_zip: submission.assignment.test_uri, image_name: image_name, student_name: submission.student.name, sec: submission.security_hash, rerun: rerun}.to_json
+    req.body = { proj_id: submission.id, proj_zip: submission.zip_uri,
+                 test_zip: submission.assignment.test_uri,
+                 container_id: submission.assignment.container.remote_id,
+                 student_name: submission.student.name,
+                 sec: submission.security_hash, rerun: rerun}.to_json
     puts req.body
     http.request req
   end
