@@ -36,6 +36,7 @@ class ContainersController < ApplicationController
         obj.upload_stream do |stream|
           IO.copy_stream tar_file,stream
         end
+        puts @container.s3_uri
         @container.s3_uri = obj.key
         response = Excon.post("#{ENV['GRADING_SERVER']}/containers",
                               headers: {
