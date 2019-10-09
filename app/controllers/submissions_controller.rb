@@ -2,7 +2,7 @@ class SubmissionsController < ApplicationController
   include UploadHelper
   before_action :set_submission, only: [:show, :edit, :update, :destroy, :rerun]
   before_action :require_login
-  before_action :verify_superuser, only: [:edit, :update]
+  # before_action :verify_superuser, only: [:edit, :update]
   skip_before_action :verify_authenticity_token
   # GET /submissions
   # GET /submissions.json
