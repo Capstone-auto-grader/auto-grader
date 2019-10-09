@@ -166,23 +166,41 @@ class AssignmentsController < ApplicationController
   # POST /assignments
   # POST /assignments.json
   def create
-    uploader = AttachmentUploader.new
-    if params[:assignment][:assignment_test]
-      uploader.store! params[:assignment][:assignment_test]
-    end
+    # uploader = AttachmentUploader.new
+    # if params[:assignment][:assignment_test]
+    #   uploader.store! params[:assignment][:assignment_test]
+    # end
     p = assignment_params
+    @assignment = Assignment.new(p)
+    base_obj = S3_BUCKET.object "#{SecureRandom.uuid}.zip"
     if params[:assignment][:base_uri]
-      base = Tempfile.new
-      base.binmode
-      base.write params[:assignment][:base_uri].read
-      base.rewind
-      base_obj = S3_BUCKET.object File.basename(base.path)
-      base_obj.upload_file base.path
+      base_obj.upload_stream do |stream|
+        IO.copy_stream params[:assignment][:base_uri], stream
+      end
+      # base = Tempfile.new
+      # base.binmode
+      # base.write params[:assignment][:base_uri].read
+      # base.rewind
+      # base_obj = S3_BUCKET.object File.basename(base.path)
+      @assignment.base_uri = "#{S3_BUCKET.name}/#{base_obj.key}"
+      # base_obj.upload_file base.path
+    else
+      @assignment.errors[:base] << "A base file is required"
+      render :new, assignment: @assignment
+      return
     end
-    unless uploader.path.nil? or not p[:has_tests]
-      buckob = S3_BUCKET.object File.basename(uploader.path)
-      buckob.upload_file uploader.path
-      p[:test_uri] = "#{S3_BUCKET.name}/#{buckob.key}" unless buckob.nil?
+    if p[:has_tests].to_i == 1
+      if ! params[:assignment][:assignment_test].nil?
+        test_obj = S3_BUCKET.object "#{SecureRandom.uuid}.zip"
+        test_obj.upload_stream do |stream|
+          IO.copy_stream params[:assignment][:base_uri], stream
+        end
+        @assignment.test_uri = "#{S3_BUCKET.name}/#{test_obj.key}" unless test_obj.nil?
+      else
+        @assignment.errors[:base] << "If you have tests, you must provide a test file"
+        render :new, assignment: @assignment
+        return
+      end
     end
 
 
@@ -197,10 +215,10 @@ class AssignmentsController < ApplicationController
     p[:group_offset] = get_group_offset(p[:course_id])
     file = params[:assignment][:uploaded_file]
     p[:submitted_once] = false
-    uploader = AttachmentUploader.new
-    uploader.store! file
-    p[:base_uri] = "#{S3_BUCKET.name}/#{base_obj.key}"
-    @assignment = Assignment.new(p)
+    # uploader = AttachmentUploader.new
+    # uploader.store! file
+    # p[:base_uri] = "#{S3_BUCKET.name}/#{base_obj.key}"
+
     @assignment.moss_running = false
     respond_to do |format|
       if @assignment.save!
@@ -234,8 +252,28 @@ class AssignmentsController < ApplicationController
   # PATCH/PUT /assignments/1
   # PATCH/PUT /assignments/1.json
   def update
+    if params[:assignment][:base_uri]
+      base_obj = S3_BUCKET.object "#{SecureRandom.uuid}.zip"
+      base_obj.upload_stream do |stream|
+        IO.copy_stream params[:assignment][:base_uri], stream
+      end
+      @assignment.base_uri = "#{S3_BUCKET.name}/#{base_obj.key}"
+    end
+    if p[:has_tests].to_i == 1
+      if  ! params[:assignment][:assignment_test].nil? # If file present
+        test_obj = S3_BUCKET.object "#{SecureRandom.uuid}.zip"
+        test_obj.upload_stream do |stream|
+          IO.copy_stream params[:assignment][:base_uri], stream
+        end
+        @assignment.test_uri = "#{S3_BUCKET.name}/#{test_obj.key}" unless test_obj.nil?
+      elsif @assignment.test_uri.nil? # If file not present and there is no test file
+        @assignment.errors[:base] << "If you have tests, you must provide a test file"
+        render :new, assignment: @assignment
+        return
+      end
+    end
     p = assignment_params
-    file = params[:assignment][:uploaded_file]
+    # file = params[:assignment][:uploaded_file]
     respond_to do |format|
       if @assignment.update(p)
         format.html { redirect_to @assignment, notice: 'Assignment was successfully updated.' }
