@@ -38,6 +38,7 @@ class User < ApplicationRecord
         digest = send("#{attribute}_digest")
         puts digest
         return false if digest.nil?
+        puts BCrypt::Password.new(digest).is_password?(token)
         BCrypt::Password.new(digest).is_password?(token)
     end
     #Returns true if a password reset has expired.
