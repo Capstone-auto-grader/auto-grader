@@ -43,11 +43,14 @@ class PasswordResetsController < ApplicationController
   end
 
   def get_user
+    puts User.find_by(email: params[:email])
     @user = User.find_by(email: params[:email])
   end
 
   def valid_user
-    unless (@user && @user.authenticated?(:reset, params[:id]))
+    puts @user
+    unless @user && @user.authenticated?(:reset, params[:id])
+      puts "REDIRECTING"
       redirect_to root_url
     end
   end
@@ -56,13 +59,17 @@ class PasswordResetsController < ApplicationController
     if @user.init_password_valid
       if @user.welcome_password_expired?
         @user.update_attribute(:init_password_valid, false)
+        puts "WELCOME EXPIRED"
         flash[:danger] = "Welcome has expired."
         redirect_to new_password_reset_url
       end
 
     elsif @user.password_reset_expired?
+      puts "PASSWORD RESET EXPIRED"
       flash[:danger] = "Password reset has expired."
       redirect_to new_password_reset_url
+    else
+      puts "ALL EXPIRED"
     end
   end
 end
