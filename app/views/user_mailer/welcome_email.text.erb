@@ -1,5 +1,5 @@
 Welcome to AutoGrader! Your head TA made an account for you so you can grade a class. Please set your password at the link below.
 
-<%= edit_password_reset_url(token: @user.reset_token, email: @user.email, host: @request.host_with_port) %>
+<%= edit_password_reset_url(@user.reset_token, token: @user.reset_token, email: @user.email, host: @request.host_with_port) %>
 
 This link will expire in a week.
