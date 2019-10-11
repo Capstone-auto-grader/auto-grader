@@ -50,7 +50,7 @@ class PasswordResetsController < ApplicationController
   def valid_user
     puts @user
     puts params
-    unless @user && @user.authenticated?(:reset, params[:id])
+    unless @user && @user.authenticated?(:reset, params[:token])
       puts "REDIRECTING"
       redirect_to root_url
     end
